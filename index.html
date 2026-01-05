@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试网页｜FPV大赛｜917813.com.cn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            padding: 25px 20px;
+            background: #000a1f;
+            background-image: 
+                linear-gradient(rgba(0, 119, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 119, 255, 0.2) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 150, 255, 0.3), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* 弹窗遮罩层 */
+        .modal-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 10, 31, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-mask.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* 弹窗内容 */
+        .modal-content {
+            width: 90%;
+            max-width: 550px;
+            background: #001438;
+            border: 2px solid;
+            border-image: linear-gradient(90deg, #0066ff, #ff00cc) 1;
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 0 40px rgba(0, 102, 255, 0.5);
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            color: #00ccff;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(0, 204, 255, 0.6);
+        }
+        .modal-text {
+            color: #e0e0e0;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        .modal-text strong {
+            color: #00ccff;
+        }
+        .modal-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #0066ff, #ff00cc);
+            background-size: 200% 200%;
+            animation: btnGlow 5s ease infinite;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        @keyframes btnGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .modal-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 0, 204, 0.4);
+        }
+        .container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .event-top {
+            padding: 40px 25px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #0066ff, #ff00cc, #00ff99);
+            background-size: 300% 300%;
+            animation: eventGlow 4s ease-in-out infinite;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 102, 255, 0.6);
+        }
+        @keyframes eventGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .event-main-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
+        }
+        .event-sub-title {
+            font-size: 1.3rem;
+            color: #fff;
+            opacity: 0.9;
+            margin-top: 10px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+        .brand-card {
+            padding: 25px;
+            border-radius: 16px;
+            background: rgba(0, 20, 50, 0.6);
+            backdrop-filter: blur(12px);
+            border: 2px solid;
+            border-image: linear-gradient(90deg, #0066ff, #ff00cc) 1;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 102, 255, 0.3);
+        }
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #00ccff;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.6);
+        }
+        .info-card {
+            padding: 30px 25px;
+            border-radius: 16px;
+            background: rgba(0, 20, 50, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 102, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 102, 255, 0.2);
+        }
+        .main-info {
+            font-size: 1.5rem;
+            color: #00ccff;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
+        }
+        .main-info span {
+            background: linear-gradient(90deg, #ff00cc, #00ff99);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .domain-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        .domain-card {
+            flex: 1;
+            min-width: 280px;
+            padding: 22px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(0, 66, 150, 0.4), rgba(0, 30, 80, 0.4));
+            border-left: 4px solid #ff00cc;
+        }
+        .domain-label {
+            font-size: 1rem;
+            color: #80c8ff;
+            margin-bottom: 10px;
+        }
+        .domain-value {
+            font-size: 1.2rem;
+            color: #fff;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .btn-wrap {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .btn {
+            padding: 18px 55px;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #0066ff, #ff00cc, #00ff99);
+            background-size: 300% 300%;
+            animation: btnGlow 5s ease infinite;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 0 30px rgba(0, 102, 255, 0.5);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 50px rgba(255, 0, 204, 0.7);
+        }
+        .iframe-wrap {
+            width: 100%;
+            height: 480px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid;
+            border-image: linear-gradient(90deg, #0066ff, #ff00cc, #00ff99) 1;
+            box-shadow: 0 0 35px rgba(0, 102, 255, 0.4);
+        }
+        .iframe-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .footer {
+            text-align: center;
+            color: #80c8ff;
+            padding: 20px 0;
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(0, 204, 255, 0.3);
+        }
+        @media (max-width: 580px) {
+            .event-main-title {
+                font-size: 2rem;
+            }
+            .brand-title {
+                font-size: 1.8rem;
+            }
+            .main-info {
+                font-size: 1.2rem;
+            }
+            .iframe-wrap {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开屏声明弹窗 -->
+    <div class="modal-mask" id="declarationModal">
+        <div class="modal-content">
+            <h3 class="modal-title">本网站声明条款</h3>
+            <div class="modal-text">
+                1. 本网站（Flyz远征飞）的所有权、运营权均归属<strong>北京康易安科技</strong>。<br>
+                2. 本网站提供的所有内容仅供参考，不构成任何商业建议或承诺。<br>
+                3. 未经本公司书面授权，任何单位或个人不得擅自转载、复制本网站内容。<br>
+                4. 本网站保留对声明条款的最终解释权，相关条款将根据实际情况不定期更新。
+            </div>
+            <button class="modal-btn" id="agreeBtn">我已阅读并同意</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="event-top">
+            <h1 class="event-main-title">Flyz远征飞穿越机大赛 • 2026</h1>
+            <p class="event-sub-title">火热报名中 · 敬请锁定赛事详情</p>
+        </div>
+
+        <div class="brand-card">
+            <h2 class="brand-title">Flyz远征飞</h2>
+        </div>
+
+        <div class="info-card">
+            <p class="main-info">网页正在加速准备中 · 预计 <span>2026年1月6日</span> 正式上线</p>
+            
+            <div class="domain-group">
+                <div class="domain-card">
+                    <div class="domain-label">当前域名</div>
+                    <div class="domain-value">917813fpv.github.io</div>
+                </div>
+                <div class="domain-card">
+                    <div class="domain-label">上线后域名</div>
+                    <div class="domain-value">917813.com.cn</div>
+                </div>
+            </div>
+
+            <div class="btn-wrap">
+                <a href="http://yzbjfpv.top" target="_blank" class="btn">访问旧站 yzbjfpv.top</a>
+            </div>
+
+            <div class="iframe-wrap">
+                <iframe src="http://yzbjfpv.top" title="Flyz远征飞旧站"></iframe>
+            </div>
+        </div>
+
+        <div class="footer">© 2026 Flyz远征飞 版权所有</div>
+    </div>
+
+    <script>
+        // 弹窗控制逻辑 - 基于localStorage记忆
+        const modal = document.getElementById('declarationModal');
+        const agreeBtn = document.getElementById('agreeBtn');
+        const hasAgreed = localStorage.getItem('flyz_declaration_agreed');
+
+        // 首次访问显示弹窗
+        if (!hasAgreed) {
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 500); // 延迟500ms弹出，提升体验
+        }
+
+        // 同意按钮事件
+        agreeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            // 记录用户已同意，有效期1年
+            localStorage.setItem('flyz_declaration_agreed', 'true');
+            localStorage.setItem('flyz_declaration_expire', Date.now() + 31536000000);
+        });
+
+        // 可选：过期自动清除记录（次年需重新同意）
+        const expireTime = localStorage.getItem('flyz_declaration_expire');
+        if (expireTime && Date.now() > parseInt(expireTime)) {
+            localStorage.removeItem('flyz_declaration_agreed');
+            localStorage.removeItem('flyz_declaration_expire');
+        }
+    </script>
+</body>
+</html>
