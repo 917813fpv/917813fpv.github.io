@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>赛事报名｜Flyz远征飞</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <!-- 国内CDN依赖 -->
   <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     /* 全局样式重置 */
@@ -18,7 +16,6 @@
     }
 
     :root {
-      /* 科技蓝标准配色 */
       --tech-blue: #0096FF;
       --tech-dark: #0066CC;
       --tech-light: #66CCFF;
@@ -29,11 +26,9 @@
       --radius: 12px;
     }
 
-    /* ========== 通用科技感蓝色方格背景 ========== */
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background-color: #000814;
-      /* 标准科技方格背景 - 深色底+蓝色线条 */
       background-image: 
         linear-gradient(rgba(0, 150, 255, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 150, 255, 0.1) 1px, transparent 1px);
@@ -43,14 +38,12 @@
       padding: 20px 0;
     }
 
-    /* 页面容器 - 居中+留白 */
     .page-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
 
-    /* ========== 左上角炫酷Logo组合 ========== */
     .header-logo {
       display: flex;
       align-items: center;
@@ -107,7 +100,6 @@
       50% { opacity: 1; }
     }
 
-    /* 页面标题 - 发光特效 */
     .page-title {
       text-align: center;
       font-size: 3rem;
@@ -128,7 +120,6 @@
       border-radius: 2px;
     }
 
-    /* 标签切换栏 - 科技感按钮 */
     .tab-nav {
       display: flex;
       justify-content: center;
@@ -177,7 +168,6 @@
       left: 100%;
     }
 
-    /* 内容卡片 - 玻璃拟态+边框发光 */
     .tab-content {
       display: none;
       background-color: rgba(255, 255, 255, 0.95);
@@ -216,7 +206,6 @@
       }
     }
 
-    /* 板块标题 */
     .section-title {
       font-size: 2rem;
       color: var(--tech-dark);
@@ -235,21 +224,37 @@
       border-radius: 3px;
     }
 
-    /* ========== 赞助商方块云图 ========== */
+    /* ========== 重写赞助商云图 CSS 动态文字云 ========== */
     #sponsor-cloud {
       width: 100%;
       height: 480px;
       border-radius: var(--radius);
       border: 1px solid var(--tech-light);
       background-color: rgba(255, 255, 255, 0.5);
-      transition: all 0.3s ease;
-    }
-
-    #sponsor-cloud:hover {
+      position: relative;
+      overflow: hidden; /* 严格限制文字不超出容器 */
       box-shadow: 0 0 25px rgba(0, 150, 255, 0.2);
     }
 
-    /* ========== 选手表格 - 精细化美化 ========== */
+    .sponsor-item {
+      position: absolute;
+      color: var(--tech-dark);
+      font-weight: bold;
+      text-shadow: 0 0 5px var(--tech-light);
+      white-space: nowrap; /* 禁止文字换行 */
+      transform: translate(-50%, -50%); /* 文字居中定位 */
+      animation: float linear infinite; /* 无规则漂浮动画 */
+    }
+
+    /* 多组动画参数，实现无规则运动 */
+    @keyframes float {
+      0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+      25% { transform: translate(-50%, -50%) rotate(5deg) scale(1.1); }
+      50% { transform: translate(-50%, -50%) rotate(0deg) scale(0.9); }
+      75% { transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); }
+      100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+    }
+
     .player-table {
       width: 100%;
       border-collapse: separate;
@@ -284,7 +289,6 @@
       transition: background-color 0.3s ease;
     }
 
-    /* 报名按钮 - 渐变+发光 */
     .apply-btn {
       display: block;
       width: fit-content;
@@ -322,7 +326,6 @@
       left: 100%;
     }
 
-    /* ========== 弹窗样式 - 科技感玻璃拟态 ========== */
     .modal {
       position: fixed;
       top: 0;
@@ -394,7 +397,6 @@
       text-shadow: 0 0 10px rgba(0, 150, 255, 0.2);
     }
 
-    /* ========== 比赛公告弹窗专属样式 ========== */
     #notice-modal .modal-content {
       max-width: 800px;
       max-height: 80vh;
@@ -433,7 +435,6 @@
       color: #555;
     }
 
-    /* ========== 赞助商表单 - 精细化设计 ========== */
     .sponsor-form {
       display: flex;
       flex-direction: column;
@@ -510,7 +511,6 @@
       border-color: var(--tech-light);
     }
 
-    /* 海报生成隐藏容器 */
     #poster-container {
       position: fixed;
       top: -9999px;
@@ -524,7 +524,6 @@
       box-shadow: 0 10px 30px rgba(0, 150, 255, 0.2);
     }
 
-    /* 公告截图隐藏容器 */
     #notice-poster {
       position: fixed;
       top: -9999px;
@@ -537,7 +536,6 @@
       box-shadow: 0 10px 30px rgba(0, 150, 255, 0.2);
     }
 
-    /* 响应式适配 - 小屏幕Logo缩小 */
     @media (max-width: 768px) {
       .logo-img {
         width: 50px;
@@ -559,12 +557,17 @@
       .notice-btn-group {
         flex-direction: column;
       }
+      #sponsor-cloud {
+        height: 300px; /* 移动端高度适配 */
+      }
+      .sponsor-item {
+        font-size: 0.8rem !important; /* 移动端文字缩小 */
+      }
     }
   </style>
 </head>
 <body>
   <div class="page-container">
-    <!-- 左上角炫酷Logo组合 -->
     <div class="header-logo">
       <img src="https://www.img520.com/kqDPsb.png" alt="Flyz远征飞 Logo" class="logo-img">
       <div class="logo-text-group">
@@ -573,23 +576,19 @@
       </div>
     </div>
 
-    <!-- 标题修改为比赛中心 -->
     <h1 class="page-title">Flyz远征飞2026全国线上FPV赛事中心</h1>
 
-    <!-- 标签切换 -->
     <div class="tab-nav">
       <button class="tab-btn active" data-tab="sponsor-tab">赞助商专区</button>
       <button class="tab-btn" data-tab="player-tab">选手报名区</button>
     </div>
 
-    <!-- 赞助商专区 -->
     <div class="tab-content active" id="sponsor-tab">
       <h2 class="section-title">当前赞助商</h2>
       <div id="sponsor-cloud"></div>
       <button class="apply-btn" id="sponsor-apply">赞助商报名</button>
     </div>
 
-    <!-- 选手报名区 -->
     <div class="tab-content" id="player-tab">
       <h2 class="section-title">参赛选手名单</h2>
       <table class="player-table">
@@ -600,14 +599,12 @@
           </tr>
         </thead>
         <tbody id="player-list">
-          <!-- JS 动态填充 -->
         </tbody>
       </table>
       <button class="apply-btn" id="player-apply">选手报名</button>
     </div>
   </div>
 
-  <!-- 1. 新增：比赛公告弹窗 -->
   <div class="modal" id="notice-modal">
     <div class="modal-content">
       <h3 class="modal-title">Flyz远征飞2026全国线上FPV赛事公告</h3>
@@ -619,7 +616,6 @@
     </div>
   </div>
 
-  <!-- 2. 选手报名弹窗 -->
   <div class="modal" id="player-modal">
     <div class="modal-content">
       <h3 class="modal-title">选手报名须知</h3>
@@ -629,7 +625,6 @@
     </div>
   </div>
 
-  <!-- 3. 赞助商报名弹窗 -->
   <div class="modal" id="sponsor-modal">
     <div class="modal-content">
       <h3 class="modal-title">赞助商信息提交</h3>
@@ -663,7 +658,6 @@
     </div>
   </div>
 
-  <!-- 4. 提交成功弹窗 -->
   <div class="modal" id="success-modal">
     <div class="modal-content">
       <h3 class="modal-title">提交成功！</h3>
@@ -673,25 +667,21 @@
     </div>
   </div>
 
-  <!-- 海报生成隐藏容器 -->
   <div id="poster-container"></div>
-  <!-- 公告截图隐藏容器 -->
   <div id="notice-poster"></div>
 
   <script>
-    // 1. 页面加载完成后自动弹出公告弹窗
     $(document).ready(function() {
-      // 加载公告内容
+      // 加载公告
       $.get('/fpv/gonggao.txt', function(data) {
         $('#notice-content').text(data);
-        // 显示公告弹窗
         $('#notice-modal').addClass('show');
       }).fail(function() {
         $('#notice-content').html('<p style="color:var(--tech-blue); text-align:center;">公告文件加载失败，请检查 /fpv/gonggao.txt 路径</p>');
         $('#notice-modal').addClass('show');
       });
 
-      // 2. 标签切换功能
+      // 标签切换
       $('.tab-btn').click(function() {
         const tabId = $(this).attr('data-tab');
         $('.tab-btn').removeClass('active');
@@ -700,85 +690,68 @@
         $('#' + tabId).addClass('active');
       });
 
-      // 3. 读取赞助商名单 - 生成方块矩阵云图
-      $.get('/fpv/zanzhu.txt', function(data) {
-        const sponsorList = data.split('\n').filter(item => item.trim() !== '');
-        const myChart = echarts.init(document.getElementById('sponsor-cloud'));
-        
-        // 标准科技方块云图配置
-        const option = {
-          grid: {
-            left: '8%',
-            right: '8%',
-            top: '12%',
-            bottom: '12%'
-          },
-          series: [{
-            type: 'wordCloud',
-            gridSize: 20,
-            sizeRange: [22, 48], 
-            rotationRange: [0, 0], 
-            shape: 'square', 
-            textStyle: {
-              fontFamily: 'system-ui',
-              fontWeight: 'bold',
-              color: function() {
-                const colors = ['#0066CC', '#0096FF', '#33CCFF', '#66CCFF'];
-                return colors[Math.floor(Math.random() * colors.length)];
-              }
-            },
-            emphasis: {
-              textStyle: {
-                shadowBlur: 15,
-                shadowColor: '#0096FF'
-              }
-            },
-            data: sponsorList.map(item => ({
-              name: item.trim(),
-              value: Math.floor(Math.random() * 45) + 25 
-            }))
-          }]
-        };
-
-        myChart.setOption(option);
-        window.addEventListener('resize', function() {
-          myChart.resize();
+      // ========== 重写赞助商云图 JS 逻辑 - 动态生成文字云 ==========
+      function initSponsorCloud() {
+        const cloud = document.getElementById('sponsor-cloud');
+        // 读取赞助商名单，若无数据则用默认数据
+        $.get('/fpv/zanzhu.txt', function(data) {
+          let sponsorList = data.split('\n').filter(item => item.trim() !== '');
+          // 默认数据
+          if (sponsorList.length === 0) {
+            sponsorList = ['远征飞航模', '蓝天科技', '极速动力', '云翼模型', '星辰配件', '飞跃电子', '劲风器材', '凌云工坊'];
+          }
+          cloud.innerHTML = ''; // 清空容器
+          const cloudWidth = cloud.offsetWidth;
+          const cloudHeight = cloud.offsetHeight;
+          // 生成每个赞助商文字节点
+          sponsorList.forEach((name, index) => {
+            const item = document.createElement('div');
+            item.className = 'sponsor-item';
+            item.innerText = name;
+            // 随机位置（限制在容器内）
+            const x = Math.random() * cloudWidth;
+            const y = Math.random() * cloudHeight;
+            // 随机大小（12-20px）
+            const size = 12 + Math.random() * 8;
+            // 随机颜色（科技蓝系）
+            const colors = ['var(--tech-dark)', 'var(--tech-blue)', 'var(--tech-light)'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            // 随机动画时长（10-20秒）
+            const duration = 10 + Math.random() * 10;
+            // 设置样式
+            item.style.left = `${x}px`;
+            item.style.top = `${y}px`;
+            item.style.fontSize = `${size}px`;
+            item.style.color = color;
+            item.style.animationDuration = `${duration}s`;
+            cloud.appendChild(item);
+          });
+        }).fail(function() {
+          cloud.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--tech-blue); font-size:1.3rem;">赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径</div>`;
         });
-      }).fail(function() {
-        $('#sponsor-cloud').html(`
-          <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--tech-blue); font-size:1.3rem;">
-            赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径
-          </div>
-        `);
-      });
-    
-      // 4. 读取选手名单 - 生成带ID表格
+      }
+      // 初始化云图 + 窗口大小变化时重新渲染
+      initSponsorCloud();
+      window.addEventListener('resize', initSponsorCloud);
+
+      // 加载选手名单
       $.get('/fpv/flyer.txt', function(data) {
         const playerList = data.split('\n').filter(item => item.trim() !== '');
         const playerTbody = $('#player-list');
         playerTbody.empty();
-        
+        if (playerList.length === 0) {
+          playerTbody.html(`<tr><td colspan="2" style="color:var(--tech-blue); padding:40px;">暂无选手报名</td></tr>`);
+          return;
+        }
         playerList.forEach((player, index) => {
           const playerId = 'ID' + (index + 1).toString().padStart(3, '0');
-          playerTbody.append(`
-            <tr>
-              <td>${playerId}</td>
-              <td>${player.trim()}</td>
-            </tr>
-          `);
+          playerTbody.append(`<tr><td>${playerId}</td><td>${player.trim()}</td></tr>`);
         });
       }).fail(function() {
-        $('#player-list').html(`
-          <tr>
-            <td colspan="2" style="color:var(--tech-blue); font-size:1.2rem; padding:40px;">
-              选手名单文件加载失败，请检查 /fpv/flyer.txt 路径
-            </td>
-          </tr>
-        `);
+        $('#player-list').html(`<tr><td colspan="2" style="color:var(--tech-blue); font-size:1.2rem; padding:40px;">选手名单文件加载失败，请检查 /fpv/flyer.txt 路径</td></tr>`);
       });
     });
 
-    // 5. 报名按钮点击事件
     document.getElementById('player-apply').onclick = function() {
       document.getElementById('player-modal').classList.add('show');
     };
@@ -786,31 +759,22 @@
       document.getElementById('sponsor-modal').classList.add('show');
     };
 
-    // 6. 关闭弹窗函数
     function closeModal(modalId) {
       document.getElementById(modalId).classList.remove('show');
     }
 
-    // 7. 新增：下载公告到相册
     function downloadNotice() {
       const noticeContent = $('#notice-content').text();
       const noticePoster = document.getElementById('notice-poster');
-      // 构建公告截图内容
       noticePoster.innerHTML = `
         <div style="text-align:center; margin-bottom:30px;">
           <h2 style="color:#0066CC; font-size:1.8rem; margin-bottom:15px;">Flyz远征飞2026全国线上FPV赛事公告</h2>
           <hr style="border:1px solid #0096FF; margin-bottom:30px;">
         </div>
         <div style="font-size:1.1rem; line-height:1.8; color:#333; white-space:pre-wrap;">${noticeContent}</div>
-        <div style="position:absolute; bottom:40px; width:90%; text-align:center; color:#0096FF; font-size:1rem;">
-          下载时间：${new Date().toLocaleString()}
-        </div>
+        <div style="position:absolute; bottom:40px; width:90%; text-align:center; color:#0096FF; font-size:1rem;">下载时间：${new Date().toLocaleString()}</div>
       `;
-      // 生成高清截图并下载
-      html2canvas(noticePoster, {
-        scale: 2,
-        useCORS: true
-      }).then(canvas => {
+      html2canvas(noticePoster, { scale: 2, useCORS: true }).then(canvas => {
         const imgUrl = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.href = imgUrl;
@@ -820,7 +784,6 @@
       });
     }
 
-    // 8. 生成赞助海报 + 真实截图下载
     function generatePoster() {
       const form = document.getElementById('sponsor-form');
       const name = form.name.value.trim();
@@ -828,7 +791,6 @@
       const phone = form.phone.value.trim() || '未填写';
       const type = form.type.value;
 
-      // 表单验证（必填项校验）
       if (!name || !wechat || !type) {
         alert('带 * 的选项为必填项，请填写完整！');
         return;
@@ -846,23 +808,15 @@
           <p><strong>手机号（选填）：</strong>${phone}</p>
           <p><strong>赞助类型：</strong>${type}</p>
         </div>
-        <div style="position:absolute; bottom:40px; width:88%; text-align:center; color:#0096FF; font-size:1rem;">
-          提交时间：${new Date().toLocaleString()}
-        </div>
+        <div style="position:absolute; bottom:40px; width:88%; text-align:center; color:#0096FF; font-size:1rem;">提交时间：${new Date().toLocaleString()}</div>
       `;
 
-      // html2canvas生成高清截图并自动下载
-      html2canvas(posterContainer, { 
-        scale: 2, 
-        useCORS: true 
-      }).then(canvas => {
+      html2canvas(posterContainer, { scale: 2, useCORS: true }).then(canvas => {
         const imgUrl = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.href = imgUrl;
         link.download = `Flyz赞助协议_${name}.png`;
         link.click();
-
-        // 重置表单+弹窗提示
         form.reset();
         closeModal('sponsor-modal');
         document.getElementById('success-modal').classList.add('show');
