@@ -103,14 +103,14 @@
     }
     .modal-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan); }
 
-    /* ========== 3. 底层内容 ========== */
-    #fpv-container { position: absolute; inset: 0; z-index: 1; }
-    iframe { width: 100%; height: 100%; border: none; }
+    /* ========== 3. 移除原iframe容器 无需保留 ========== */
   </style>
 </head>
 <body>
 
-  <audio id="bg-music" loop></audio>
+  <audio id="bg-music" loop>
+    <!-- 音乐链接可根据需要自行添加 -->
+  
 
   <div id="splash-screen" onclick="handleSplashClick()">
     <img src="https://www.img520.com/kqDPsb.png" alt="Logo" class="splash-logo" onerror="this.style.display='none'">
@@ -125,10 +125,6 @@
       点击下方按钮参与
     </div>
     <button class="modal-btn" onclick="closeModalAndEnter()">立即参与</button>
-  </div>
-
-  <div id="fpv-container">
-    <iframe src="/fpv"></iframe>
   </div>
 
   <script>
@@ -153,12 +149,15 @@
       splash.style.filter = 'blur(5px) brightness(0.4)';
     }
 
+    // 修改核心：关闭弹窗后直接跳转到 /fpv 页面
     function closeModalAndEnter() {
       modal.classList.remove('active');
       splash.style.filter = 'none';
       splash.style.opacity = '0';
       setTimeout(() => {
         splash.style.display = 'none';
+        // 页面跳转核心代码
+        window.location.href = '/fpv';
       }, 800);
     }
   </script>
