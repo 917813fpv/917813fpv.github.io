@@ -282,14 +282,14 @@
       box-shadow: 0 3px 10px rgba(0, 150, 255, 0.1);
     }
 
-    /* ========== 金主赞助商特殊效果 ========== */
-    .sponsor-gold {
+    /* ========== 第一个赞助商特殊效果 ========== */
+    .sponsor-first {
       background: linear-gradient(120deg, #FFF8DC, #FFD700);
       position: relative;
     }
 
-    .sponsor-gold::before {
-      content: '★ 金主赞助商 ★';
+    .sponsor-first::before {
+      content: '★ 首席赞助商 ★';
       position: absolute;
       top: -5px;
       right: 20px;
@@ -299,7 +299,7 @@
       animation: goldFlash 1.5s ease-in-out infinite;
     }
 
-    .sponsor-gold td {
+    .sponsor-first td {
       color: var(--text-main);
       font-weight: bold;
       text-shadow: 0 0 5px var(--gold);
@@ -586,7 +586,7 @@
         padding: 12px;
         font-size: 0.85rem;
       }
-      .sponsor-gold::before {
+      .sponsor-first::before {
         right: 10px;
         font-size: 0.7rem;
       }
@@ -746,29 +746,29 @@
         $('#' + tabId).addClass('active');
       });
 
-      // ========== 加载赞助商名单 ==========
+      // ========== 加载赞助商名单（格式改为 名称=类型） ==========
       function loadSponsorList() {
         const sponsorTbody = $('#sponsor-list');
         $.get('/fpv/zanzhu.txt', function(data) {
           let sponsorList = data.split('\n').filter(item => item.trim() !== '');
-          // 默认数据（格式：名称|类型）
+          // 默认数据（格式：名称=类型）
           if (sponsorList.length === 0) {
             sponsorList = [
-              '大黄狗电池|资金赞助',
-              '极速动力|设备赞助',
-              '云翼模型|物料赞助',
-              '星辰配件|设备赞助',
-              '飞跃电子|技术支持'
+              '大黄狗电池=资金赞助',
+              '极速动力=设备赞助',
+              '云翼模型=物料赞助',
+              '星辰配件=设备赞助',
+              '飞跃电子=技术支持'
             ];
           }
           sponsorTbody.empty();
           sponsorList.forEach((item, index) => {
-            const [name, type] = item.split('|');
+            const [name, type] = item.split('=');
             const sponsorId = 'SID' + (index + 1).toString().padStart(3, '0');
-            // 识别金主赞助商并添加特殊类名
-            const isGold = name.trim() === '大黄狗电池' ? 'sponsor-gold' : '';
+            // 第一个赞助商添加特殊类名
+            const isFirst = index === 0 ? 'sponsor-first' : '';
             sponsorTbody.append(`
-              <tr class="${isGold}">
+              <tr class="${isFirst}">
                 <td>${sponsorId}</td>
                 <td>${name || '未知赞助商'}</td>
                 <td>${type || '未知类型'}</td>
