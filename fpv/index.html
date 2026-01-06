@@ -20,6 +20,8 @@
       --tech-dark: #0066CC;
       --tech-light: #66CCFF;
       --tech-gray: #F0F7FF;
+      --gold: #FFD700;
+      --red: #FF4444;
       --text-main: #333333;
       --text-light: #FFFFFF;
       --shadow: 0 4px 20px rgba(0, 150, 255, 0.15);
@@ -224,38 +226,8 @@
       border-radius: 3px;
     }
 
-    /* ========== 重写赞助商云图 CSS 动态文字云 ========== */
-    #sponsor-cloud {
-      width: 100%;
-      height: 480px;
-      border-radius: var(--radius);
-      border: 1px solid var(--tech-light);
-      background-color: rgba(255, 255, 255, 0.5);
-      position: relative;
-      overflow: hidden; /* 严格限制文字不超出容器 */
-      box-shadow: 0 0 25px rgba(0, 150, 255, 0.2);
-    }
-
-    .sponsor-item {
-      position: absolute;
-      color: var(--tech-dark);
-      font-weight: bold;
-      text-shadow: 0 0 5px var(--tech-light);
-      white-space: nowrap; /* 禁止文字换行 */
-      transform: translate(-50%, -50%); /* 文字居中定位 */
-      animation: float linear infinite; /* 无规则漂浮动画 */
-    }
-
-    /* 多组动画参数，实现无规则运动 */
-    @keyframes float {
-      0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-      25% { transform: translate(-50%, -50%) rotate(5deg) scale(1.1); }
-      50% { transform: translate(-50%, -50%) rotate(0deg) scale(0.9); }
-      75% { transform: translate(-50%, -50%) rotate(-5deg) scale(1.1); }
-      100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-    }
-
-    .player-table {
+    /* ========== 统一表格样式（赞助商+选手+后勤） ========== */
+    .data-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
@@ -264,29 +236,78 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
-    .player-table th {
+    .data-table th {
       background: linear-gradient(90deg, var(--tech-dark), var(--tech-blue));
       color: var(--text-light);
       padding: 18px;
       font-size: 1.15rem;
       text-align: center;
       letter-spacing: 1px;
+      position: relative;
     }
 
-    .player-table td {
+    /* 表头发光特效 */
+    .data-table th::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--tech-light), transparent);
+      animation: headerShine 2s ease-in-out infinite;
+    }
+
+    @keyframes headerShine {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .data-table td {
       padding: 18px;
       text-align: center;
       font-size: 1.05rem;
       border-bottom: 1px solid rgba(0, 150, 255, 0.1);
+      transition: all 0.3s ease;
     }
 
-    .player-table tr:last-child td {
+    .data-table tr:last-child td {
       border-bottom: none;
     }
 
-    .player-table tr:hover {
+    /* 行悬浮特效 */
+    .data-table tr:hover {
       background-color: var(--tech-gray);
-      transition: background-color 0.3s ease;
+      transform: scale(1.01);
+      box-shadow: 0 3px 10px rgba(0, 150, 255, 0.1);
+    }
+
+    /* ========== 金主赞助商特殊效果 ========== */
+    .sponsor-gold {
+      background: linear-gradient(120deg, #FFF8DC, #FFD700);
+      position: relative;
+    }
+
+    .sponsor-gold::before {
+      content: '★ 金主赞助商 ★';
+      position: absolute;
+      top: -5px;
+      right: 20px;
+      color: var(--red);
+      font-size: 0.8rem;
+      font-weight: bold;
+      animation: goldFlash 1.5s ease-in-out infinite;
+    }
+
+    .sponsor-gold td {
+      color: var(--text-main);
+      font-weight: bold;
+      text-shadow: 0 0 5px var(--gold);
+    }
+
+    @keyframes goldFlash {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
     }
 
     .apply-btn {
@@ -557,11 +578,17 @@
       .notice-btn-group {
         flex-direction: column;
       }
-      #sponsor-cloud {
-        height: 300px; /* 移动端高度适配 */
+      .data-table th {
+        padding: 12px;
+        font-size: 0.9rem;
       }
-      .sponsor-item {
-        font-size: 0.8rem !important; /* 移动端文字缩小 */
+      .data-table td {
+        padding: 12px;
+        font-size: 0.85rem;
+      }
+      .sponsor-gold::before {
+        right: 10px;
+        font-size: 0.7rem;
       }
     }
   </style>
@@ -581,17 +608,30 @@
     <div class="tab-nav">
       <button class="tab-btn active" data-tab="sponsor-tab">赞助商专区</button>
       <button class="tab-btn" data-tab="player-tab">选手报名区</button>
+      <button class="tab-btn" data-tab="logistics-tab">后勤组人员</button>
     </div>
 
+    <!-- ========== 赞助商专区 ========== -->
     <div class="tab-content active" id="sponsor-tab">
       <h2 class="section-title">当前赞助商</h2>
-      <div id="sponsor-cloud"></div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th width="20%">赞助商ID</th>
+            <th width="40%">赞助商名称</th>
+            <th width="40%">赞助类型</th>
+          </tr>
+        </thead>
+        <tbody id="sponsor-list">
+        </tbody>
+      </table>
       <button class="apply-btn" id="sponsor-apply">赞助商报名</button>
     </div>
 
+    <!-- ========== 选手报名区 ========== -->
     <div class="tab-content" id="player-tab">
       <h2 class="section-title">参赛选手名单</h2>
-      <table class="player-table">
+      <table class="data-table">
         <thead>
           <tr>
             <th width="30%">选手ID</th>
@@ -602,6 +642,22 @@
         </tbody>
       </table>
       <button class="apply-btn" id="player-apply">选手报名</button>
+    </div>
+
+    <!-- ========== 后勤组人员专区 ========== -->
+    <div class="tab-content" id="logistics-tab">
+      <h2 class="section-title">后勤组人员名单</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th width="30%">后勤ID</th>
+            <th width="35%">人员姓名</th>
+            <th width="35%">担任职务</th>
+          </tr>
+        </thead>
+        <tbody id="logistics-list">
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -690,66 +746,87 @@
         $('#' + tabId).addClass('active');
       });
 
-      // ========== 重写赞助商云图 JS 逻辑 - 动态生成文字云 ==========
-      function initSponsorCloud() {
-        const cloud = document.getElementById('sponsor-cloud');
-        // 读取赞助商名单，若无数据则用默认数据
+      // ========== 加载赞助商名单 ==========
+      function loadSponsorList() {
+        const sponsorTbody = $('#sponsor-list');
         $.get('/fpv/zanzhu.txt', function(data) {
           let sponsorList = data.split('\n').filter(item => item.trim() !== '');
-          // 默认数据
+          // 默认数据（格式：名称|类型）
           if (sponsorList.length === 0) {
-            sponsorList = ['远征飞航模', '蓝天科技', '极速动力', '云翼模型', '星辰配件', '飞跃电子', '劲风器材', '凌云工坊'];
+            sponsorList = [
+              '大黄狗电池|资金赞助',
+              '极速动力|设备赞助',
+              '云翼模型|物料赞助',
+              '星辰配件|设备赞助',
+              '飞跃电子|技术支持'
+            ];
           }
-          cloud.innerHTML = ''; // 清空容器
-          const cloudWidth = cloud.offsetWidth;
-          const cloudHeight = cloud.offsetHeight;
-          // 生成每个赞助商文字节点
-          sponsorList.forEach((name, index) => {
-            const item = document.createElement('div');
-            item.className = 'sponsor-item';
-            item.innerText = name;
-            // 随机位置（限制在容器内）
-            const x = Math.random() * cloudWidth;
-            const y = Math.random() * cloudHeight;
-            // 随机大小（12-20px）
-            const size = 12 + Math.random() * 8;
-            // 随机颜色（科技蓝系）
-            const colors = ['var(--tech-dark)', 'var(--tech-blue)', 'var(--tech-light)'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            // 随机动画时长（10-20秒）
-            const duration = 10 + Math.random() * 10;
-            // 设置样式
-            item.style.left = `${x}px`;
-            item.style.top = `${y}px`;
-            item.style.fontSize = `${size}px`;
-            item.style.color = color;
-            item.style.animationDuration = `${duration}s`;
-            cloud.appendChild(item);
+          sponsorTbody.empty();
+          sponsorList.forEach((item, index) => {
+            const [name, type] = item.split('|');
+            const sponsorId = 'SID' + (index + 1).toString().padStart(3, '0');
+            // 识别金主赞助商并添加特殊类名
+            const isGold = name.trim() === '大黄狗电池' ? 'sponsor-gold' : '';
+            sponsorTbody.append(`
+              <tr class="${isGold}">
+                <td>${sponsorId}</td>
+                <td>${name || '未知赞助商'}</td>
+                <td>${type || '未知类型'}</td>
+              </tr>
+            `);
           });
         }).fail(function() {
-          cloud.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--tech-blue); font-size:1.3rem;">赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径</div>`;
+          sponsorTbody.html(`<tr><td colspan="3" style="color:var(--tech-blue); padding:40px;">赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径</td></tr>`);
         });
       }
-      // 初始化云图 + 窗口大小变化时重新渲染
-      initSponsorCloud();
-      window.addEventListener('resize', initSponsorCloud);
+      loadSponsorList();
 
-      // 加载选手名单
-      $.get('/fpv/flyer.txt', function(data) {
-        const playerList = data.split('\n').filter(item => item.trim() !== '');
+      // ========== 加载选手名单 ==========
+      function loadPlayerList() {
         const playerTbody = $('#player-list');
-        playerTbody.empty();
-        if (playerList.length === 0) {
-          playerTbody.html(`<tr><td colspan="2" style="color:var(--tech-blue); padding:40px;">暂无选手报名</td></tr>`);
-          return;
-        }
-        playerList.forEach((player, index) => {
-          const playerId = 'ID' + (index + 1).toString().padStart(3, '0');
-          playerTbody.append(`<tr><td>${playerId}</td><td>${player.trim()}</td></tr>`);
+        $.get('/fpv/flyer.txt', function(data) {
+          let playerList = data.split('\n').filter(item => item.trim() !== '');
+          if (playerList.length === 0) {
+            playerTbody.html(`<tr><td colspan="2" style="color:var(--tech-blue); padding:40px;">暂无选手报名</td></tr>`);
+            return;
+          }
+          playerTbody.empty();
+          playerList.forEach((name, index) => {
+            const playerId = 'PID' + (index + 1).toString().padStart(3, '0');
+            playerTbody.append(`<tr><td>${playerId}</td><td>${name.trim()}</td></tr>`);
+          });
+        }).fail(function() {
+          playerTbody.html(`<tr><td colspan="2" style="color:var(--tech-blue); font-size:1.2rem; padding:40px;">选手名单文件加载失败，请检查 /fpv/flyer.txt 路径</td></tr>`);
         });
-      }).fail(function() {
-        $('#player-list').html(`<tr><td colspan="2" style="color:var(--tech-blue); font-size:1.2rem; padding:40px;">选手名单文件加载失败，请检查 /fpv/flyer.txt 路径</td></tr>`);
-      });
+      }
+      loadPlayerList();
+
+      // ========== 加载后勤组人员名单 ==========
+      function loadLogisticsList() {
+        const logisticsTbody = $('#logistics-list');
+        $.get('/fpv/houqin.txt', function(data) {
+          let logisticsList = data.split('\n').filter(item => item.trim() !== '');
+          if (logisticsList.length === 0) {
+            logisticsTbody.html(`<tr><td colspan="3" style="color:var(--tech-blue); padding:40px;">暂无后勤人员信息</td></tr>`);
+            return;
+          }
+          logisticsTbody.empty();
+          logisticsList.forEach((item, index) => {
+            const [name, duty] = item.split('=');
+            const logisticsId = 'LID' + (index + 1).toString().padStart(3, '0');
+            logisticsTbody.append(`
+              <tr>
+                <td>${logisticsId}</td>
+                <td>${name.trim() || '未知姓名'}</td>
+                <td>${duty.trim() || '未知职务'}</td>
+              </tr>
+            `);
+          });
+        }).fail(function() {
+          logisticsTbody.html(`<tr><td colspan="3" style="color:var(--tech-blue); padding:40px;">后勤人员名单文件加载失败，请检查 /fpv/houqin.txt 路径</td></tr>`);
+        });
+      }
+      loadLogisticsList();
     });
 
     document.getElementById('player-apply').onclick = function() {
@@ -820,6 +897,8 @@
         form.reset();
         closeModal('sponsor-modal');
         document.getElementById('success-modal').classList.add('show');
+        // 刷新赞助商列表
+        loadSponsorList();
       });
     }
   </script>
