@@ -226,7 +226,7 @@
       border-radius: 3px;
     }
 
-    /* ========== 统一表格样式（赞助商+选手+后勤） ========== */
+    /* ========== 统一表格样式 ========== */
     .data-table {
       width: 100%;
       border-collapse: separate;
@@ -246,7 +246,6 @@
       position: relative;
     }
 
-    /* 表头发光特效 */
     .data-table th::after {
       content: '';
       position: absolute;
@@ -275,20 +274,20 @@
       border-bottom: none;
     }
 
-    /* 行悬浮特效 */
     .data-table tr:hover {
       background-color: var(--tech-gray);
       transform: scale(1.01);
       box-shadow: 0 3px 10px rgba(0, 150, 255, 0.1);
     }
 
-    /* ========== 第一个赞助商特殊效果 ========== */
+    /* ========== 首席赞助商特殊样式（修复定位问题） ========== */
     .sponsor-first {
       background: linear-gradient(120deg, #FFF8DC, #FFD700);
       position: relative;
     }
 
-    .sponsor-first::before {
+    /* 关键修复：将标签定位到单元格外部，避免挤压表格内容 */
+    .sponsor-first td:first-child::before {
       content: '★ 首席赞助商 ★';
       position: absolute;
       top: -5px;
@@ -297,6 +296,7 @@
       font-size: 0.8rem;
       font-weight: bold;
       animation: goldFlash 1.5s ease-in-out infinite;
+      z-index: 1;
     }
 
     .sponsor-first td {
@@ -586,7 +586,7 @@
         padding: 12px;
         font-size: 0.85rem;
       }
-      .sponsor-first::before {
+      .sponsor-first td:first-child::before {
         right: 10px;
         font-size: 0.7rem;
       }
@@ -611,7 +611,7 @@
       <button class="tab-btn" data-tab="logistics-tab">后勤组人员</button>
     </div>
 
-    <!-- ========== 赞助商专区（移除ID列，仅保留名称+类型） ========== -->
+    <!-- ========== 赞助商专区（两列表格，结构正确） ========== -->
     <div class="tab-content active" id="sponsor-tab">
       <h2 class="section-title">当前赞助商</h2>
       <table class="data-table">
@@ -745,12 +745,11 @@
         $('#' + tabId).addClass('active');
       });
 
-      // ========== 加载赞助商名单（移除ID，仅保留名称+类型） ==========
+      // ========== 加载赞助商名单（两列渲染，无错位） ==========
       function loadSponsorList() {
         const sponsorTbody = $('#sponsor-list');
         $.get('/fpv/zanzhu.txt', function(data) {
           let sponsorList = data.split('\n').filter(item => item.trim() !== '');
-          // 默认数据（格式：名称=类型）
           if (sponsorList.length === 0) {
             sponsorList = [
               '大黄狗电池=资金赞助',
@@ -762,13 +761,16 @@
           }
           sponsorTbody.empty();
           sponsorList.forEach((item, index) => {
-            const [name, type] = item.split('=');
-            // 第一个赞助商添加特殊类名，移除ID相关代码
+            // 强制分割为两部分，避免因无=号导致的列错位
+            const splitArr = item.split('=');
+            const name = splitArr[0] || '未知赞助商';
+            const type = splitArr[1] || '未知类型';
+            // 仅第一行添加特殊类
             const isFirst = index === 0 ? 'sponsor-first' : '';
             sponsorTbody.append(`
               <tr class="${isFirst}">
-                <td>${name || '未知赞助商'}</td>
-                <td>${type || '未知类型'}</td>
+                <td>${name}</td>
+                <td>${type}</td>
               </tr>
             `);
           });
@@ -809,13 +811,15 @@
           }
           logisticsTbody.empty();
           logisticsList.forEach((item, index) => {
-            const [name, duty] = item.split('=');
+            const splitArr = item.split('=');
+            const name = splitArr[0] || '未知姓名';
+            const duty = splitArr[1] || '未知职务';
             const logisticsId = 'LID' + (index + 1).toString().padStart(3, '0');
             logisticsTbody.append(`
               <tr>
                 <td>${logisticsId}</td>
-                <td>${name.trim() || '未知姓名'}</td>
-                <td>${duty.trim() || '未知职务'}</td>
+                <td>${name}</td>
+                <td>${duty}</td>
               </tr>
             `);
           });
@@ -894,7 +898,6 @@
         form.reset();
         closeModal('sponsor-modal');
         document.getElementById('success-modal').classList.add('show');
-        // 刷新赞助商列表
         loadSponsorList();
       });
     }
