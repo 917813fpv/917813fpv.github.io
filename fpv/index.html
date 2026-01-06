@@ -535,8 +535,9 @@
       <table class="player-table">
         <thead>
           <tr>
-            <<th width="30%">选手ID</</th>
-            <<th width="70%">选手姓名</</th>
+            <!-- 修复：多余的左尖括号 -->
+            <th width="30%">选手ID</th>
+            <th width="70%">选手姓名</th>
           </tr>
         </thead>
         <tbody id="player-list">
@@ -630,7 +631,8 @@
           },
           series: [{
             type: 'wordCloud',
-            gridSize: 20,, // 方格间距，更规整
+            // 修复：多余的逗号
+            gridSize: 20,
             sizeRange: [22, 48], // 文字大小区间
             rotationRange: [0, 0], // 纯方块无旋转
             shape: 'square', // 方形布局
@@ -721,7 +723,7 @@
         return;
       }
 
-      // 填充海报内容
+      // 修复：海报内文字标注错误（原代码微信号/手机号必填选填标反）
       const posterContainer = document.getElementById('poster-container');
       posterContainer.innerHTML = `
         <div style="text-align:center; margin-bottom:30px;">
@@ -730,8 +732,8 @@
         </div>
         <div style="font-size:1.2rem; line-height:2.5; margin-left:30px;">
           <p><strong>赞助商名称：</strong>${name}</p>
-          <p><strong>微信号（选填）：</strong>${wechat}</p>
-          <p><strong>手机号（必填）：</strong>${phone}</p>
+          <p><strong>微信号（必填）：</strong>${wechat}</p>
+          <p><strong>手机号（选填）：</strong>${phone}</p>
           <p><strong>赞助类型：</strong>${type}</p>
         </div>
         <div style="position:absolute; bottom:40px; width:88%; text-align:center; color:#0096FF; font-size:1rem;">
