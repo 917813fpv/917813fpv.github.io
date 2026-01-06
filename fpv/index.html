@@ -379,7 +379,7 @@
       width: 100%;
       max-width: 580px;
       box-shadow: 0 10px 40px rgba(0, 150, 255, 0.25);
-      border: 1px solid var(--tech-light);
+      border: 1px solid rgba(0, 150, 255, 0.3);
       position: relative;
     }
 
@@ -611,15 +611,14 @@
       <button class="tab-btn" data-tab="logistics-tab">后勤组人员</button>
     </div>
 
-    <!-- ========== 赞助商专区 ========== -->
+    <!-- ========== 赞助商专区（移除ID列，仅保留名称+类型） ========== -->
     <div class="tab-content active" id="sponsor-tab">
       <h2 class="section-title">当前赞助商</h2>
       <table class="data-table">
         <thead>
           <tr>
-            <th width="20%">赞助商ID</th>
-            <th width="40%">赞助商名称</th>
-            <th width="40%">赞助类型</th>
+            <th width="50%">赞助商名称</th>
+            <th width="50%">赞助类型</th>
           </tr>
         </thead>
         <tbody id="sponsor-list">
@@ -746,7 +745,7 @@
         $('#' + tabId).addClass('active');
       });
 
-      // ========== 加载赞助商名单（格式改为 名称=类型） ==========
+      // ========== 加载赞助商名单（移除ID，仅保留名称+类型） ==========
       function loadSponsorList() {
         const sponsorTbody = $('#sponsor-list');
         $.get('/fpv/zanzhu.txt', function(data) {
@@ -764,19 +763,17 @@
           sponsorTbody.empty();
           sponsorList.forEach((item, index) => {
             const [name, type] = item.split('=');
-            const sponsorId = 'SID' + (index + 1).toString().padStart(3, '0');
-            // 第一个赞助商添加特殊类名
+            // 第一个赞助商添加特殊类名，移除ID相关代码
             const isFirst = index === 0 ? 'sponsor-first' : '';
             sponsorTbody.append(`
               <tr class="${isFirst}">
-                <td>${sponsorId}</td>
                 <td>${name || '未知赞助商'}</td>
                 <td>${type || '未知类型'}</td>
               </tr>
             `);
           });
         }).fail(function() {
-          sponsorTbody.html(`<tr><td colspan="3" style="color:var(--tech-blue); padding:40px;">赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径</td></tr>`);
+          sponsorTbody.html(`<tr><td colspan="2" style="color:var(--tech-blue); padding:40px;">赞助商名单文件加载失败，请检查 /fpv/zanzhu.txt 路径</td></tr>`);
         });
       }
       loadSponsorList();
