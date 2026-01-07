@@ -28,12 +28,15 @@
       --radius: 12px;
     }
 
+    /* ======================================
+       网页背景：无深色遮罩，亮蓝色网格
+       ====================================== */
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background-color: #000814;
+      background-color: #001B3A; /* 更亮的深蓝背景 */
       background-image: 
-        linear-gradient(rgba(0, 150, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 255, 0.1) 1px, transparent 1px);
+        linear-gradient(rgba(0, 150, 255, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 150, 255, 0.3) 1px, transparent 1px);
       background-size: 30px 30px;
       color: var(--text-main);
       min-height: 100vh;
@@ -304,14 +307,14 @@
       50% { opacity: 1; transform: scale(1.1); }
     }
 
-    /* ========== 第二行：浅蓝色背景（简单、干净、不影响布局） ========== */
+    /* ========== 第二行：浅蓝色背景（简单、干净） ========== */
     .sponsor-second {
-      background: linear-gradient(120deg, #e6f7ff, #b3d9ff);
+      background: #B3D9FF;
     }
 
-    /* ========== 第三行：浅紫色背景（简单、干净、不影响布局） ========== */
+    /* ========== 第三行：浅紫色背景（简单、干净） ========== */
     .sponsor-third {
-      background: linear-gradient(120deg, #f3e6ff, #d9b3ff);
+      background: #D9B3FF;
     }
 
     .apply-btn {
