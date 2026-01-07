@@ -38,6 +38,33 @@
       color: var(--text-main);
       min-height: 100vh;
       padding: 20px 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ======================================
+       新增：全局背景扫光效果
+       ====================================== */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 300%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 150, 255, 0.15),
+        transparent
+      );
+      animation: globalScan 12s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes globalScan {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
 
     .page-container {
@@ -291,23 +318,81 @@
       content: '★ 首席赞助商 ★';
       position: absolute;
       top: -5px;
-      right: 20px;
-      color: var(--red);
-      font-size: 0.8rem;
-      font-weight: bold;
+      right: 10px;
+      font-size: 0.85rem;
+      color: #b8860b;
+      text-shadow: 0 0 5px var(--gold);
       animation: goldFlash 1.5s ease-in-out infinite;
       z-index: 1;
-    }
-
-    .sponsor-first td {
-      color: var(--text-main);
-      font-weight: bold;
-      text-shadow: 0 0 5px var(--gold);
     }
 
     @keyframes goldFlash {
       0%, 100% { opacity: 0.7; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* ========== 第 2 行 浅蓝色特殊效果 ========== */
+    .sponsor-second {
+      background: linear-gradient(120deg, #e6f7ff, #b3d9ff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sponsor-second::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shine 2s linear infinite;
+    }
+
+    @keyframes shine {
+      100% { left: 100%; }
+    }
+
+    /* ========== 第 3 行 紫色霓虹科技效果（原创） ========== */
+    .sponsor-third {
+      background: rgba(40, 10, 80, 0.15);
+      position: relative;
+      border: 1px solid #9966ff;
+      overflow: hidden;
+    }
+
+    .sponsor-third::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #9966ff, #cc99ff, #9966ff);
+      animation: purpleLine 2s ease-in-out infinite;
+    }
+
+    .sponsor-third::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #9966ff, #cc99ff, #9966ff);
+      animation: purpleLine 2s ease-in-out infinite reverse;
+    }
+
+    @keyframes purpleLine {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .sponsor-third td {
+      position: relative;
+      z-index: 2;
+      color: #e0ccff;
+      text-shadow: 0 0 10px rgba(153, 102, 255, 0.5);
     }
 
     .apply-btn {
@@ -364,7 +449,7 @@
 
     .modal.show {
       display: flex;
-      animation: modalFade 0.4s ease;
+      animation: modalFade 0.4s ease-out;
     }
 
     @keyframes modalFade {
@@ -424,6 +509,7 @@
       overflow-y: auto;
       padding: 30px;
     }
+
     .notice-content {
       font-size: 1.1rem;
       line-height: 1.8;
@@ -432,12 +518,14 @@
       word-wrap: break-word;
       word-break: normal;
     }
+
     .notice-btn-group {
       display: flex;
       gap: 15px;
       justify-content: center;
       margin-top: 30px;
     }
+
     .notice-btn {
       padding: 12px 30px;
       border-radius: 50px;
@@ -446,11 +534,13 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .download-notice {
       background: linear-gradient(90deg, var(--tech-dark), var(--tech-blue));
       color: white;
       box-shadow: 0 3px 10px rgba(0, 150, 255, 0.3);
     }
+
     .close-notice {
       background: #f5f5f5;
       color: #555;
@@ -557,35 +647,76 @@
       box-shadow: 0 10px 30px rgba(0, 150, 255, 0.2);
     }
 
+    /* ======================================
+       页脚样式（已更新为天津泊客创新科技）
+       ====================================== */
+    footer {
+      width: 100%;
+      padding: 26px 0;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #66CCFF;
+      text-shadow: 0 0 15px rgba(0, 150, 255, 0.6);
+      margin-top: 60px;
+      border-top: 1px solid rgba(0, 150, 255, 0.3);
+      background: rgba(0, 8, 20, 0.7);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 5;
+    }
+
+    .footer-main {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .footer-sub {
+      font-size: 0.95rem;
+      opacity: 0.92;
+    }
+
+    /* ======================================
+       适配手机
+       ====================================== */
     @media (max-width: 768px) {
       .logo-img {
         width: 50px;
         height: 50px;
       }
+
       .logo-domain {
         font-size: 1.2rem;
       }
+
       .logo-slogan {
         font-size: 0.9rem;
       }
+
       .page-title {
         font-size: 2.2rem;
       }
+
       #notice-modal .modal-content {
         max-width: 95%;
         padding: 20px;
       }
+
       .notice-btn-group {
         flex-direction: column;
       }
+
       .data-table th {
         padding: 12px;
         font-size: 0.9rem;
       }
+
       .data-table td {
         padding: 12px;
         font-size: 0.85rem;
       }
+
       .sponsor-first td:first-child::before {
         right: 10px;
         font-size: 0.7rem;
@@ -593,6 +724,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page-container">
     <div class="header-logo">
@@ -618,7 +750,7 @@
         <thead>
           <tr>
             <th width="50%">赞助商名称</th>
-            <th width="50%">赞助类型</th>
+            <th width="50%">赞助类型/简介</th>
           </tr>
         </thead>
         <tbody id="sponsor-list">
@@ -659,6 +791,18 @@
       </table>
     </div>
   </div>
+
+  <!-- ======================================
+       页脚（已更新为天津泊客创新科技）
+       ====================================== -->
+  <footer>
+    <div class="footer-main">
+      天津泊客创新（科技）有限公司 · PokRC 团队
+    </div>
+    <div class="footer-sub">
+      微型 250g 无人机极速世界纪录保持者 · 全力支持本次赛事
+    </div>
+  </footer>
 
   <div class="modal" id="notice-modal">
     <div class="modal-content">
@@ -765,10 +909,15 @@
             const splitArr = item.split('=');
             const name = splitArr[0] || '未知赞助商';
             const type = splitArr[1] || '未知类型';
-            // 仅第一行添加特殊类
-            const isFirst = index === 0 ? 'sponsor-first' : '';
+
+            // 给不同行添加不同样式
+            let rowClass = '';
+            if (index === 0) rowClass = 'sponsor-first';      // 首席赞助商（原金色）
+            if (index === 1) rowClass = 'sponsor-second';    // 浅蓝特殊效果
+            if (index === 2) rowClass = 'sponsor-third';     // 紫色霓虹效果
+
             sponsorTbody.append(`
-              <tr class="${isFirst}">
+              <tr class="${rowClass}">
                 <td>${name}</td>
                 <td>${type}</td>
               </tr>
@@ -833,6 +982,7 @@
     document.getElementById('player-apply').onclick = function() {
       document.getElementById('player-modal').classList.add('show');
     };
+
     document.getElementById('sponsor-apply').onclick = function() {
       document.getElementById('sponsor-modal').classList.add('show');
     };
@@ -841,17 +991,41 @@
       document.getElementById(modalId).classList.remove('show');
     }
 
+    // ======================================
+    // 下载公告（已添加右下角水印：917813.com.cn）
+    // ======================================
     function downloadNotice() {
       const noticeContent = $('#notice-content').text();
       const noticePoster = document.getElementById('notice-poster');
+
       noticePoster.innerHTML = `
         <div style="text-align:center; margin-bottom:30px;">
           <h2 style="color:#0066CC; font-size:1.8rem; margin-bottom:15px;">Flyz远征飞2026全国线上FPV赛事公告</h2>
           <hr style="border:1px solid #0096FF; margin-bottom:30px;">
         </div>
         <div style="font-size:1.1rem; line-height:1.8; color:#333; white-space:pre-wrap;">${noticeContent}</div>
-        <div style="position:absolute; bottom:40px; width:90%; text-align:center; color:#0096FF; font-size:1rem;">下载时间：${new Date().toLocaleString()}</div>
+
+        <!-- 下载时间 -->
+        <div style="position:absolute; bottom:40px; width:90%; text-align:center; color:#0096FF; font-size:1rem;">
+          下载时间：${new Date().toLocaleString()}
+        </div>
+
+        <!-- 右下角水印 -->
+        <div style="
+          position:absolute;
+          bottom:15px;
+          right:20px;
+          font-size:0.9rem;
+          color:rgba(0, 150, 255, 0.45);
+          transform:rotate(-15deg);
+          pointer-events:none;
+          font-weight:bold;
+          letter-spacing:1px;
+        ">
+          917813.com.cn
+        </div>
       `;
+
       html2canvas(noticePoster, { scale: 2, useCORS: true }).then(canvas => {
         const imgUrl = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
