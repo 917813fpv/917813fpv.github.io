@@ -43,7 +43,7 @@
     }
 
     /* ======================================
-       新增：全局背景扫光效果
+       全局扫描光
        ====================================== */
     body::before {
       content: '';
@@ -119,7 +119,6 @@
     .logo-slogan {
       font-size: 1rem;
       color: var(--tech-light);
-      margin-top: 3px;
       text-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
       animation: sloganBreath 4s ease-in-out infinite;
     }
@@ -307,13 +306,12 @@
       box-shadow: 0 3px 10px rgba(0, 150, 255, 0.1);
     }
 
-    /* ========== 首席赞助商特殊样式（修复定位问题） ========== */
+    /* ========== 首席赞助商特殊样式（你自己做的，保持不变） ========== */
     .sponsor-first {
       background: linear-gradient(120deg, #FFF8DC, #FFD700);
       position: relative;
     }
 
-    /* 关键修复：将标签定位到单元格外部，避免挤压表格内容 */
     .sponsor-first td:first-child::before {
       content: '★ 首席赞助商 ★';
       position: absolute;
@@ -331,9 +329,9 @@
       50% { opacity: 1; transform: scale(1.1); }
     }
 
-    /* ========== 第 2 行 浅蓝色特殊效果 ========== */
+    /* ========== 第 2 行：科技蓝扫光效果（已修复错位） ========== */
     .sponsor-second {
-      background: linear-gradient(120deg, #e6f7ff, #b3d9ff);
+      background: rgba(0, 150, 255, 0.05);
       position: relative;
       overflow: hidden;
     }
@@ -343,19 +341,30 @@
       position: absolute;
       top: 0;
       left: -100%;
-      width: 100%;
+      width: 30%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 180, 255, 0.3),
+        transparent
+      );
       animation: shine 2s linear infinite;
+      z-index: 0;
     }
 
     @keyframes shine {
-      100% { left: 100%; }
+      100% { left: 130%; }
     }
 
-    /* ========== 第 3 行 紫色霓虹科技效果（原创） ========== */
+    .sponsor-second td {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ========== 第 3 行：紫色霓虹边框效果（已修复错位） ========== */
     .sponsor-third {
-      background: rgba(40, 10, 80, 0.15);
+      background: rgba(153, 102, 255, 0.05);
       position: relative;
       border: 1px solid #9966ff;
       overflow: hidden;
@@ -370,6 +379,7 @@
       height: 2px;
       background: linear-gradient(90deg, #9966ff, #cc99ff, #9966ff);
       animation: purpleLine 2s ease-in-out infinite;
+      z-index: 1;
     }
 
     .sponsor-third::after {
@@ -381,6 +391,7 @@
       height: 2px;
       background: linear-gradient(90deg, #9966ff, #cc99ff, #9966ff);
       animation: purpleLine 2s ease-in-out infinite reverse;
+      z-index: 1;
     }
 
     @keyframes purpleLine {
@@ -391,8 +402,7 @@
     .sponsor-third td {
       position: relative;
       z-index: 2;
-      color: #e0ccff;
-      text-shadow: 0 0 10px rgba(153, 102, 255, 0.5);
+      color: #6b4dae;
     }
 
     .apply-btn {
@@ -648,7 +658,7 @@
     }
 
     /* ======================================
-       页脚样式（已更新为天津泊客创新科技）
+       页脚样式
        ====================================== */
     footer {
       width: 100%;
@@ -793,7 +803,7 @@
   </div>
 
   <!-- ======================================
-       页脚（已更新为天津泊客创新科技）
+       页脚
        ====================================== -->
   <footer>
     <div class="footer-main">
@@ -905,16 +915,14 @@
           }
           sponsorTbody.empty();
           sponsorList.forEach((item, index) => {
-            // 强制分割为两部分，避免因无=号导致的列错位
             const splitArr = item.split('=');
             const name = splitArr[0] || '未知赞助商';
             const type = splitArr[1] || '未知类型';
 
-            // 给不同行添加不同样式
             let rowClass = '';
-            if (index === 0) rowClass = 'sponsor-first';      // 首席赞助商（原金色）
-            if (index === 1) rowClass = 'sponsor-second';    // 浅蓝特殊效果
-            if (index === 2) rowClass = 'sponsor-third';     // 紫色霓虹效果
+            if (index === 0) rowClass = 'sponsor-first';
+            if (index === 1) rowClass = 'sponsor-second';
+            if (index === 2) rowClass = 'sponsor-third';
 
             sponsorTbody.append(`
               <tr class="${rowClass}">
@@ -992,7 +1000,7 @@
     }
 
     // ======================================
-    // 下载公告（已添加右下角水印：917813.com.cn）
+    // 下载公告
     // ======================================
     function downloadNotice() {
       const noticeContent = $('#notice-content').text();
@@ -1004,13 +1012,9 @@
           <hr style="border:1px solid #0096FF; margin-bottom:30px;">
         </div>
         <div style="font-size:1.1rem; line-height:1.8; color:#333; white-space:pre-wrap;">${noticeContent}</div>
-
-        <!-- 下载时间 -->
         <div style="position:absolute; bottom:40px; width:90%; text-align:center; color:#0096FF; font-size:1rem;">
           下载时间：${new Date().toLocaleString()}
         </div>
-
-        <!-- 右下角水印 -->
         <div style="
           position:absolute;
           bottom:15px;
