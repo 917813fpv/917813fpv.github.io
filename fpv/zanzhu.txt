@@ -1,5 +1,6 @@
 DAI·WONG·GAU=大黄狗电池
 博博瑞BosLi-Po=博氏电池
+PokRc魄客模型=世界纪录保持者
 翼效架构=Flyz合作伙伴
 飞阅文化传媒=Flyz合作伙伴
 @带你飙机带你飞=Flyz网站测试
@@ -16,7 +17,6 @@ BY科技=Flyz合作伙伴
 腾远智拓图传厂=Flyz合作伙伴
 思创宏图内存卡=Flyz合作伙伴
 星星模型=Flyz合作伙伴
-魄客模型=Flyz合作伙伴
 @7D穿越机代组=Flyz合作伙伴
 @陈XZ代组=Flyz合作伙伴
 @路天钰sltyfpv代组=Flyz合作伙伴
