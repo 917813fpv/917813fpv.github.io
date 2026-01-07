@@ -3,14 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>2026线上FPV竞速赛比赛中心｜Flyz远征飞官网</title>
+  <title>2026线上FPV竞速赛中心｜Flyz远征飞</title>
   <link rel="icon" href="https://917813.com.cn/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Han+Sans:wght@400;500;700&display=swap">
+
+  <!-- 第三方字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 高德地图 JS API（用于逆地理编码） -->
+  <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=你的高德地图Key"></script>
+
   <style>
     :root {
       --tech-blue: #0096FF;
       --tech-light: #66CCFF;
       --tech-dark: #0066CC;
+      --gold: #FFD700;
+      --gold-dark: #B8860B;
+      --gold-glow: rgba(255, 215, 0, 0.6);
       --text-light: #FFFFFF;
       --radius: 16px;
     }
@@ -22,341 +33,309 @@
     }
 
     body {
-      font-family: 'Inter', 'Source Han Sans', 'Microsoft YaHei', sans-serif;
+      font-family: 'Exo 2', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
       background-color: #000814;
-      background-image: 
-        linear-gradient(rgba(0, 150, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 255, 0.1) 1px, transparent 1px);
-      background-size: 30px 30px;
       color: var(--text-light);
       height: 100vh;
       overflow: hidden;
       position: relative;
     }
 
-    /* 网格呼吸动画 */
-    body::after {
-      content: '';
+    /* --------------------------------------------------
+       1. 科技蓝格子背景（最底层，z=0）
+    -------------------------------------------------- */
+    .bg-grid {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(0, 150, 255, 0.03), rgba(0, 80, 160, 0.03));
-      animation: gridPulse 8s ease-in-out infinite;
-      pointer-events: none;
+      background-image: 
+        linear-gradient(rgba(0, 150, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 150, 255, 0.2) 1px, transparent 1px);
+      background-size: 30px 30px;
+      z-index: 0;
+      animation: gridPulse 4s ease-in-out infinite;
     }
 
     @keyframes gridPulse {
-      0%, 100% { opacity: 0.5; }
+      0%, 100% { opacity: 0.6; }
       50% { opacity: 1; }
     }
 
-    /* ========== 赛事同款 Logo ========== */
-    .page-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      position: relative;
-      z-index: 10;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    /* Logo 隐藏样式 */
-    .page-container.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-20px);
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      position: relative;
-      z-index: 10;
-    }
-
-    .logo-img {
-      width: 60px;
-      height: 60px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px var(--tech-light);
-      transition: all 0.3s ease;
-    }
-
-    .logo-img:hover {
-      transform: rotate(5deg) scale(1.1);
-      box-shadow: 0 0 30px var(--tech-blue);
-    }
-
-    .logo-text-group {
-      margin-left: 15px;
-    }
-
-    .logo-domain {
-      font-size: 1.5rem;
-      color: var(--tech-blue);
-      font-weight: bold;
-      text-shadow: 0 0 15px var(--tech-light);
-      letter-spacing: 1px;
-      background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: logoGlow 3s ease-in-out infinite;
-    }
-
-    @keyframes logoGlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .logo-slogan {
-      font-size: 1rem;
-      color: var(--tech-light);
-      margin-top: 3px;
-      text-shadow: 0 0 10px rgba(0, 150, 255, 0.3);
-      animation: sloganBreath 4s ease-in-out infinite;
-    }
-
-    @keyframes sloganBreath {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
-
-    /* 全屏 iframe */
-    #mainFrame {
-      position: absolute;
+    /* --------------------------------------------------
+       2. 扫光特效（z=1）
+    -------------------------------------------------- */
+    .scanline {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      border: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.15) 1%,
+        rgba(255, 255, 255, 0) 2%
+      );
+      animation: scan 2.8s linear infinite;
+      pointer-events: none;
       z-index: 1;
-      opacity: 0;
-      transition: opacity 1.2s ease-out;
     }
 
-    #mainFrame.loaded {
-      opacity: 1;
-    }
-
-    /* 初始提示 */
-    .initial-hint {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 10;
-      animation: fadeInUp 1s ease;
+    .scanline2 {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 200, 255, 0) 0%,
+        rgba(0, 200, 255, 0.2) 1%,
+        rgba(0, 200, 255, 0) 2%
+      );
+      animation: scan 4.2s linear infinite;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .title {
-      font-size: 3.5rem;
+    @keyframes scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* --------------------------------------------------
+       3. 动态光流（z=2）
+    -------------------------------------------------- */
+    .bg-lightflow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, rgba(0, 150, 255, 0.05), rgba(0, 80, 160, 0.05)),
+        linear-gradient(135deg, rgba(0, 200, 255, 0.03), rgba(0, 100, 200, 0.03));
+      animation: lightflow 12s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes lightflow {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    /* --------------------------------------------------
+       4. 开屏动画（最上层，z=100）
+    -------------------------------------------------- */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 8, 20, 0.98);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 1s ease 0.5s;
+    }
+
+    .splash-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .splash-logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 14px;
+      box-shadow: 0 0 35px var(--tech-light);
+      margin-bottom: 35px;
+      animation: splashLogo 1.6s ease;
+    }
+
+    @keyframes splashLogo {
+      0% { transform: scale(0) rotateY(0deg); }
+      70% { transform: scale(1.1) rotateY(15deg); }
+      100% { transform: scale(1) rotateY(0deg); }
+    }
+
+    .splash-title {
+      font-size: 2.8rem;
       background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 25px rgba(0, 150, 255, 0.3);
-      margin-bottom: 15px;
-      animation: titleGlow 6s ease-in-out infinite;
+      text-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeInUp 0.9s ease 0.4s forwards;
     }
 
-    .subtitle {
+    .splash-line {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(25px);
+    }
+
+    .splash-line-1 {
+      animation: fadeInUp 0.9s ease 0.8s forwards, fadeOut 0.7s ease 3.2s forwards;
+    }
+
+    .splash-line-2 {
+      animation: fadeInUp 0.9s ease 1.2s forwards, fadeOut 0.7s ease 3.6s forwards;
+    }
+
+    .gold-text {
+      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 
+        0 0 10px var(--gold-glow),
+        0 0 20px var(--gold-glow),
+        0 0 30px var(--gold-glow);
+      animation: goldPulse 2.5s ease-in-out infinite;
+    }
+
+    .pokrc-text {
+      background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 
+        0 0 10px rgba(0, 150, 255, 0.5),
+        0 0 20px rgba(0, 150, 255, 0.3);
+    }
+
+    /* --------------------------------------------------
+       5. 智能服务器页面（z=10）
+    -------------------------------------------------- */
+    .server-selection {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 8, 20, 0.92);
+      z-index: 10;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .server-selection.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .server-title {
+      font-size: 3.2rem;
+      background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
+      margin-bottom: 8px;
+    }
+
+    .server-domain {
       font-size: 1.6rem;
+      color: var(--tech-light);
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px rgba(0, 150, 255, 0.5);
+    }
+
+    .server-brand {
+      font-size: 1.2rem;
       color: #E0F7FF;
-      margin-bottom: 25px;
-      text-shadow: 0 0 15px rgba(102, 204, 255, 0.4);
-      animation: fadeIn 1.2s ease 0.2s both;
-    }
-
-    .note {
-      font-size: 1.1rem;
-      color: #B3E5FC;
-      animation: fadeIn 1.2s ease 0.4s both;
-    }
-
-    /* 进度条容器 */
-    .progress-container {
-      width: 320px;
-      height: 12px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 50px;
-      margin: 25px auto 0;
-      border: 1px solid rgba(0, 150, 255, 0.3);
-      overflow: hidden;
-      animation: fadeIn 1.2s ease 0.6s both;
+      margin-bottom: 30px;
+      text-shadow: 0 0 12px rgba(102, 204, 255, 0.4);
     }
 
     /* 进度条 */
+    .progress-container {
+      width: 360px;
+      height: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 50px;
+      margin: 0 auto;
+      border: 1px solid rgba(0, 150, 255, 0.3);
+      overflow: hidden;
+    }
+
     .progress-bar {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
       border-radius: 50px;
-      animation: progressAnim 4.5s ease-in-out forwards;
+      animation: progressAnim 3.5s ease-in-out forwards;
     }
 
-    /* 假进度条动画 */
     @keyframes progressAnim {
       0% { width: 0%; }
-      10% { width: 8%; }
-      25% { width: 18%; }
-      40% { width: 33%; }
-      60% { width: 45%; }
-      75% { width: 60%; }
-      85% { width: 72%; }
-      100% { width: 85%; }
+      100% { width: 100%; }
     }
 
-    /* 弹窗背景 */
-    .modal-backdrop {
+    /* 位置信息 */
+    .location-info {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: var(--tech-light);
+      text-shadow: 0 0 12px rgba(0, 150, 255, 0.5);
+      opacity: 0;
+      animation: fadeIn 1s ease 1s forwards;
+    }
+
+    /* --------------------------------------------------
+       6. iframe 容器（z=20）
+    -------------------------------------------------- */
+    .iframe-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 8, 20, 0.7);
-      backdrop-filter: blur(10px);
-      z-index: 100;
+      z-index: 20;
       display: none;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 1s ease;
     }
 
-    .modal-backdrop.show {
+    .iframe-container.show {
       display: block;
       opacity: 1;
     }
 
-    /* 弹窗内容 */
-    .modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: var(--radius);
-      padding: 35px 40px;
-      width: 90%;
-      max-width: 520px;
-      z-index: 101;
-      display: none;
-      box-shadow: 0 10px 40px rgba(0, 150, 255, 0.3);
-      border: 1px solid rgba(0, 150, 255, 0.3);
-      transition: transform 0.4s ease, box-shadow 0.3s ease;
-    }
-
-    .modal.show {
-      display: block;
-      transform: translate(-50%, -50%) scale(1);
-      box-shadow: 0 15px 50px rgba(0, 150, 255, 0.4);
-    }
-
-    .modal-title {
-      font-size: 1.8rem;
-      color: var(--tech-dark);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .modal-text {
-      font-size: 1.2rem;
-      color: #333;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-    }
-
-    .modal-btn {
-      padding: 12px 25px;
-      border-radius: 50px;
-      border: none;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* 按钮光效 */
-    .modal-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
+    #mainFrame {
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.6s ease;
+      border: none;
     }
 
-    .modal-btn:hover::before {
-      left: 100%;
+    /* --------------------------------------------------
+       通用动画
+    -------------------------------------------------- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .success-btn {
-      background: linear-gradient(90deg, #00C853, #00E676);
-      color: white;
-    }
-
-    .fail-btn {
-      background: linear-gradient(90deg, #FF3D00, #FF6E40);
-      color: white;
-    }
-
-    .wait-btn {
-      background: linear-gradient(90deg, #1E88E5, #42A5F5);
-      color: white;
-    }
-
-    /* 成功反馈动画 */
-    .feedback-animation {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: var(--radius);
-      padding: 30px 40px;
-      width: 90%;
-      max-width: 420px;
-      z-index: 200;
-      text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 150, 255, 0.3);
-      border: 1px solid rgba(0, 150, 255, 0.3);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .feedback-animation.show {
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .feedback-icon {
-      font-size: 4rem;
-      color: #00E676;
-      margin-bottom: 15px;
-      animation: popIn 0.6s ease;
-    }
-
-    .feedback-text {
-      font-size: 1.3rem;
-      color: #333;
-      animation: fadeInUp 0.5s ease 0.2s both;
-    }
-
-    /* 动画 */
-    @keyframes titleGlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); }
     }
 
     @keyframes fadeIn {
@@ -364,154 +343,146 @@
       to { opacity: 1; }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translate(-50%, -45%); }
-      to { opacity: 1; transform: translate(-50%, -50%); }
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      70% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    /* 适配手机 */
+    /* --------------------------------------------------
+       适配手机
+    -------------------------------------------------- */
     @media (max-width: 768px) {
-      .title { font-size: 2.2rem; }
-      .subtitle { font-size: 1.3rem; }
+      .splash-title { font-size: 2.1rem; }
+      .splash-line { font-size: 1.2rem; }
+      .server-title { font-size: 2.2rem; }
+      .server-domain { font-size: 1.3rem; }
+      .server-brand { font-size: 1rem; }
       .progress-container { width: 80%; }
-      .modal { padding: 25px 20px; }
-      .modal-title { font-size: 1.5rem; }
-      .modal-text { font-size: 1.1rem; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- 赛事同款 Logo -->
-<div class="page-container" id="pageContainer">
-  <div class="header-logo">
-    <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞 Logo" class="logo-img">
-    <div class="logo-text-group">
-      <div class="logo-domain">917813.com.cn</div>
-      <div class="logo-slogan">Flyz远征飞｜为方便模友而生</div>
-    </div>
+<!-- 1. 蓝格子背景（最底层） -->
+<div class="bg-grid"></div>
+
+<!-- 2. 扫光特效 -->
+<div class="scanline"></div>
+<div class="scanline2"></div>
+
+<!-- 3. 动态光流 -->
+<div class="bg-lightflow"></div>
+
+<!-- 4. 开屏动画 -->
+<div class="splash-screen" id="splashScreen">
+  <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞 Logo" class="splash-logo">
+
+  <div class="splash-title">Flyz远征飞 2026 线上 FPV 模拟器竞速赛</div>
+
+  <div class="splash-line splash-line-1">
+    由微型 250g 无人机 <span class="gold-text">极速世界纪录保持者</span>
+  </div>
+  <div class="splash-line splash-line-2">
+    <span class="pokrc-text">Pok RC 团队</span> 全力支持
   </div>
 </div>
 
-<!-- 初始提示 -->
-<div class="initial-hint" id="initialHint">
-  <h1 class="title">Flyz远征飞智能服务器</h1>
-  <p class="subtitle">近期有人反馈加载失败问题 已新增备用服务器</p>
-  <p class="note">正在为您自动选择 中国大陆服务器...</p>
+<!-- 5. 智能服务器页面 -->
+<div class="server-selection" id="serverSelection">
+  <div class="server-title">Flyz远征飞智能服务器</div>
+  <div class="server-domain">917813.com.cn</div>
+  <div class="server-brand">认准官方活动报名唯一通道 · 赛事中心</div>
 
-  <!-- 进度条 -->
   <div class="progress-container">
     <div class="progress-bar"></div>
   </div>
-</div>
 
-<!-- 全屏 iframe -->
-<iframe id="mainFrame" src=""></iframe>
-
-<!-- 弹窗背景 -->
-<div class="modal-backdrop" id="modalBackdrop"></div>
-
-<!-- 询问弹窗 -->
-<div class="modal" id="checkModal">
-  <h3 class="modal-title">页面是否加载成功？</h3>
-  <p class="modal-text">若内容未正常显示，请点击下方按钮切换国际服务器。</p>
-  <div class="btn-group">
-    <button class="modal-btn success-btn" onclick="onSuccess()">加载成功</button>
-    <button class="modal-btn fail-btn" onclick="onFail()">加载失败</button>
-    <button class="modal-btn wait-btn" onclick="onWait()">我再等等</button>
+  <div class="location-info" id="locationInfo">
+    正在选择中国大陆服务器 · 获取位置中...
   </div>
 </div>
 
-<!-- 成功反馈动画 -->
-<div class="feedback-animation" id="feedbackAnimation">
-  <div class="feedback-icon">✓</div>
-  <div class="feedback-text">感谢您的反馈<br>我们会不断优化体验</div>
+<!-- 6. iframe 容器（开屏时就开始加载） -->
+<div class="iframe-container" id="iframeContainer">
+  <iframe id="mainFrame" src="/fpv"></iframe>
 </div>
 
 <script>
-  const initialHint = document.getElementById("initialHint");
+  const splashScreen = document.getElementById("splashScreen");
+  const serverSelection = document.getElementById("serverSelection");
+  const iframeContainer = document.getElementById("iframeContainer");
   const mainFrame = document.getElementById("mainFrame");
-  const modalBackdrop = document.getElementById("modalBackdrop");
-  const checkModal = document.getElementById("checkModal");
-  const feedbackAnimation = document.getElementById("feedbackAnimation");
-  const pageContainer = document.getElementById("pageContainer");
+  const locationInfo = document.getElementById("locationInfo");
 
-  let isLoaded = false;
+  // ------------------------------
+  // 真实定位逻辑（浏览器 Geolocation API）
+  // ------------------------------
+  function getLocation() {
+    // 如果浏览器支持定位
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        // 定位成功
+        function(position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
 
-  // 5 秒后自动嵌入中国大陆服务器
+          // 使用高德地图逆地理编码获取城市
+          const geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+          });
+
+          geocoder.getAddress([lng, lat], function(status, result) {
+            if (status === "complete" && result.info === "OK") {
+              const city = result.regeocode.addressComponent.city;
+              const district = result.regeocode.addressComponent.district;
+
+              if (city && district) {
+                locationInfo.textContent = `当前位置：${city}${district} · 匹配最佳服务器中...`;
+              } else {
+                locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
+              }
+            } else {
+              locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
+            }
+          });
+        },
+        // 定位失败（用户拒绝/定位不可用）
+        function(error) {
+          console.log("定位失败：", error.message);
+          locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      // 浏览器不支持定位
+      locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
+    }
+  }
+
+  // 开屏动画播放时就开始获取定位
+  getLocation();
+
+  // ------------------------------
+  // 页面流程控制
+  // ------------------------------
+  // 开屏动画播放 3.5 秒后隐藏
   setTimeout(() => {
-    initialHint.style.opacity = "0";
-    setTimeout(() => initialHint.style.display = "none", 500);
+    splashScreen.classList.add("hidden");
 
-    mainFrame.src = "/fpv";
-    mainFrame.classList.add("loaded");
-
-    // 监听 iframe 是否加载成功（同源可用）
-    mainFrame.onload = function() {
-      isLoaded = true;
-      console.log("页面加载成功");
-      // 隐藏 Logo
-      pageContainer.classList.add("hidden");
-    };
-
-    // 20 秒后检查是否加载成功
+    // 显示智能服务器页面
     setTimeout(() => {
-      if (!isLoaded) {
-        showCheckModal();
-      }
-    }, 20000);
+      serverSelection.classList.add("show");
 
-  }, 5000);
+      // 智能服务器页面显示 3.5 秒后切换到 iframe
+      setTimeout(() => {
+        iframeContainer.classList.add("show");
+        serverSelection.classList.remove("show");
+      }, 3500);
 
-  // 显示询问弹窗
-  function showCheckModal() {
-    modalBackdrop.classList.add("show");
-    checkModal.classList.add("show");
-  }
+    }, 500);
 
-  // 隐藏询问弹窗
-  function hideCheckModal() {
-    modalBackdrop.classList.remove("show");
-    checkModal.classList.remove("show");
-  }
-
-  // 用户点击加载成功
-  function onSuccess() {
-    hideCheckModal();
-
-    // 显示成功反馈动画
-    feedbackAnimation.classList.add("show");
-
-    // 2 秒后隐藏
-    setTimeout(() => {
-      feedbackAnimation.classList.remove("show");
-    }, 2000);
-  }
-
-  // 用户点击加载失败
-  function onFail() {
-    window.open("https://yzbjfpv.top/fpv", "_blank");
-    hideCheckModal();
-  }
-
-  // 用户点击我再等等
-  function onWait() {
-    hideCheckModal();
-
-    // 再等 20 秒再次询问
-    setTimeout(() => {
-      if (!isLoaded) {
-        showCheckModal();
-      }
-    }, 20000);
-  }
+  }, 3500);
 </script>
 
 </body>
