@@ -11,9 +11,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- 高德地图 JS API（用于逆地理编码） -->
-  <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=你的高德地图Key"></script>
-
   <style>
     :root {
       --tech-blue: #0096FF;
@@ -42,7 +39,11 @@
     }
 
     /* --------------------------------------------------
-       1. 科技蓝格子背景（最底层，z=0）
+       ✨ 1. 科技蓝格子背景（强化版）
+       - 线更亮
+       - 更明显
+       - 加发光脉冲
+       - 更有科技感
     -------------------------------------------------- */
     .bg-grid {
       position: fixed;
@@ -51,16 +52,38 @@
       width: 100%;
       height: 100%;
       background-image: 
-        linear-gradient(rgba(0, 150, 255, 0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 255, 0.2) 1px, transparent 1px);
-      background-size: 30px 30px;
+        linear-gradient(rgba(0, 180, 255, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 180, 255, 0.4) 1px, transparent 1px);
+      background-size: 28px 28px;
       z-index: 0;
-      animation: gridPulse 4s ease-in-out infinite;
+
+      /* 发光脉冲动画 */
+      box-shadow: inset 0 0 60px rgba(0, 150, 255, 0.4);
+      animation: 
+        gridPulse 3s ease-in-out infinite,
+        gridGlow 6s ease-in-out infinite;
     }
 
+    /* 透明度呼吸 */
     @keyframes gridPulse {
-      0%, 100% { opacity: 0.6; }
+      0%, 100% { opacity: 0.7; }
       50% { opacity: 1; }
+    }
+
+    /* 发光呼吸 */
+    @keyframes gridGlow {
+      0%, 100% { 
+        box-shadow: inset 0 0 60px rgba(0, 150, 255, 0.4);
+        background-image: 
+          linear-gradient(rgba(0, 180, 255, 0.4) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 180, 255, 0.4) 1px, transparent 1px);
+      }
+      50% { 
+        box-shadow: inset 0 0 80px rgba(0, 200, 255, 0.6);
+        background-image: 
+          linear-gradient(rgba(0, 220, 255, 0.55) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 220, 255, 0.55) 1px, transparent 1px);
+      }
     }
 
     /* --------------------------------------------------
@@ -137,7 +160,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 8, 20, 0.98);
+      background: rgba(0, 8, 20, 0.75);
       z-index: 100;
       display: flex;
       flex-direction: column;
@@ -167,6 +190,9 @@
       100% { transform: scale(1) rotateY(0deg); }
     }
 
+    /* --------------------------------------------------
+       ✨ 竞速赛大字放大窜入特效
+    -------------------------------------------------- */
     .splash-title {
       font-size: 2.8rem;
       background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
@@ -176,7 +202,31 @@
       text-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
       margin-bottom: 18px;
       opacity: 0;
-      animation: fadeInUp 0.9s ease 0.4s forwards;
+      animation: titleZoomIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.0s forwards;
+    }
+
+    @keyframes titleZoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+        text-shadow: none;
+      }
+      70% {
+        opacity: 1;
+        transform: scale(1.1);
+        text-shadow: 
+          0 0 20px rgba(0, 150, 255, 0.6),
+          0 0 40px rgba(0, 150, 255, 0.4),
+          0 0 60px rgba(0, 150, 255, 0.2);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        text-shadow: 
+          0 0 15px rgba(0, 150, 255, 0.5),
+          0 0 30px rgba(0, 150, 255, 0.3),
+          0 0 45px rgba(0, 150, 255, 0.1);
+      }
     }
 
     .splash-line {
@@ -187,11 +237,15 @@
     }
 
     .splash-line-1 {
-      animation: fadeInUp 0.9s ease 0.8s forwards, fadeOut 0.7s ease 3.2s forwards;
+      animation: 
+        fadeInUp 0.9s ease 1.8s forwards,
+        fadeOut 0.7s ease 6.0s forwards;
     }
 
     .splash-line-2 {
-      animation: fadeInUp 0.9s ease 1.2s forwards, fadeOut 0.7s ease 3.6s forwards;
+      animation: 
+        fadeInUp 0.9s ease 2.2s forwards,
+        fadeOut 0.7s ease 7.0s forwards;
     }
 
     .gold-text {
@@ -225,7 +279,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 8, 20, 0.92);
+      background: rgba(0, 8, 20, 0.75);
       z-index: 10;
       display: none;
       flex-direction: column;
@@ -281,7 +335,7 @@
       width: 0%;
       background: linear-gradient(90deg, var(--tech-light), var(--tech-blue));
       border-radius: 50px;
-      animation: progressAnim 3.5s ease-in-out forwards;
+      animation: progressAnim 4.8s ease-in-out forwards;
     }
 
     @keyframes progressAnim {
@@ -394,11 +448,11 @@
   </div>
 
   <div class="location-info" id="locationInfo">
-    正在选择中国大陆服务器 · 获取位置中...
+    当前位置：中国大陆服务器
   </div>
 </div>
 
-<!-- 6. iframe 容器（开屏时就开始加载） -->
+<!-- 6. iframe 容器 -->
 <div class="iframe-container" id="iframeContainer">
   <iframe id="mainFrame" src="/fpv"></iframe>
 </div>
@@ -407,82 +461,24 @@
   const splashScreen = document.getElementById("splashScreen");
   const serverSelection = document.getElementById("serverSelection");
   const iframeContainer = document.getElementById("iframeContainer");
-  const mainFrame = document.getElementById("mainFrame");
-  const locationInfo = document.getElementById("locationInfo");
 
-  // ------------------------------
-  // 真实定位逻辑（浏览器 Geolocation API）
-  // ------------------------------
-  function getLocation() {
-    // 如果浏览器支持定位
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        // 定位成功
-        function(position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-
-          // 使用高德地图逆地理编码获取城市
-          const geocoder = new AMap.Geocoder({
-            radius: 1000,
-            extensions: "all"
-          });
-
-          geocoder.getAddress([lng, lat], function(status, result) {
-            if (status === "complete" && result.info === "OK") {
-              const city = result.regeocode.addressComponent.city;
-              const district = result.regeocode.addressComponent.district;
-
-              if (city && district) {
-                locationInfo.textContent = `当前位置：${city}${district} · 匹配最佳服务器中...`;
-              } else {
-                locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
-              }
-            } else {
-              locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
-            }
-          });
-        },
-        // 定位失败（用户拒绝/定位不可用）
-        function(error) {
-          console.log("定位失败：", error.message);
-          locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
-        }
-      );
-    } else {
-      // 浏览器不支持定位
-      locationInfo.textContent = "当前位置：中国大陆 · 匹配最佳服务器中...";
-    }
-  }
-
-  // 开屏动画播放时就开始获取定位
-  getLocation();
-
-  // ------------------------------
-  // 页面流程控制
-  // ------------------------------
-  // 开屏动画播放 3.5 秒后隐藏
+  // 开屏动画播放 8 秒
   setTimeout(() => {
     splashScreen.classList.add("hidden");
 
-    // 显示智能服务器页面
+    // 显示服务器选择页面
     setTimeout(() => {
       serverSelection.classList.add("show");
 
-      // 智能服务器页面显示 3.5 秒后切换到 iframe
+      // 服务器选择页面播放 5 秒
       setTimeout(() => {
         iframeContainer.classList.add("show");
         serverSelection.classList.remove("show");
-      }, 3500);
+      }, 5000);
 
     }, 500);
 
-  }, 3500);
+  }, 8000);
 </script>
 
 </body>
