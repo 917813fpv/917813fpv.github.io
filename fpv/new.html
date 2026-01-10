@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>赛事公告｜Flyz远征飞</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --tech-blue:#0096FF;--tech-dark:#0066CC;--tech-light:#66CCFF;
+  --text-main:#333;--text-light:#fff;--radius:12px;
+  --shadow:0 4px 20px rgba(0,150,255,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:#000814;
+  background-image:
+    linear-gradient(rgba(0,150,255,.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,150,255,.1) 1px,transparent 1px);
+  background-size:30px 30px;
+  color:var(--text-main);
+  min-height:100vh;
+  padding:20px 0;
+  position:relative;
+}
+.page-container{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+.header-logo{
+  display:flex;align-items:center;
+  margin-bottom:20px;
+}
+.logo-img{
+  width:60px;height:60px;border-radius:10px;
+  box-shadow:0 0 20px var(--tech-light);
+  transition:all .3s ease;
+}
+.logo-img:hover{transform:rotate(5deg) scale(1.1);box-shadow:0 0 30px var(--tech-blue)}
+.logo-text-group{margin-left:15px}
+.logo-domain{
+  font-size:1.5rem;font-weight:bold;
+  background:linear-gradient(90deg,var(--tech-light),var(--tech-blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.logo-slogan{
+  font-size:1rem;color:var(--tech-light);
+  text-shadow:0 0 10px rgba(0,150,255,.3);
+}
+.page-title{
+  text-align:center;font-size:2.5rem;color:var(--text-light);
+  margin:10px 0 30px;
+  text-shadow:0 0 20px rgba(0,150,255,.4);
+  position:relative;
+}
+.page-title::after{
+  content:'';display:block;width:120px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--tech-blue),transparent);
+  margin:12px auto 0;border-radius:2px;
+}
+.card{
+  background:rgba(255,255,255,.95);
+  border-radius:var(--radius);
+  padding:30px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(0,150,255,.3);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--tech-blue),var(--tech-light));
+}
+.notice-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding-bottom:12px;
+  border-bottom:1px solid rgba(0,150,255,.15);
+}
+.notice-title{
+  font-size:1.6rem;color:var(--tech-dark);font-weight:600;
+}
+.notice-time{
+  font-size:.95rem;color:#666;
+}
+.notice-content{
+  font-size:1.1rem;line-height:1.8;color:#333;
+  white-space:pre-wrap;
+  min-height:220px;
+}
+.btn-group{
+  display:flex;justify-content:center;gap:16px;
+  margin-top:28px;
+}
+.btn{
+  padding:12px 28px;border-radius:50px;border:none;
+  font-size:1.1rem;cursor:pointer;transition:all .3s ease;
+}
+.btn-primary{
+  background:linear-gradient(90deg,var(--tech-dark),var(--tech-blue));
+  color:#fff;box-shadow:0 4px 15px rgba(0,150,255,.3);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,150,255,.4)}
+.btn-outline{
+  background:transparent;border:2px solid var(--tech-blue);
+  color:var(--tech-blue);
+}
+.btn-outline:hover{background:rgba(0,150,255,.06);box-shadow:0 0 15px rgba(0,150,255,.2)}
+footer{
+  margin-top:40px;text-align:center;
+  color:rgba(102,204,255,.7);font-size:.95rem;
+  text-shadow:0 0 10px rgba(0,150,255,.3);
+}
+#notice-poster{
+  position:fixed;top:-9999px;left:-9999px;
+  background:#fff;width:700px;padding:40px;border-radius:var(--radius);
+  border:3px solid var(--tech-blue);box-shadow:0 10px 30px rgba(0,150,255,.2);
+}
+@media (max-width:768px){
+  .logo-img{width:50px;height:50px}
+  .logo-domain{font-size:1.2rem}
+  .page-title{font-size:2rem}
+  .card{padding:20px}
+  .notice-title{font-size:1.4rem}
+  .notice-content{font-size:1rem;min-height:160px}
+  .btn{padding:10px 22px;font-size:1rem}
+  #notice-poster{width:92vw;padding:24px}
+}
+</style>
+</head>
+<body>
+<div class="page-container">
+  <div class="header-logo">
+    <img src="https://img520.com/UIGuUV.jpeg" class="logo-img">
+    <div class="logo-text-group">
+      <div class="logo-domain">917813.com.cn</div>
+      <div class="logo-slogan">Flyz远征飞｜为方便模友而生</div>
+    </div>
+  </div>
+
+  <h1 class="page-title">赛事公告</h1>
+
+  <div class="card">
+    <div class="notice-header">
+      <div class="notice-title" id="notice-title">公告</div>
+      <div class="notice-time" id="notice-time"></div>
+    </div>
+    <div class="notice-content" id="notice-content">
+      加载中...
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="downloadNotice()">保存公告到相册</button>
+    <button class="btn btn-outline" onclick="location.href='/index.html'">返回首页</button>
+  </div>
+</div>
+
+<footer>
+  © 2026 Flyz远征飞 · 917813.com.cn
+</footer>
+
+<div id="notice-poster"></div>
+
+<script>
+$(function(){
+  $.get('/fpv/gonggao.txt',function(data){
+    $('#notice-content').text(data);
+    $('#notice-time').text(new Date().toLocaleString());
+  }).fail(function(){
+    $('#notice-content').html('<div style="color:#ff4d4f;text-align:center;padding:20px;">公告加载失败，请稍后再试</div>');
+  });
+});
+
+function downloadNotice(){
+  const title=$('#notice-title').text();
+  const content=$('#notice-content').text();
+  const time=$('#notice-time').text();
+  const poster=$('#notice-poster');
+
+  poster.html(`
+    <div style="text-align:center;margin-bottom:24px;">
+      <h2 style="color:#0066CC;font-size:1.6rem;margin-bottom:8px;">Flyz远征飞2026赛事公告</h2>
+      <div style="color:#666;font-size:.95rem;">${time}</div>
+      <hr style="border:1px solid rgba(0,150,255,.2);margin-top:12px;">
+    </div>
+    <div style="font-size:1.1rem;line-height:1.8;white-space:pre-wrap;color:#333;">${content}</div>
+    <div style="position:absolute;bottom:20px;right:20px;font-size:.9rem;color:rgba(0,150,255,.5);">917813.com.cn</div>
+  `);
+
+  html2canvas(poster[0],{scale:2,useCORS:true}).then(canvas=>{
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png',1.0);
+    a.download=`Flyz公告_${time.replace(/\D/g,'')}.png`;
+    a.click();
+  });
+}
+</script>
+</body>
+</html>
