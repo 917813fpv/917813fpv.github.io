@@ -207,7 +207,7 @@ footer{
 
 <script>
 function loadStaff(){
-  $.get('/fpv/staff.txt',function(data){
+  $.get('/fpv/houqin.txt',function(data){
     const list=data.split('\n').filter(item=>item.trim()!=='');
     const container=$('#staff-list');
     container.empty();
