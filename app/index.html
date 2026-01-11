@@ -415,16 +415,27 @@
     let loadStartTime = {};
     const iframe = document.getElementById("main-iframe");
 
-    iframe.onloadstart = function() {
-      loadStartTime[this.src] = Date.now();
-    };
+    // ✅ 修复：iframe 不支持 onloadstart，改用 src 变化时记录时间
+    Object.defineProperty(iframe, 'src', {
+      set: function(newValue) {
+        loadStartTime[newValue] = Date.now();
+        // 调用原始的 src setter
+        this.setAttribute('src', newValue);
+      },
+      get: function() {
+        return this.getAttribute('src');
+      }
+    });
 
     iframe.onload = function() {
       const loadTime = Date.now() - loadStartTime[this.src];
-      if (loadTime < 3000) {
+      
+      // ✅ 修复：防止 loadTime 为 NaN
+      if (isNaN(loadTime) || loadTime < 3000) {
         document.getElementById("security-block").classList.add("active");
         return;
       }
+      
       this.previousElementSibling.style.display = "none";
     };
 
