@@ -427,6 +427,9 @@
       }
     });
 
+    // ✅ ✅ ✅ 关键修复：手动触发一次 src 设置，确保第一次加载也有时间记录
+    iframe.src = iframe.src;
+
     iframe.onload = function() {
       const loadTime = Date.now() - loadStartTime[this.src];
       
