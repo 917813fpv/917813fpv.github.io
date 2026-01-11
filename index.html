@@ -118,10 +118,159 @@
     @keyframes fadeIn {
       to { opacity: 1; }
     }
+
+    /* 拦截页面 */
+    #block-page {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #block-page.active {
+      display: flex;
+    }
+
+    .block-icon {
+      font-size: 4rem;
+      color: var(--red);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
+    }
+
+    .block-title {
+      font-size: 2.2rem;
+      color: var(--red);
+      margin-bottom: 15px;
+    }
+
+    .block-desc {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: 10px;
+      max-width: 80%;
+    }
+
+    /* 人机验证弹窗 */
+    #verify-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #verify-modal.active {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 90%;
+      max-width: 380px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 1.6rem;
+      color: var(--cyan);
+      margin-bottom: 18px;
+    }
+
+    /* 新增：提示文字样式 */
+    .verify-tip {
+      font-size: 1.1rem;
+      color: #ffffff;
+      margin-bottom: 12px;
+      text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    }
+
+    .verify-area {
+      width: 100%;
+      height: 180px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      position: relative;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .verify-dot {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid var(--cyan);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--cyan);
+      text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    }
+
+    .verify-dot:hover {
+      background: rgba(0, 255, 255, 0.35);
+      transform: scale(1.1);
+    }
+
+    .verify-dot.correct {
+      background: rgba(0, 255, 0, 0.3);
+      border-color: #00ff00;
+      color: #00ff00;
+    }
+
+    .error-msg {
+      color: #ff6666;
+      font-size: 1rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .error-msg.active {
+      display: block;
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- 拦截页面 -->
+  <div id="block-page">
+    <div class="block-icon">
+      <i class="fa fa-shield"></i>
+    </div>
+    <div class="block-title">访问被拒绝</div>
+    <div class="block-desc" id="block-reason"></div>
+    <div class="block-desc">本网站仅支持 Chrome、Safari、Edge、Firefox、微信浏览器</div>
+  </div>
+
+  <!-- 人机验证弹窗 -->
+  <div id="verify-modal">
+    <div class="modal-card">
+      <div class="modal-title">人机验证</div>
+
+      <!-- 新增：提示文字 -->
+      <div class="verify-tip">请依次点击 1、2、3</div>
+
+      <div class="verify-area" id="verify-area"></div>
+      <div class="error-msg" id="verify-error">请按数字顺序点击</div>
+    </div>
+  </div>
 
   <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="logo">
 
@@ -152,79 +301,168 @@
   </div>
 
   <script>
-    // 验证结果
-    let results = {
-      browser: false,
-      system: false,
-      network: false,
-      human: false
-    };
+    // 全局拦截开关
+    let isBlocked = false;
+    let blockReason = "";
 
-    // 1. 浏览器检测
-    function checkBrowser() {
+    // 1. 浏览器白名单检测（只允许 Chrome / Safari / Edge / Firefox / 微信）
+    function isAllowedBrowser() {
       const ua = navigator.userAgent.toLowerCase();
+
       const isChrome = /chrome/.test(ua) && !/edge/.test(ua);
-      const isEdge = /edg/.test(ua);
       const isSafari = /safari/.test(ua) && !/chrome/.test(ua);
+      const isEdge = /edg/.test(ua);
       const isFirefox = /firefox/.test(ua);
-      results.browser = isChrome || isEdge || isSafari || isFirefox;
-      document.getElementById("check1").textContent = results.browser ? "✔" : "✘";
-      document.getElementById("check1").className = "check-icon " + (results.browser ? "success" : "error");
+      const isWeChat = /micromessenger/.test(ua);
+
+      return isChrome || isSafari || isEdge || isFirefox || isWeChat;
     }
 
-    // 2. 系统检测（简单示例）
-    function checkSystem() {
-      results.system = true; // 可自定义规则
-      document.getElementById("check2").textContent = results.system ? "✔" : "✘";
-      document.getElementById("check2").className = "check-icon " + (results.system ? "success" : "error");
-    }
-
-    // 3. 网络检测
-    function checkNetwork() {
-      results.network = navigator.onLine;
-      document.getElementById("check3").textContent = results.network ? "✔" : "✘";
-      document.getElementById("check3").className = "check-icon " + (results.network ? "success" : "error");
-    }
-
-    // 4. 人机验证（简单点击验证）
-    function initHumanCheck() {
-      let clicks = 0;
-      const targetClicks = 3;
-      const check4 = document.getElementById("check4");
-
-      document.addEventListener("click", () => {
-        if (clicks < targetClicks) {
-          clicks++;
-          if (clicks === targetClicks) {
-            results.human = true;
-            check4.textContent = "✔";
-            check4.className = "check-icon success";
+    // 2. 检测境外 IP
+    function checkForeignIP(callback) {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://ipapi.co/json/", true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              callback(data.country_code !== "CN");
+            } else {
+              callback(false); // API 失败默认放行
+            }
           }
-        }
-      });
+        };
+        xhr.onerror = function() {
+          callback(false);
+        };
+        xhr.send();
+      } catch (err) {
+        callback(false);
+      }
     }
 
-    // 执行所有检测
-    checkBrowser();
-    checkSystem();
-    checkNetwork();
-    initHumanCheck();
+    // 3. 检测鸿蒙/华为
+    function isHarmonyOrHuawei() {
+      const ua = navigator.userAgent.toLowerCase();
+      const isHarmonyOS = /openharmony|harmonyos/i.test(ua);
+      const isHuaweiDevice = /huawei|honor/i.test(ua);
+      return isHarmonyOS || isHuaweiDevice;
+    }
 
-    // 最终判断
-    setTimeout(() => {
-      const status = document.getElementById("status");
-
-      if (results.browser && results.system && results.network && results.human) {
-        status.textContent = "验证通过，正在进入赛事官网...";
-        status.style.color = "var(--green)";
-        setTimeout(() => {
-          window.location.href = "https://917813.com.cn/fpv/index.html";
-        }, 1200);
-      } else {
-        status.textContent = "验证失败，请使用主流浏览器并完成人机验证。";
-        status.style.color = "var(--red)";
+    // 执行前置拦截检测
+    checkForeignIP(function(isForeign) {
+      if (isForeign) {
+        blockReason = "境外 IP 暂不支持访问";
+        document.getElementById("block-reason").textContent = blockReason;
+        document.getElementById("block-page").classList.add("active");
+        isBlocked = true;
+        return;
       }
-    }, 2200);
+
+      if (isHarmonyOrHuawei()) {
+        blockReason = "鸿蒙系统/华为设备暂不支持访问";
+        document.getElementById("block-reason").textContent = blockReason;
+        document.getElementById("block-page").classList.add("active");
+        isBlocked = true;
+        return;
+      }
+
+      if (!isAllowedBrowser()) {
+        blockReason = "浏览器不受支持";
+        document.getElementById("block-reason").textContent = blockReason;
+        document.getElementById("block-page").classList.add("active");
+        isBlocked = true;
+        return;
+      }
+
+      // 前置检测通过，开始正常验证流程
+      initValidation();
+    });
+
+    // 正常验证流程
+    function initValidation() {
+      // 1. 浏览器检测
+      document.getElementById("check1").textContent = "✔";
+      document.getElementById("check1").className = "check-icon success";
+
+      // 2. 系统检测
+      document.getElementById("check2").textContent = "✔";
+      document.getElementById("check2").className = "check-icon success";
+
+      // 3. 网络检测
+      document.getElementById("check3").textContent = "✔";
+      document.getElementById("check3").className = "check-icon success";
+
+      // 4. 人机验证
+      let clickOrder = [];
+      const correctOrder = [0, 1, 2];
+      const verifyArea = document.getElementById("verify-area");
+      const verifyError = document.getElementById("verify-error");
+
+      function generateDots() {
+        verifyArea.innerHTML = "";
+        clickOrder = [];
+
+        const areaWidth = verifyArea.offsetWidth;
+        const areaHeight = verifyArea.offsetHeight;
+        const dotSize = 36;
+        const padding = 12;
+
+        for (let i = 0; i < 3; i++) {
+          const x = Math.random() * (areaWidth - dotSize - 2 * padding) + padding;
+          const y = Math.random() * (areaHeight - dotSize - 2 * padding) + padding;
+
+          const dot = document.createElement("div");
+          dot.className = "verify-dot";
+          dot.style.left = x + "px";
+          dot.style.top = y + "px";
+          dot.dataset.index = i;
+          dot.textContent = i + 1;
+
+          dot.onclick = function() {
+            const index = parseInt(this.dataset.index);
+
+            if (index !== correctOrder[clickOrder.length]) {
+              verifyError.classList.add("active");
+              setTimeout(() => {
+                verifyError.classList.remove("active");
+                generateDots();
+              }, 1500);
+              return;
+            }
+
+            clickOrder.push(index);
+            this.classList.add("correct");
+
+            if (clickOrder.length === 3) {
+              document.getElementById("check4").textContent = "✔";
+              document.getElementById("check4").className = "check-icon success";
+              document.getElementById("verify-modal").classList.remove("active");
+
+              // 验证通过
+              setTimeout(() => {
+                const status = document.getElementById("status");
+                status.textContent = "验证通过，正在进入赛事官网...";
+                status.style.color = "var(--green)";
+
+                setTimeout(() => {
+                  window.location.href = "https://917813.com.cn/fpv/index.html";
+                }, 1200);
+              }, 800);
+            }
+          };
+
+          verifyArea.appendChild(dot);
+        }
+      }
+
+      // 显示人机验证弹窗
+      setTimeout(() => {
+        document.getElementById("verify-modal").classList.add("active");
+        generateDots();
+      }, 1000);
+    }
   </script>
 
 </body>
