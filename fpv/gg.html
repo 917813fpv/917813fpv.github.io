@@ -183,41 +183,55 @@ footer{
 <div id="notice-poster"></div>
 
 <script>
-function loadNotice(){
-  $.get('/fpv/gonggao.txt',function(data){
-    $('#notice-content').text(data);
-    $('#notice-time').text(new Date().toLocaleString());
-    $('#last-refresh').text(new Date().toLocaleString());
-  }).fail(function(){
-    $('#notice-content').html('<div style="color:#ff4d4f;text-align:center;padding:20px;">公告加载失败，请稍后再试</div>');
-  });
+// 加载公告
+function loadNotice() {
+  $.get('/fpv/gonggao.txt')
+    .done(data => {
+      $('#notice-content').text(data);
+      const now = new Date().toLocaleString();
+      $('#notice-time').text(now);
+      $('#last-refresh').text(now);
+    })
+    .fail(() => {
+      $('#notice-content').html('<div style="color:#ff4d4f;text-align:center;padding:20px;">公告加载失败，请稍后再试</div>');
+    });
 }
 
-$(function(){
-  loadNotice();
-  setInterval(loadNotice,20000);
-});
+// 页面加载 + 定时刷新
+$(loadNotice);
+setInterval(loadNotice, 20000);
 
-function downloadNotice(){
-  const title=$('#notice-title').text();
-  const content=$('#notice-content').text();
-  const time=$('#notice-time').text();
-  const poster=$('#notice-poster');
+// 下载公告海报
+function downloadNotice() {
+  const poster = $('#notice-poster');
+  const time = $('#notice-time').text();
 
+  // 构建海报内容
   poster.html(`
     <div style="text-align:center;margin-bottom:24px;">
       <h2 style="color:#0066CC;font-size:1.6rem;margin-bottom:8px;">Flyz远征飞2026赛事公告</h2>
       <div style="color:#666;font-size:.95rem;">${time}</div>
       <hr style="border:1px solid rgba(0,150,255,.2);margin-top:12px;">
     </div>
-    <div style="font-size:1.1rem;line-height:1.8;white-space:pre-wrap;color:#333;">${content}</div>
+    <div style="font-size:1.1rem;line-height:1.8;white-space:pre-wrap;color:#333;">${$('#notice-content').text()}</div>
     <div style="position:absolute;bottom:20px;right:20px;font-size:.9rem;color:rgba(0,150,255,.5);">917813.com.cn</div>
   `);
 
-  html2canvas(poster[0],{scale:2,useCORS:true}).then(canvas=>{
-    const a=document.createElement('a');
-    a.href=canvas.toDataURL('image/png',1.0);
-    a.download=`Flyz公告_${time.replace(/\D/g,'')}.png`;
+  // 临时显示海报（用于渲染）
+  poster.css({
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    'z-index': '9999'
+  });
+
+  // 生成图片并下载
+  html2canvas(poster[0], { scale: 2, useCORS: true }).then(canvas => {
+    poster.css({ top: '-9999px', left: '-9999px', 'z-index': '-1' }); // 隐藏
+
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png', 1.0);
+    a.download = `Flyz公告_${time.replace(/\D/g, '')}.png`;
     a.click();
   });
 }
