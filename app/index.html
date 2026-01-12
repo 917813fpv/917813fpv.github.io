@@ -5,21 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-XSS-Protection" content="1; mode=block">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https://i.ooxx.ooo data:; frame-src 'self' https://917813.com.cn; font-src https://cdn.jsdelivr.net;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https://i.ooxx.ooo data:; frame-src 'self' https://917813.com.cn; font-src https://cdn.jsdelivr.net;">
 
-  <title>2026线上FPV竞速赛｜Flyz远征飞</title>
+  <title>Flyz Safety Unit</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
   <style>
     :root {
       --cyan: #00ffff;
-      --red: #ff4d4d;
-      --glass: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.2);
+      --blue: #66ccff;
     }
 
     * {
@@ -29,7 +26,7 @@
     }
 
     body {
-      font-family: "Exo 2", "Noto Sans SC", sans-serif;
+      font-family: "Consolas", "Monaco", monospace;
       height: 100vh;
       overflow: hidden;
       background: #000;
@@ -39,7 +36,6 @@
       color: #fff;
     }
 
-    /* 全新的科技感 Splash */
     .splash {
       position: fixed;
       inset: 0;
@@ -76,7 +72,6 @@
       letter-spacing: 1px;
     }
 
-    /* 科技感面板 */
     .scan-panel {
       width: 82%;
       max-width: 420px;
@@ -122,9 +117,8 @@
     .scan-logs {
       height: 120px;
       overflow-y: hidden;
-      font-family: "Consolas", "Monaco", monospace;
       font-size: 0.95rem;
-      color: #a0e0ff;
+      color: var(--blue);
     }
 
     .log-item {
@@ -142,17 +136,12 @@
     }
 
     .log-time {
-      color: #66ccff;
+      color: var(--blue);
       margin-right: 8px;
     }
 
     .log-text {
-      color: #a0e0ff;
-    }
-
-    .log-highlight {
-      color: #00ffff;
-      font-weight: bold;
+      color: var(--blue);
     }
 
     .device-info {
@@ -230,10 +219,10 @@
       left: 0;
       width: 100%;
       height: 56px;
-      background: var(--glass);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border-top: 1px solid var(--glass-border);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -280,14 +269,14 @@
 
     .block-icon {
       font-size: 2.5rem;
-      color: var(--red);
+      color: var(--cyan);
       margin-bottom: 15px;
-      text-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
+      text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
     }
 
     .block-title {
       font-size: 1.8rem;
-      color: var(--red);
+      color: var(--cyan);
       margin-bottom: 12px;
     }
 
@@ -295,7 +284,7 @@
       font-size: 1.1rem;
       margin-bottom: 8px;
       max-width: 80%;
-      color: #ddd;
+      color: var(--blue);
     }
 
     .block-domain {
@@ -319,33 +308,6 @@
       background: rgba(0, 255, 255, 0.2);
       transform: scale(1.05);
     }
-
-    .risk-assessment {
-      margin-top: 15px;
-      width: 80%;
-      max-width: 380px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 77, 77, 0.3);
-      border-radius: 8px;
-      padding: 12px;
-      text-align: left;
-    }
-
-    .risk-title {
-      font-size: 1.2rem;
-      color: var(--red);
-      margin-bottom: 8px;
-    }
-
-    .risk-item {
-      margin-bottom: 6px;
-      font-size: 1rem;
-    }
-
-    .risk-value {
-      color: #ffd700;
-      font-weight: bold;
-    }
   </style>
 </head>
 
@@ -355,31 +317,29 @@
     <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
     <div class="splash-title">Flyz Safety Unit</div>
 
-    <!-- 科技感扫描面板 -->
     <div class="scan-panel">
       <div class="panel-title">
         <i class="fa fa-shield"></i>
         <span>安全扫描日志</span>
       </div>
-      <div class="scan-logs" id="scan-logs">
-        <!-- 日志会通过 JS 动态添加 -->
-      </div>
+      <div class="scan-logs" id="scan-logs"></div>
     </div>
 
     <div class="device-info" id="device-info">
       <div class="device-item" id="device-browser"></div>
       <div class="device-item" id="device-os"></div>
       <div class="device-item" id="device-language"></div>
+      <div class="device-item" id="device-network"></div>
     </div>
 
-    <div class="splash-sub" id="welcome-text" style="display:none;">欢迎进入 2026 线上 FPV 竞速赛官网</div>
+    <div class="splash-sub" id="welcome-text" style="display:none;">欢迎进入系统</div>
   </div>
 
   <div id="pages">
     <div class="iframe-wrap">
       <div class="loader">
         <div class="loader-spinner"></div>
-        <div class="loader-text">Flyz Safety Unit 正在验证页面...</div>
+        <div class="loader-text">加载中...</div>
       </div>
       <iframe src="https://917813.com.cn/fpv/gg" id="main-iframe"></iframe>
     </div>
@@ -416,28 +376,27 @@
     <div class="block-icon">
       <i class="fa fa-shield"></i>
     </div>
-    <div class="block-title">Flyz Safety Unit 已拦截</div>
-    <div class="block-desc">检测到异常快速加载行为，可能包含不安全内容。</div>
-    <div class="block-desc">建议使用主流浏览器访问。</div>
-    <div class="block-desc">本站域名：<span class="block-domain">917813.com.cn</span></div>
-    <button class="block-btn" onclick="location.reload()">刷新页面</button>
+    <div class="block-title">访问被拦截</div>
+    <div class="block-desc">网络异常或运营商不被支持</div>
+    <div class="block-desc">请使用 移动 / 电信 / 联通 / 广电</div>
+    <div class="block-desc">域名：<span class="block-domain">917813.com.cn</span></div>
+    <button class="block-btn" onclick="location.reload()">刷新</button>
   </div>
 
   <div id="browser-block">
-    <div class="block-icon">
-      <i class="fa fa-exclamation-triangle"></i>
-    </div>
-    <div class="block-title">浏览器不受支持</div>
-    <div class="block-desc">为了您的安全，请使用主流浏览器访问本站。</div>
-    <div class="block-desc">支持：Chrome、Edge、Safari、Firefox</div>
-    <div class="block-desc">当前：<span id="browser-name"></span></div>
+    <div class="splash">
+      <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
+      <div class="splash-title">Flyz Safety Unit</div>
 
-    <div class="risk-assessment">
-      <div class="risk-title">设备风险评估</div>
-      <div class="risk-item">风险等级：<span class="risk-value">高风险</span></div>
-      <div class="risk-item">风险原因：<span class="risk-value">使用不安全或未知浏览器</span></div>
-      <div class="risk-item">可能包含：<span class="risk-value">黄色内容 / 恶意脚本 / 安全漏洞</span></div>
-      <div class="risk-item">建议：<span class="risk-value">更换主流浏览器</span></div>
+      <div class="scan-panel">
+        <div class="panel-title">
+          <i class="fa fa-shield"></i>
+          <span>安全拦截日志</span>
+        </div>
+        <div class="scan-logs" id="browser-logs"></div>
+      </div>
+
+      <button class="block-btn" onclick="location.reload()">刷新</button>
     </div>
   </div>
 
@@ -446,111 +405,156 @@
     let browserName = "未知浏览器";
     let osName = "未知系统";
     let language = navigator.language || "未知语言";
+    let networkType = "未知网络";
+    let operator = "未知运营商";
+    let networkStatus = "正常";
 
-    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
-      browserName = "Google Chrome";
-    } else if (userAgent.includes("Edg")) {
-      browserName = "Microsoft Edge";
-    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
-      browserName = "Safari";
-    } else if (userAgent.includes("Firefox")) {
-      browserName = "Mozilla Firefox";
-    } else if (userAgent.includes("Quark")) {
-      browserName = "Quark 浏览器";
+    if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) browserName = "Chrome";
+    else if (userAgent.includes("Edg")) browserName = "Edge";
+    else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) browserName = "Safari";
+    else if (userAgent.includes("Firefox")) browserName = "Firefox";
+    else if (userAgent.includes("Quark")) browserName = "Quark";
+
+    if (userAgent.includes("Windows")) osName = "Windows";
+    else if (userAgent.includes("Mac")) osName = "macOS";
+    else if (userAgent.includes("Linux")) osName = "Linux";
+    else if (userAgent.includes("Android")) osName = "Android";
+    else if (userAgent.includes("iPhone") || userAgent.includes("iPad")) osName = "iOS";
+
+    if (navigator.connection) {
+      const conn = navigator.connection;
+      networkType = conn.type || "未知网络";
+
+      const typeMap = {
+        "wifi": "WiFi",
+        "cellular": "蜂窝网络",
+        "ethernet": "以太网",
+        "none": "无网络",
+        "unknown": "未知网络"
+      };
+
+      networkType = typeMap[networkType] || networkType;
+
+      if (networkType === "蜂窝网络") {
+        if (userAgent.includes("CMCC") || userAgent.includes("China Mobile")) operator = "中国移动";
+        else if (userAgent.includes("CUCC") || userAgent.includes("China Unicom")) operator = "中国联通";
+        else if (userAgent.includes("CTCC") || userAgent.includes("China Telecom")) operator = "中国电信";
+        else if (userAgent.includes("CBN") || userAgent.includes("China Broadcasting")) operator = "中国广电";
+        else { operator = "未知运营商"; networkStatus = "异常"; }
+      } else if (networkType === "WiFi") {
+        operator = "WiFi";
+      }
+    } else {
+      networkType = "无法检测网络";
+      operator = "无法检测运营商";
     }
 
-    if (userAgent.includes("Windows")) {
-      osName = "Windows";
-    } else if (userAgent.includes("Mac")) {
-      osName = "macOS";
-    } else if (userAgent.includes("Linux")) {
-      osName = "Linux";
-    } else if (userAgent.includes("Android")) {
-      osName = "Android";
-    } else if (userAgent.includes("iPhone") || userAgent.includes("iPad")) {
-      osName = "iOS";
+    const allowedOperators = ["中国移动", "中国电信", "中国联通", "中国广电"];
+    if (networkType === "蜂窝网络" && !allowedOperators.includes(operator)) networkStatus = "异常";
+
+    document.getElementById("device-browser").textContent = "浏览器：" + browserName;
+    document.getElementById("device-os").textContent = "系统：" + osName;
+    document.getElementById("device-language").textContent = "语言：" + language;
+    document.getElementById("device-network").textContent = "网络：" + networkType + " / " + operator;
+
+    const logs = [];
+
+    logs.push("[+] 系统初始化");
+    logs.push("[+] 启动安全引擎");
+    logs.push("[+] 检测浏览器：" + browserName);
+    logs.push("[+] 检测系统：" + osName);
+    logs.push("[+] 检测网络：" + networkType);
+    logs.push("[+] 检测运营商：" + operator);
+
+    let isBrowserBlocked = (browserName === "Quark" || browserName === "未知浏览器");
+
+    if (isBrowserBlocked) {
+      logs.push("[!] 浏览器不被支持");
+      logs.push("[!] 风险等级：高风险");
+      logs.push("[!] 原因：浏览器不安全");
+      logs.push("[!] 建议：使用 Chrome / Edge / Safari / Firefox");
+      logs.push("[!] 访问被拦截");
     }
 
-    document.getElementById("browser-name").textContent = browserName;
+    const scanLogs = document.getElementById("scan-logs");
+    const browserLogs = document.getElementById("browser-logs");
 
-    if (browserName === "Quark 浏览器" || browserName === "未知浏览器") {
-      document.getElementById("browser-block").classList.add("active");
-    }
-
-    if (browserName !== "未知浏览器") {
-      document.getElementById("device-browser").textContent = "浏览器：" + browserName;
-    }
-
-    if (osName !== "未知系统") {
-      document.getElementById("device-os").textContent = "系统：" + osName;
-    }
-
-    if (language !== "未知语言") {
-      document.getElementById("device-language").textContent = "语言：" + language;
-    }
-
-    // 高级扫描日志内容
-    const logs = [
-      "[+] 系统初始化中...",
-      "[+] 启动 Flyz 安全防护引擎 v2.1.0",
-      "[+] 拦截黄色网站程序已启动，正在加载特征库...",
-      "[+] 正在扫描浏览器安全漏洞 (CVE-2025-XXXX)...",
-      "[+] 正在验证访问来源 IP 与地理位置...",
-      "[+] 正在建立加密安全通道 (TLS 1.3)...",
-      "[+] 正在检测设备指纹与浏览器指纹...",
-      "[+] 正在检查是否存在恶意脚本注入...",
-      "[+] 正在过滤敏感关键词与风险 URL...",
-      "[+] 正在验证站点证书与域名真实性...",
-      "[+] 安全扫描完成，风险等级：低",
-      "[+] 正在进入赛事系统..."
-    ];
-
-    const logContainer = document.getElementById("scan-logs");
-
-    // 逐行打印日志，带动画
-    function printLogs(index = 0) {
-      if (index >= logs.length) return;
-
-      const log = logs[index];
+    function printLog(text, target = scanLogs) {
       const div = document.createElement("div");
       div.className = "log-item";
-
       const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
-      div.innerHTML = `<span class="log-time">[${time}]</span><span class="log-text">${log}</span>`;
-
-      logContainer.appendChild(div);
-
-      // 自动滚动到底部
-      logContainer.scrollTop = logContainer.scrollHeight;
-
-      // 控制打印速度，让它看起来更真实
-      let delay = 120;
-      if (log.includes("拦截黄色网站程序") || log.includes("安全扫描完成")) {
-        delay = 250;
-      } else if (log.includes("正在进入赛事系统")) {
-        delay = 400;
-      }
-
-      setTimeout(() => printLogs(index + 1), delay);
+      div.innerHTML = `<span class="log-time">[${time}]</span><span class="log-text">${text}</span>`;
+      target.appendChild(div);
+      target.scrollTop = target.scrollHeight;
     }
 
-    printLogs();
+    let logIndex = 0;
+    function nextLog() {
+      if (logIndex >= logs.length) {
+        if (isBrowserBlocked) {
+          browserLogs.innerHTML = scanLogs.innerHTML;
+          document.getElementById("browser-block").classList.add("active");
+        }
+        return;
+      }
+      printLog(logs[logIndex]);
+      logIndex++;
+      setTimeout(nextLog, 120);
+    }
 
-    setTimeout(() => {
-      document.getElementById("welcome-text").style.display = "block";
-    }, 2200);
+    nextLog();
 
-    setTimeout(() => {
-      document.getElementById("splash").classList.add("hidden");
-      document.getElementById("pages").classList.add("active");
-    }, 3200);
+    if (isBrowserBlocked) return;
+
+    let networkSpeed = "未知";
+    let speedTestPassed = true;
+
+    function testNetworkSpeed() {
+      return new Promise(resolve => {
+        const startTime = performance.now();
+        const testImg = new Image();
+        testImg.src = "https://i.ooxx.ooo/i/N2ZlN.jpg?cache=" + Math.random();
+
+        testImg.onload = () => {
+          const duration = performance.now() - startTime;
+          const speedKBps = (100 / (duration / 1000)).toFixed(2);
+          networkSpeed = speedKBps + " KB/s";
+          if (speedKBps < 50) { speedTestPassed = false; networkStatus = "异常"; }
+          resolve();
+        };
+
+        testImg.onerror = () => {
+          networkSpeed = "测速失败";
+          speedTestPassed = false;
+          networkStatus = "异常";
+          resolve();
+        };
+      });
+    }
+
+    testNetworkSpeed().then(() => {
+      printLog(speedTestPassed ? "[+] 网速测试通过：" + networkSpeed : "[!] 网速测试失败：" + networkSpeed);
+
+      if (networkStatus === "异常") {
+        printLog("[!] 风险评估：高风险");
+        printLog("[!] 原因：网络异常或运营商不被支持");
+        setTimeout(() => document.getElementById("security-block").classList.add("active"), 500);
+      } else {
+        printLog("[+] 风险评估：低风险");
+        printLog("[+] 扫描完成，进入系统");
+        setTimeout(() => {
+          document.getElementById("splash").classList.add("hidden");
+          document.getElementById("pages").classList.add("active");
+        }, 800);
+      }
+    });
 
     const iframe = document.getElementById("main-iframe");
     const loader = document.querySelector(".loader");
+    let iframeLoaded = false;
 
-    iframe.onload = function() {
-      loader.style.display = "none";
-    };
+    iframe.onload = () => { iframeLoaded = true; loader.style.display = "none"; };
+    setTimeout(() => { if (!iframeLoaded) loader.style.display = "none"; }, 5000);
 
     const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
     const iframeUrls = {
@@ -568,11 +572,10 @@
       currentPage = index;
       const target = pages[index];
 
-      document.querySelectorAll(".dock-item").forEach(item => {
-        item.classList.remove("active");
-      });
+      document.querySelectorAll(".dock-item").forEach(item => item.classList.remove("active"));
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
 
+      iframeLoaded = false;
       loader.style.display = "flex";
       iframe.src = iframeUrls[target];
     }
@@ -588,14 +591,10 @@
     let touchStartX = 0;
     let touchEndX = 0;
 
-    document.addEventListener("touchstart", e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-
+    document.addEventListener("touchstart", e => { touchStartX = e.changedTouches[0].screenX; });
     document.addEventListener("touchend", e => {
       touchEndX = e.changedTouches[0].screenX;
       const diff = touchEndX - touchStartX;
-
       if (diff > 50 && currentPage > 0) setActivePage(currentPage - 1);
       else if (diff < -50 && currentPage < pages.length - 1) setActivePage(currentPage + 1);
     });
