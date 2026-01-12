@@ -39,6 +39,7 @@
       color: #fff;
     }
 
+    /* 全新的科技感 Splash */
     .splash {
       position: fixed;
       inset: 0;
@@ -49,7 +50,7 @@
       align-items: center;
       background: rgba(0, 0, 0, 0.95);
       opacity: 1;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.8s ease;
     }
 
     .splash.hidden {
@@ -58,25 +59,100 @@
     }
 
     .splash-logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 16px;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
-      margin-bottom: 20px;
+      width: 110px;
+      height: 110px;
+      border-radius: 18px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+      margin-bottom: 22px;
+      border: 1px solid rgba(0, 255, 255, 0.4);
     }
 
     .splash-title {
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       font-weight: 800;
       color: var(--cyan);
-      text-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-      margin-bottom: 10px;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      margin-bottom: 18px;
+      letter-spacing: 1px;
     }
 
-    .splash-sub {
-      font-size: 1.1rem;
-      color: #ccc;
+    /* 科技感面板 */
+    .scan-panel {
+      width: 82%;
+      max-width: 420px;
+      height: 180px;
+      background: rgba(0, 20, 40, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 12px;
+      padding: 16px;
       margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scan-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+      animation: scanLine 2s linear infinite;
+    }
+
+    @keyframes scanLine {
+      100% { left: 100%; }
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .panel-title i {
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
+    .scan-logs {
+      height: 120px;
+      overflow-y: hidden;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.95rem;
+      color: #a0e0ff;
+    }
+
+    .log-item {
+      margin-bottom: 6px;
+      opacity: 0;
+      transform: translateX(-10px);
+      animation: logIn 0.3s ease forwards;
+    }
+
+    @keyframes logIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .log-time {
+      color: #66ccff;
+      margin-right: 8px;
+    }
+
+    .log-text {
+      color: #a0e0ff;
+    }
+
+    .log-highlight {
+      color: #00ffff;
+      font-weight: bold;
     }
 
     .device-info {
@@ -278,7 +354,17 @@
   <div class="splash" id="splash">
     <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
     <div class="splash-title">Flyz Safety Unit</div>
-    <div class="splash-sub">正在检测您的设备...</div>
+
+    <!-- 科技感扫描面板 -->
+    <div class="scan-panel">
+      <div class="panel-title">
+        <i class="fa fa-shield"></i>
+        <span>安全扫描日志</span>
+      </div>
+      <div class="scan-logs" id="scan-logs">
+        <!-- 日志会通过 JS 动态添加 -->
+      </div>
+    </div>
 
     <div class="device-info" id="device-info">
       <div class="device-item" id="device-browser"></div>
@@ -403,43 +489,67 @@
       document.getElementById("device-language").textContent = "语言：" + language;
     }
 
+    // 高级扫描日志内容
+    const logs = [
+      "[+] 系统初始化中...",
+      "[+] 启动 Flyz 安全防护引擎 v2.1.0",
+      "[+] 拦截黄色网站程序已启动，正在加载特征库...",
+      "[+] 正在扫描浏览器安全漏洞 (CVE-2025-XXXX)...",
+      "[+] 正在验证访问来源 IP 与地理位置...",
+      "[+] 正在建立加密安全通道 (TLS 1.3)...",
+      "[+] 正在检测设备指纹与浏览器指纹...",
+      "[+] 正在检查是否存在恶意脚本注入...",
+      "[+] 正在过滤敏感关键词与风险 URL...",
+      "[+] 正在验证站点证书与域名真实性...",
+      "[+] 安全扫描完成，风险等级：低",
+      "[+] 正在进入赛事系统..."
+    ];
+
+    const logContainer = document.getElementById("scan-logs");
+
+    // 逐行打印日志，带动画
+    function printLogs(index = 0) {
+      if (index >= logs.length) return;
+
+      const log = logs[index];
+      const div = document.createElement("div");
+      div.className = "log-item";
+
+      const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+      div.innerHTML = `<span class="log-time">[${time}]</span><span class="log-text">${log}</span>`;
+
+      logContainer.appendChild(div);
+
+      // 自动滚动到底部
+      logContainer.scrollTop = logContainer.scrollHeight;
+
+      // 控制打印速度，让它看起来更真实
+      let delay = 120;
+      if (log.includes("拦截黄色网站程序") || log.includes("安全扫描完成")) {
+        delay = 250;
+      } else if (log.includes("正在进入赛事系统")) {
+        delay = 400;
+      }
+
+      setTimeout(() => printLogs(index + 1), delay);
+    }
+
+    printLogs();
+
     setTimeout(() => {
       document.getElementById("welcome-text").style.display = "block";
-    }, 1200);
+    }, 2200);
 
     setTimeout(() => {
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
-    }, 2500);
+    }, 3200);
 
-    let loadStartTime = {};
     const iframe = document.getElementById("main-iframe");
-
-    // ✅ 修复：iframe 不支持 onloadstart，改用 src 变化时记录时间
-    Object.defineProperty(iframe, 'src', {
-      set: function(newValue) {
-        loadStartTime[newValue] = Date.now();
-        // 调用原始的 src setter
-        this.setAttribute('src', newValue);
-      },
-      get: function() {
-        return this.getAttribute('src');
-      }
-    });
-
-    // ✅ ✅ ✅ 关键修复：手动触发一次 src 设置，确保第一次加载也有时间记录
-    iframe.src = iframe.src;
+    const loader = document.querySelector(".loader");
 
     iframe.onload = function() {
-      const loadTime = Date.now() - loadStartTime[this.src];
-      
-      // ✅ 修复：防止 loadTime 为 NaN
-      if (isNaN(loadTime) || loadTime < 3000) {
-        document.getElementById("security-block").classList.add("active");
-        return;
-      }
-      
-      this.previousElementSibling.style.display = "none";
+      loader.style.display = "none";
     };
 
     const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
@@ -463,9 +573,7 @@
       });
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
 
-      const loader = document.querySelector(".loader");
       loader.style.display = "flex";
-
       iframe.src = iframeUrls[target];
     }
 
