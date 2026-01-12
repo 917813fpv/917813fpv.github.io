@@ -181,8 +181,8 @@
       margin-bottom: 3px;
     }
 
-    /* 拦截大窗 */
-    #block-block {
+    /* 确认窗口 */
+    #confirm-block {
       position: fixed;
       inset: 0;
       z-index: 9999;
@@ -194,42 +194,80 @@
       text-align: center;
     }
 
-    #block-block.active {
+    #confirm-block.active {
       display: flex;
     }
 
-    .block-icon {
+    .confirm-icon {
       font-size: 4rem;
-      color: #ff6b6b;
+      color: #ffcc00;
       margin-bottom: 20px;
-      text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+      text-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
     }
 
-    .block-title {
-      font-size: 2.5rem;
-      color: #ff6b6b;
+    .confirm-title {
+      font-size: 2.2rem;
+      color: #ffcc00;
       margin-bottom: 15px;
     }
 
-    .block-desc {
+    .confirm-desc {
       font-size: 1.3rem;
-      color: #ff9e7d;
+      color: #fff;
       margin-bottom: 25px;
+      max-width: 80%;
     }
 
-    .block-btn {
+    .confirm-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .confirm-btn {
       padding: 10px 25px;
-      border: 2px solid #ff6b6b;
-      background: rgba(255, 107, 107, 0.2);
-      color: #ff6b6b;
       border-radius: 8px;
       font-size: 1.2rem;
       cursor: pointer;
       transition: all 0.3s;
     }
 
-    .block-btn:hover {
-      background: rgba(255, 107, 107, 0.3);
+    .btn-confirm {
+      border: 2px solid #00cc00;
+      background: rgba(0, 204, 0, 0.2);
+      color: #00cc00;
+    }
+
+    .btn-confirm:hover {
+      background: rgba(0, 204, 0, 0.3);
+    }
+
+    .btn-cancel {
+      border: 2px solid #ff3333;
+      background: rgba(255, 51, 51, 0.2);
+      color: #ff3333;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 51, 51, 0.3);
+    }
+
+    /* 水印 */
+    #watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      color: rgba(255, 0, 0, 0.6);
+      font-size: 12px;
+      text-align: right;
+      pointer-events: none;
+      line-height: 1.4;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+      display: none;
+    }
+
+    #watermark.show {
+      display: block;
     }
   </style>
 </head>
@@ -285,14 +323,23 @@
     </div>
   </div>
 
-  <!-- 拦截大窗 -->
-  <div id="block-block">
-    <div class="block-icon">
-      <i class="fa fa-shield"></i>
+  <!-- 确认窗口 -->
+  <div id="confirm-block">
+    <div class="confirm-icon">
+      <i class="fa fa-exclamation-triangle"></i>
     </div>
-    <div class="block-title">访问被拦截</div>
-    <div class="block-desc" id="block-text"></div>
-    <button class="block-btn" onclick="location.reload()">刷新</button>
+    <div class="confirm-title" id="confirm-title"></div>
+    <div class="confirm-desc" id="confirm-desc"></div>
+    <div class="confirm-buttons">
+      <button class="confirm-btn btn-confirm" id="btn-confirm">仍继续访问</button>
+      <button class="confirm-btn btn-cancel" id="btn-cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- 水印 -->
+  <div id="watermark">
+    Flyz Safety Unit 已拦截<br>
+    用户仍继续访问（不安全）
   </div>
 
   <script>
@@ -300,9 +347,13 @@
     // 配置
     // ======================
     const ALLOWED_DOMAIN = "917813.com.cn";
-    const blockText = document.getElementById("block-text");
-    const blockWindow = document.getElementById("block-block");
     const iframeLoader = document.getElementById("iframeLoader");
+    const confirmBlock = document.getElementById("confirm-block");
+    const confirmTitle = document.getElementById("confirm-title");
+    const confirmDesc = document.getElementById("confirm-desc");
+    const btnConfirm = document.getElementById("btn-confirm");
+    const btnCancel = document.getElementById("btn-cancel");
+    const watermark = document.getElementById("watermark");
 
     // ======================
     // 开头 3 秒提示动画
@@ -316,103 +367,129 @@
     }, 1500);
 
     // ======================
-    // 1. 检测境外 IP（使用国内可访问接口 + 超时处理）
+    // 显示确认窗口
+    // ======================
+    function showConfirm(title, desc) {
+      confirmTitle.textContent = title;
+      confirmDesc.textContent = desc;
+      confirmBlock.classList.add("active");
+    }
+
+    // ======================
+    // 隐藏确认窗口
+    // ======================
+    function hideConfirm() {
+      confirmBlock.classList.remove("active");
+    }
+
+    // ======================
+    // 进入主页面
+    // ======================
+    function enterMainPage() {
+      document.getElementById("splash").classList.add("hidden");
+      document.getElementById("pages").classList.add("active");
+    }
+
+    // ======================
+    // 显示水印
+    // ======================
+    function showWatermark() {
+      watermark.classList.add("show");
+    }
+
+    // ======================
+    // 1. 检测境外 IP（带超时）
     // ======================
     function checkForeignIP() {
       return new Promise(resolve => {
-        // 超时处理：5 秒内没返回就认为是境内（避免卡住）
+        // 超时 3 秒
         const timeout = setTimeout(() => {
-          console.log("IP 检测超时，默认允许访问");
-          resolve(false);
-        }, 5000);
+          resolve("timeout");
+        }, 3000);
 
         fetch("https://ipinfo.io/json")
           .then(res => res.json())
           .then(data => {
             clearTimeout(timeout);
             const country = data.country || "";
-            console.log("IP 所在国家：", country);
 
-            // 中国境内判断（包含港澳台）
             if (country === "CN" || country === "HK" || country === "MO" || country === "TW") {
-              resolve(false); // 境内
+              resolve("cn");
             } else {
-              resolve(true); // 境外
+              resolve("foreign");
             }
           })
           .catch(() => {
             clearTimeout(timeout);
-            console.log("IP 检测失败，默认允许访问");
-            resolve(false); // 失败也按境内处理，避免卡住
+            resolve("error");
           });
       });
     }
 
     // ======================
-    // 2. 检测 iframe 是否为本站
-    // ======================
-    function checkIframeSource() {
-      const iframe = document.getElementById("main-iframe");
-      const src = iframe.src;
-
-      return src.includes(ALLOWED_DOMAIN);
-    }
-
-    // ======================
-    // 3. 初始化检测（延迟 3 秒）
+    // 2. 初始化检测
     // ======================
     setTimeout(async () => {
-      try {
-        // 检测境外 IP
-        const isForeign = await checkForeignIP();
+      const ipResult = await checkForeignIP();
 
-        if (isForeign) {
-          blockText.textContent = "境外 IP 禁止访问";
-          blockWindow.classList.add("active");
-          return;
-        }
+      if (ipResult === "foreign") {
+        // 境外 IP
+        showConfirm(
+          "检测到境外访问",
+          "境外 IP 访问可能存在安全风险，是否继续？"
+        );
 
-        // 检测 iframe 是否合法
-        const isIframeValid = checkIframeSource();
+        btnConfirm.onclick = () => {
+          hideConfirm();
+          enterMainPage();
+          showWatermark();
+        };
 
-        if (!isIframeValid) {
-          blockText.textContent = "非法 iframe 来源";
-          blockWindow.classList.add("active");
-          return;
-        }
-      } catch (e) {
-        console.error("检测出错：", e);
+        btnCancel.onclick = hideConfirm;
+
+      } else if (ipResult === "timeout" || ipResult === "error") {
+        // 识别失败
+        showConfirm(
+          "IP 识别失败",
+          "无法确认你的访问来源，是否继续？"
+        );
+
+        btnConfirm.onclick = () => {
+          hideConfirm();
+          enterMainPage();
+          showWatermark();
+        };
+
+        btnCancel.onclick = hideConfirm;
+
+      } else {
+        // 境内 IP，直接进入
+        enterMainPage();
       }
 
-      // 全部通过或出错都进入主界面（避免卡住）
-      document.getElementById("splash").classList.add("hidden");
-      document.getElementById("pages").classList.add("active");
     }, 3000);
 
     // ======================
-    // IFrame 加载完成隐藏加载界面
+    // IFrame 加载完成
     // ======================
     const iframe = document.getElementById("main-iframe");
-    
-    // 防 iframe onload 不触发
     let iframeLoaded = false;
+
     iframe.onload = () => {
       iframeLoaded = true;
       iframeLoader.style.display = "none";
     };
 
-    // 强制隐藏加载中（最多 8 秒）
+    // 超时强制隐藏
     setTimeout(() => {
       if (!iframeLoaded) {
-        console.log("IFrame 加载超时，强制进入");
         iframeLoader.style.display = "none";
       }
     }, 8000);
 
     // ======================
-    // 下面内容保持不变
+    // 底部导航切换
     // ======================
-
     const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
     const iframeUrls = {
       home: "https://917813.com.cn/fpv/index",
@@ -432,7 +509,6 @@
       document.querySelectorAll(".dock-item").forEach(item => item.classList.remove("active"));
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
 
-      // 显示加载中
       iframeLoader.style.display = "flex";
       iframeLoaded = false;
 
@@ -447,15 +523,25 @@
       });
     });
 
+    // ======================
+    // 左右滑动切换
+    // ======================
     let touchStartX = 0;
     let touchEndX = 0;
 
-    document.addEventListener("touchstart", e => { touchStartX = e.changedTouches[0].screenX; });
+    document.addEventListener("touchstart", e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
     document.addEventListener("touchend", e => {
       touchEndX = e.changedTouches[0].screenX;
       const diff = touchEndX - touchStartX;
-      if (diff > 50 && currentPage > 0) setActivePage(currentPage - 1);
-      else if (diff < -50 && currentPage < pages.length - 1) setActivePage(currentPage + 1);
+
+      if (diff > 50 && currentPage > 0) {
+        setActivePage(currentPage - 1);
+      } else if (diff < -50 && currentPage < pages.length - 1) {
+        setActivePage(currentPage + 1);
+      }
     });
   </script>
 
