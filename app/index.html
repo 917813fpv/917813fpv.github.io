@@ -316,25 +316,34 @@
     }, 1500);
 
     // ======================
-    // 1. 检测境外 IP
+    // 1. 检测境外 IP（使用国内可访问接口 + 超时处理）
     // ======================
     function checkForeignIP() {
       return new Promise(resolve => {
-        fetch("https://ipapi.co/json/")
+        // 超时处理：5 秒内没返回就认为是境内（避免卡住）
+        const timeout = setTimeout(() => {
+          console.log("IP 检测超时，默认允许访问");
+          resolve(false);
+        }, 5000);
+
+        fetch("https://ipinfo.io/json")
           .then(res => res.json())
           .then(data => {
-            const country = data.country_name || "";
+            clearTimeout(timeout);
+            const country = data.country || "";
             console.log("IP 所在国家：", country);
 
             // 中国境内判断（包含港澳台）
-            if (country === "China" || country === "Hong Kong" || country === "Macao" || country === "Taiwan") {
+            if (country === "CN" || country === "HK" || country === "MO" || country === "TW") {
               resolve(false); // 境内
             } else {
               resolve(true); // 境外
             }
           })
           .catch(() => {
-            resolve(true); // 无法检测也按境外处理
+            clearTimeout(timeout);
+            console.log("IP 检测失败，默认允许访问");
+            resolve(false); // 失败也按境内处理，避免卡住
           });
       });
     }
@@ -353,25 +362,29 @@
     // 3. 初始化检测（延迟 3 秒）
     // ======================
     setTimeout(async () => {
-      // 检测境外 IP
-      const isForeign = await checkForeignIP();
+      try {
+        // 检测境外 IP
+        const isForeign = await checkForeignIP();
 
-      if (isForeign) {
-        blockText.textContent = "境外 IP 禁止访问";
-        blockWindow.classList.add("active");
-        return;
+        if (isForeign) {
+          blockText.textContent = "境外 IP 禁止访问";
+          blockWindow.classList.add("active");
+          return;
+        }
+
+        // 检测 iframe 是否合法
+        const isIframeValid = checkIframeSource();
+
+        if (!isIframeValid) {
+          blockText.textContent = "非法 iframe 来源";
+          blockWindow.classList.add("active");
+          return;
+        }
+      } catch (e) {
+        console.error("检测出错：", e);
       }
 
-      // 检测 iframe 是否合法
-      const isIframeValid = checkIframeSource();
-
-      if (!isIframeValid) {
-        blockText.textContent = "非法 iframe 来源";
-        blockWindow.classList.add("active");
-        return;
-      }
-
-      // 全部通过
+      // 全部通过或出错都进入主界面（避免卡住）
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
     }, 3000);
@@ -380,13 +393,20 @@
     // IFrame 加载完成隐藏加载界面
     // ======================
     const iframe = document.getElementById("main-iframe");
+    
+    // 防 iframe onload 不触发
+    let iframeLoaded = false;
     iframe.onload = () => {
+      iframeLoaded = true;
       iframeLoader.style.display = "none";
     };
 
-    // 防止加载超时
+    // 强制隐藏加载中（最多 8 秒）
     setTimeout(() => {
-      iframeLoader.style.display = "none";
+      if (!iframeLoaded) {
+        console.log("IFrame 加载超时，强制进入");
+        iframeLoader.style.display = "none";
+      }
     }, 8000);
 
     // ======================
@@ -414,6 +434,7 @@
 
       // 显示加载中
       iframeLoader.style.display = "flex";
+      iframeLoaded = false;
 
       iframe.src = iframeUrls[target];
     }
