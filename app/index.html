@@ -46,7 +46,6 @@
       align-items: center;
       background: rgba(0, 0, 0, 0.95);
       opacity: 1;
-      transition: opacity 0.8s ease;
     }
 
     .splash.hidden {
@@ -72,13 +71,11 @@
       letter-spacing: 1px;
     }
 
-    /* 提示文本 */
     .splash-notice {
       font-size: 1.2rem;
       color: var(--blue);
       margin-top: 20px;
       opacity: 0;
-      transition: opacity 0.5s ease;
     }
 
     .splash-notice.show {
@@ -108,7 +105,6 @@
       border: none;
     }
 
-    /* IFrame 加载中 */
     .iframe-loader {
       position: absolute;
       top: 0;
@@ -165,7 +161,6 @@
       align-items: center;
       font-size: 12px;
       color: rgba(255, 255, 255, 0.7);
-      transition: all 0.2s;
       width: 52px;
       height: 52px;
       justify-content: center;
@@ -173,7 +168,6 @@
 
     .dock-item.active {
       color: var(--cyan);
-      transform: scale(1.1);
     }
 
     .dock-item i {
@@ -181,7 +175,6 @@
       margin-bottom: 3px;
     }
 
-    /* 确认窗口 */
     #confirm-block {
       position: fixed;
       inset: 0;
@@ -228,7 +221,6 @@
       border-radius: 8px;
       font-size: 1.2rem;
       cursor: pointer;
-      transition: all 0.3s;
     }
 
     .btn-confirm {
@@ -237,21 +229,12 @@
       color: #00cc00;
     }
 
-    .btn-confirm:hover {
-      background: rgba(0, 204, 0, 0.3);
-    }
-
     .btn-cancel {
       border: 2px solid #ff3333;
       background: rgba(255, 51, 51, 0.2);
       color: #ff3333;
     }
 
-    .btn-cancel:hover {
-      background: rgba(255, 51, 51, 0.3);
-    }
-
-    /* 水印 */
     #watermark {
       position: fixed;
       bottom: 20px;
@@ -269,6 +252,35 @@
     #watermark.show {
       display: block;
     }
+
+    .watermark-rolling {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.25;
+    }
+
+    .watermark-rolling-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 24px;
+      color: #ff0000;
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      animation: roll 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes roll {
+      0% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
+    }
   </style>
 </head>
 
@@ -277,21 +289,17 @@
   <div class="splash" id="splash">
     <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
     <div class="splash-title">Flyz Safety Unit</div>
-
-    <!-- 提示文本 -->
     <div class="splash-notice" id="notice1">已连接服务器</div>
     <div class="splash-notice" id="notice2">已启用安全系统V2.0</div>
   </div>
 
   <div id="pages">
     <div class="iframe-wrap">
-      <!-- IFrame 加载中 -->
       <div class="iframe-loader" id="iframeLoader">
         <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="iframe-loader-logo">
         <div class="iframe-loader-title">Flyz Safety Unit</div>
         <div class="iframe-loader-text">正在保障加载安全</div>
       </div>
-
       <iframe src="https://917813.com.cn/fpv/gg" id="main-iframe"></iframe>
     </div>
   </div>
@@ -323,7 +331,6 @@
     </div>
   </div>
 
-  <!-- 确认窗口 -->
   <div id="confirm-block">
     <div class="confirm-icon">
       <i class="fa fa-exclamation-triangle"></i>
@@ -336,16 +343,18 @@
     </div>
   </div>
 
-  <!-- 水印 -->
   <div id="watermark">
     Flyz Safety Unit 已拦截<br>
-    用户仍继续访问（不安全）
+    当前设备 IP 异常 917813.com.cn 对此不负责（不安全）
+  </div>
+
+  <div class="watermark-rolling" id="rollingWatermark" style="display:none;">
+    <div class="watermark-rolling-text">
+      当前设备 IP 异常 917813.com.cn 对此不负责 不安全
+    </div>
   </div>
 
   <script>
-    // ======================
-    // 配置
-    // ======================
     const ALLOWED_DOMAIN = "917813.com.cn";
     const iframeLoader = document.getElementById("iframeLoader");
     const confirmBlock = document.getElementById("confirm-block");
@@ -354,10 +363,8 @@
     const btnConfirm = document.getElementById("btn-confirm");
     const btnCancel = document.getElementById("btn-cancel");
     const watermark = document.getElementById("watermark");
+    const rollingWatermark = document.getElementById("rollingWatermark");
 
-    // ======================
-    // 开头 3 秒提示动画
-    // ======================
     setTimeout(() => {
       document.getElementById("notice1").classList.add("show");
     }, 500);
@@ -366,112 +373,133 @@
       document.getElementById("notice2").classList.add("show");
     }, 1500);
 
-    // ======================
-    // 显示确认窗口
-    // ======================
     function showConfirm(title, desc) {
       confirmTitle.textContent = title;
       confirmDesc.textContent = desc;
       confirmBlock.classList.add("active");
     }
 
-    // ======================
-    // 隐藏确认窗口
-    // ======================
     function hideConfirm() {
       confirmBlock.classList.remove("active");
     }
 
-    // ======================
-    // 进入主页面
-    // ======================
     function enterMainPage() {
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
     }
 
-    // ======================
-    // 显示水印
-    // ======================
-    function showWatermark() {
+    function showAllWatermarks() {
       watermark.classList.add("show");
+      rollingWatermark.style.display = "block";
     }
 
-    // ======================
-    // 1. 检测境外 IP（带超时）
-    // ======================
-    function checkForeignIP() {
+    function checkIPWithTimeout(url, timeout = 3000) {
       return new Promise(resolve => {
-        // 超时 3 秒
-        const timeout = setTimeout(() => {
+        const timer = setTimeout(() => {
           resolve("timeout");
-        }, 3000);
+        }, timeout);
 
-        fetch("https://ipinfo.io/json")
+        fetch(url, { method: "GET", mode: "cors" })
           .then(res => res.json())
           .then(data => {
-            clearTimeout(timeout);
-            const country = data.country || "";
-
+            clearTimeout(timer);
+            const country = (data.country || "").toUpperCase();
             if (country === "CN" || country === "HK" || country === "MO" || country === "TW") {
               resolve("cn");
             } else {
               resolve("foreign");
             }
           })
-          .catch(() => {
-            clearTimeout(timeout);
+          .catch(err => {
+            clearTimeout(timer);
             resolve("error");
           });
       });
     }
 
-    // ======================
-    // 2. 初始化检测
-    // ======================
-    setTimeout(async () => {
-      const ipResult = await checkForeignIP();
+    async function checkForeignIP() {
+      let result = await checkIPWithTimeout("https://ipinfo.io/json");
 
-      if (ipResult === "foreign") {
-        // 境外 IP
+      if (result === "timeout" || result === "error") {
+        result = await checkIPWithTimeout("https://api.ip.sb/geoip");
+      }
+
+      return result;
+    }
+
+    function isUnsafeBrowser() {
+      const ua = navigator.userAgent;
+
+      if (
+        ua.includes("MSIE") ||
+        ua.includes("Trident") ||
+        ua.includes("Edge/12") ||
+        ua.includes("OPR/") && !ua.includes("Chrome") ||
+        ua.includes("Opera Mini") ||
+        ua.includes("Android") && ua.includes("Version/") && !ua.includes("Chrome") ||
+        ua.includes("MicroMessenger") ||
+        ua.includes("QQ/") ||
+        ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Firefox") && !ua.includes("Edge")
+      ) {
+        return true;
+      }
+
+      return false;
+    }
+
+    setTimeout(async () => {
+      if (isUnsafeBrowser()) {
         showConfirm(
-          "检测到境外访问",
-          "境外 IP 访问可能存在安全风险，是否继续？"
+          "浏览器安全检测异常",
+          "当前设备 IP 异常，917813.com.cn 对此不负责。是否继续访问？"
         );
 
         btnConfirm.onclick = () => {
           hideConfirm();
           enterMainPage();
-          showWatermark();
+          showAllWatermarks();
+        };
+
+        btnCancel.onclick = hideConfirm;
+        return;
+      }
+
+      const ipResult = await checkForeignIP();
+
+      if (ipResult === "foreign") {
+        showConfirm(
+          "检测到境外访问",
+          "当前设备 IP 异常，917813.com.cn 对此不负责。是否继续访问？"
+        );
+
+        btnConfirm.onclick = () => {
+          hideConfirm();
+          enterMainPage();
+          showAllWatermarks();
         };
 
         btnCancel.onclick = hideConfirm;
 
       } else if (ipResult === "timeout" || ipResult === "error") {
-        // 识别失败
         showConfirm(
           "IP 识别失败",
-          "无法确认你的访问来源，是否继续？"
+          "当前设备 IP 异常，917813.com.cn 对此不负责。是否继续访问？"
         );
 
         btnConfirm.onclick = () => {
           hideConfirm();
           enterMainPage();
-          showWatermark();
+          showAllWatermarks();
         };
 
         btnCancel.onclick = hideConfirm;
 
       } else {
-        // 境内 IP，直接进入
         enterMainPage();
       }
 
     }, 3000);
 
-    // ======================
-    // IFrame 加载完成
-    // ======================
     const iframe = document.getElementById("main-iframe");
     let iframeLoaded = false;
 
@@ -480,16 +508,12 @@
       iframeLoader.style.display = "none";
     };
 
-    // 超时强制隐藏
     setTimeout(() => {
       if (!iframeLoaded) {
         iframeLoader.style.display = "none";
       }
     }, 8000);
 
-    // ======================
-    // 底部导航切换
-    // ======================
     const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
     const iframeUrls = {
       home: "https://917813.com.cn/fpv/index",
@@ -521,27 +545,6 @@
         const index = pages.indexOf(target);
         setActivePage(index);
       });
-    });
-
-    // ======================
-    // 左右滑动切换
-    // ======================
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    document.addEventListener("touchstart", e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-
-    document.addEventListener("touchend", e => {
-      touchEndX = e.changedTouches[0].screenX;
-      const diff = touchEndX - touchStartX;
-
-      if (diff > 50 && currentPage > 0) {
-        setActivePage(currentPage - 1);
-      } else if (diff < -50 && currentPage < pages.length - 1) {
-        setActivePage(currentPage + 1);
-      }
     });
   </script>
 
