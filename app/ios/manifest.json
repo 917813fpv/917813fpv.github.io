@@ -1,0 +1,13 @@
+{
+  "name": "2026全国线上FPV模拟器竞速赛｜Flyz远征飞",
+  "short_name": "Flyz远征飞",
+  "display": "standalone",
+  "start_url": "https://91783.com.cn/app/",
+  "icons": [
+    {
+      "src": "https://www.img520.com/UIGuUV.jpeg",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
