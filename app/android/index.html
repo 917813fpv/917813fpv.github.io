@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>2026全国线上FPV模拟器竞速赛｜Flyz远征飞 安卓端下载</title>
+  <link rel="icon" href="https://www.img520.com/UIGuUV.jpeg" type="image/png" />
+  <style>
+    :root{
+      --c:#2D7FF9;
+      --bg:#f5f5f7;
+      --txt:#1d1d1f;
+      --card:#ffffffcc;
+      --m:20px;
+      --android-green:#3DDC84; /* 安卓标志性绿色 */
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0a0a0a;
+        --txt:#f5f5f7;
+        --card:#1c1c1ecc;
+      }
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+      background:var(--bg);
+      color:var(--txt);
+      line-height:1.6;
+      padding-bottom:40px;
+    }
+    .wrap{
+      max-width:420px;
+      margin:0 auto;
+      padding:var(--m);
+      padding-top:40px;
+    }
+    .hero{
+      text-align:center;
+      margin-bottom:30px;
+      animation:fadeInUp 0.6s ease;
+    }
+    .icon{
+      width:100px;
+      height:100px;
+      margin:0 auto 18px;
+      border-radius:24px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:0 8px 24px rgba(0,0,0,0.12);
+      transition:transform 0.3s ease;
+      border:3px solid var(--android-green); /* 安卓绿边框标识 */
+    }
+    .icon:hover{
+      transform:scale(1.05);
+    }
+    .icon img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    h1{
+      margin:0;
+      font-size:26px;
+      font-weight:600;
+    }
+    .tag{
+      display:inline-block;
+      margin-top:10px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:var(--android-green);
+      color:#fff;
+      font-size:14px;
+      font-weight:500;
+    }
+    .card{
+      background:var(--card);
+      border-radius:20px;
+      padding:22px;
+      margin-bottom:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+      animation:fadeInUp 0.6s ease 0.2s both;
+    }
+    .step{
+      display:flex;
+      gap:14px;
+      margin-bottom:18px;
+      align-items:flex-start;
+    }
+    .step:last-child{
+      margin-bottom:0;
+    }
+    .num{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--android-green);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      font-weight:600;
+    }
+    .txt{
+      flex:1;
+      font-size:17px;
+    }
+    .btn{
+      display:block;
+      width:100%;
+      padding:16px 0;
+      background:var(--android-green);
+      color:#fff;
+      border-radius:14px;
+      text-align:center;
+      text-decoration:none;
+      font-size:18px;
+      font-weight:600;
+      margin-top:20px;
+      transition:background 0.2s ease, transform 0.2s ease;
+      animation:fadeInUp 0.6s ease 0.4s both;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    .btn:hover{
+      background:#2DBF6E;
+      transform:translateY(-2px);
+    }
+    .tip{
+      margin-top:16px;
+      font-size:14px;
+      color:#666;
+      text-align:center;
+      animation:fadeInUp 0.6s ease 0.5s both;
+    }
+    .warning{
+      background:rgba(255,69,0,0.1);
+      border-left:4px solid #FF4500;
+      padding:12px 16px;
+      border-radius:8px;
+      margin-top:20px;
+      font-size:14px;
+      color:#FF4500;
+      animation:fadeInUp 0.6s ease 0.6s both;
+    }
+    @media(prefers-color-scheme:dark){
+      .tip{
+        color:#aaa;
+      }
+      .warning{
+        background:rgba(255,69,0,0.2);
+      }
+    }
+    @keyframes fadeInUp{
+      from{
+        opacity:0;
+        transform:translateY(20px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+    /* 安卓图标样式 */
+    .android-icon{
+      width:24px;
+      height:24px;
+      fill:#fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="icon">
+        <img src="https://www.img520.com/UIGuUV.jpeg" alt="Flyz远征飞官方logo" />
+      </div>
+      <h1>2026全国线上FPV模拟器竞速赛</h1>
+      <div class="tag">Flyz远征飞 · 安卓端APK</div>
+    </div>
+
+    <div class="card">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="txt">点击下方「立即下载APK」按钮</div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="txt">下载完成后，打开安装包（允许“未知来源”安装）</div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="txt">按照提示完成安装，桌面即可找到应用图标</div>
+      </div>
+    </div>
+
+    <!-- 下载按钮：直接指向你的APK路径 -->
+    <a href="https://91783.com.cn/app/android/androidv1.apk" class="btn" download>
+      <svg class="android-icon" viewBox="0 0 24 24">
+        <path d="M6 18c0 .55.45 1 1 1h10c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1zm5-14C9.79 4 9 4.79 9 6s.79 2 2 2 2-.79 2-2-.79-2-2-2zm0 10c-2.33 0-7 1.17-7 3.5V19h14v-1.5c0-2.33-4.67-3.5-7-3.5z"/>
+      </svg>
+      立即下载APK
+    </a>
+
+    <div class="warning">
+      ⚠️ 提示：部分手机需开启「允许安装来自未知来源的应用」权限，安装后即可正常使用
+    </div>
+
+    <div class="tip">
+      安装包大小仅5.1MB，极速下载无需等待，流量环境也可轻松安装。如有问题，请刷新页面重试。
+    </div>
+  </div>
+
+  <script>
+    // 下载按钮点击反馈
+    const downloadBtn = document.querySelector('.btn');
+    downloadBtn.addEventListener('click', () => {
+      downloadBtn.textContent = '下载中...';
+      setTimeout(() => {
+        downloadBtn.innerHTML = `
+          <svg class="android-icon" viewBox="0 0 24 24">
+            <path d="M6 18c0 .55.45 1 1 1h10c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1zm5-14C9.79 4 9 4.79 9 6s.79 2 2 2 2-.79 2-2-.79-2-2-2zm0 10c-2.33 0-7 1.17-7 3.5V19h14v-1.5c0-2.33-4.67-3.5-7-3.5z"/>
+          </svg>
+          立即下载APK
+        `;
+      }, 3000);
+    });
+
+    // 检测是否为安卓设备（可选提示）
+    const isAndroid = /Android/.test(navigator.userAgent);
+    if (!isAndroid) {
+      setTimeout(() => {
+        alert('当前设备非安卓系统，下载的APK文件可能无法安装');
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
