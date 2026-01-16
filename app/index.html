@@ -145,7 +145,7 @@
       color: var(--secondary);
     }
 
-    /* Dock */
+    /* 纯文字导航栏（无图标） */
     #dock {
       position: fixed;
       bottom: 0;
@@ -164,143 +164,25 @@
 
     .dock-item {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.7);
-      width: 50px;
-      height: 50px;
       justify-content: center;
-      transition: color 0.2s ease;
+      align-items: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      width: 100%;
+      height: 100%;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
 
     .dock-item.active {
       color: var(--primary);
+      background: rgba(0, 255, 255, 0.08);
+      border-bottom: 2px solid var(--primary);
     }
 
-    .dock-item i {
-      font-size: 18px;
-      margin-bottom: 3px;
-    }
-
-    /* Confirm Block */
-    #confirm-block {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0, 10, 20, 0.92);
-      backdrop-filter: blur(6px);
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    #confirm-block.active {
-      display: flex;
-    }
-
-    .confirm-icon {
-      font-size: 3.5rem;
-      color: #ffcc00;
-      margin-bottom: 18px;
-      text-shadow: 0 0 18px rgba(255, 204, 0, 0.7);
-    }
-
-    .confirm-title {
-      font-size: 1.8rem;
-      color: #ffcc00;
-      margin-bottom: 12px;
-    }
-
-    .confirm-desc {
-      font-size: 1.1rem;
-      color: #fff;
-      margin-bottom: 22px;
-      max-width: 80%;
-      line-height: 1.5;
-    }
-
-    .confirm-buttons {
-      display: flex;
-      gap: 18px;
-    }
-
-    .confirm-btn {
-      padding: 9px 22px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-confirm {
-      border: 2px solid #00cc00;
-      background: rgba(0, 204, 0, 0.15);
-      color: #00cc00;
-    }
-
-    .btn-confirm:hover {
-      background: rgba(0, 204, 0, 0.25);
-    }
-
-    .btn-cancel {
-      border: 2px solid #ff3333;
-      background: rgba(255, 51, 51, 0.15);
-      color: #ff3333;
-    }
-
-    .btn-cancel:hover {
-      background: rgba(255, 51, 51, 0.25);
-    }
-
-    /* Watermark */
-    #watermark {
-      position: fixed;
-      bottom: 18px;
-      right: 18px;
-      z-index: 999;
-      color: rgba(255, 0, 0, 0.55);
-      font-size: 11px;
-      text-align: right;
-      pointer-events: none;
-      line-height: 1.4;
-      text-shadow: 0 0 6px rgba(255, 0, 0, 0.4);
-      display: none;
-    }
-
-    #watermark.show {
-      display: block;
-    }
-
-    .watermark-rolling {
-      position: fixed;
-      inset: 0;
-      z-index: 8;
-      pointer-events: none;
-      overflow: hidden;
-      opacity: 0.22;
-    }
-
-    .watermark-rolling-text {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 22px;
-      color: #ff0000;
-      text-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      animation: roll 18s linear infinite;
-      white-space: nowrap;
-    }
-
-    @keyframes roll {
-      0% { transform: translateY(100%); }
-      100% { transform: translateY(-100%); }
+    .dock-item:hover {
+      color: var(--secondary);
+      background: rgba(0, 255, 255, 0.05);
     }
   </style>
 </head>
@@ -311,8 +193,7 @@
     <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
     <div class="splash-title">Flyz Safety Unit</div>
     <div class="splash-notice" id="notice1">已连接服务器</div>
-    <div class="splash-notice" id="notice2">已启用安全系统 V2.0</div>
-    <div class="splash-notice" id="notice3">IP 检测中...</div>
+    <div class="splash-notice" id="notice2">已启用安全系统20260116版</div>
   </div>
 
   <div id="pages">
@@ -326,67 +207,20 @@
     </div>
   </div>
 
+  <!-- 纯文字导航栏 -->
   <div id="dock">
-    <div class="dock-item" data-target="home">
-      <i class="fa fa-home"></i>
-      <span>首页</span>
-    </div>
-    <div class="dock-item active" data-target="gg">
-      <i class="fa fa-bullhorn"></i>
-      <span>公告</span>
-    </div>
-    <div class="dock-item" data-target="xs">
-      <i class="fa fa-users"></i>
-      <span>选手</span>
-    </div>
-    <div class="dock-item" data-target="cs">
-      <i class="fa fa-flag-checkered"></i>
-      <span>初赛</span>
-    </div>
-    <div class="dock-item" data-target="zz">
-      <i class="fa fa-handshake-o"></i>
-      <span>赞助</span>
-    </div>
-    <div class="dock-item" data-target="hq">
-      <i class="fa fa-truck"></i>
-      <span>后勤</span>
-    </div>
-  </div>
-
-  <div id="confirm-block">
-    <div class="confirm-icon">
-      <i class="fa fa-exclamation-triangle"></i>
-    </div>
-    <div class="confirm-title" id="confirm-title"></div>
-    <div class="confirm-desc" id="confirm-desc"></div>
-    <div class="confirm-buttons">
-      <button class="confirm-btn btn-confirm" id="btn-confirm">仍继续访问</button>
-      <button class="confirm-btn btn-cancel" id="btn-cancel">取消</button>
-    </div>
-  </div>
-
-  <div id="watermark">
-    Flyz Safety Unit 已拦截<br>
-    当前设备 IP 异常 917813.com.cn 对此不负责（不安全）
-  </div>
-
-  <div class="watermark-rolling" id="rollingWatermark" style="display:none;">
-    <div class="watermark-rolling-text">
-      当前设备 IP 异常 917813.com.cn 对此不负责 不安全
-    </div>
+    <div class="dock-item" data-target="home">首页</div>
+    <div class="dock-item active" data-target="gg">公告</div>
+    <div class="dock-item" data-target="xs">选手</div>
+    <div class="dock-item" data-target="cs">初赛</div>
+    <div class="dock-item" data-target="zz">赞助</div>
+    <div class="dock-item" data-target="hq">后勤</div>
   </div>
 
   <script>
-    const ALLOWED_DOMAIN = "917813.com.cn";
     const iframeLoader = document.getElementById("iframeLoader");
-    const confirmBlock = document.getElementById("confirm-block");
-    const confirmTitle = document.getElementById("confirm-title");
-    const confirmDesc = document.getElementById("confirm-desc");
-    const btnConfirm = document.getElementById("btn-confirm");
-    const btnCancel = document.getElementById("btn-cancel");
-    const watermark = document.getElementById("watermark");
-    const rollingWatermark = document.getElementById("rollingWatermark");
 
+    // 开屏动画提示
     setTimeout(() => {
       document.getElementById("notice1").classList.add("show");
     }, 500);
@@ -395,167 +229,16 @@
       document.getElementById("notice2").classList.add("show");
     }, 1500);
 
+    // 直接进入主页面（无IP检测）
     setTimeout(() => {
-      document.getElementById("notice3").classList.add("show");
-    }, 2000);
-
-    function showConfirm(title, desc) {
-      confirmTitle.textContent = title;
-      confirmDesc.textContent = desc;
-      confirmBlock.classList.add("active");
-    }
-
-    function hideConfirm() {
-      confirmBlock.classList.remove("active");
-    }
-
-    function enterMainPage() {
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
-    }
-
-    function showAllWatermarks() {
-      watermark.classList.add("show");
-      rollingWatermark.style.display = "block";
-    }
-
-    // 六个常见的开源 IP 检测接口
-    const IP_API_LIST = [
-      "https://ipinfo.io/json",
-      "https://api.ip.sb/geoip",
-      "https://ipapi.co/json/",
-      "https://geoip.nekudo.com/api",
-      "https://api.db-ip.com/v2/free/self",
-      "https://ipgeolocation.abstractapi.com/v1/?api_key=7566661f8f584e61a10e5f69a066a181"
-    ];
-
-    // 超时检测函数
-    function fetchWithTimeout(url, timeout = 5000) {
-      return new Promise((resolve) => {
-        const controller = new AbortController();
-        const timer = setTimeout(() => {
-          controller.abort();
-          resolve(null);
-        }, timeout);
-
-        fetch(url, { signal: controller.signal })
-          .then(res => res.json().catch(() => null))
-          .then(data => {
-            clearTimeout(timer);
-            resolve(data);
-          })
-          .catch(() => {
-            clearTimeout(timer);
-            resolve(null);
-          });
-      });
-    }
-
-    // 判断是否为中国 IP
-    function isChinaIP(data) {
-      if (!data) return false;
-
-      const country = (data.country || data.country_name || data.country_code || "").toUpperCase();
-      const region = (data.region || data.region_name || "").toUpperCase();
-
-      return country === "CN" || 
-             country === "HK" || 
-             country === "MO" || 
-             country === "TW" ||
-             region.includes("CHINA");
-    }
-
-    // 并行检测多个 IP 接口
-    async function checkIPs() {
-      const promises = IP_API_LIST.map(url => fetchWithTimeout(url));
-      const results = await Promise.all(promises);
-
-      for (const data of results) {
-        if (data) {
-          return isChinaIP(data) ? "cn" : "foreign";
-        }
-      }
-
-      return "timeout";
-    }
-
-    function isUnsafeBrowser() {
-      const ua = navigator.userAgent;
-
-      if (
-        ua.includes("MSIE") ||
-        ua.includes("Trident") ||
-        ua.includes("Edge/12") ||
-        ua.includes("OPR/") && !ua.includes("Chrome") ||
-        ua.includes("Opera Mini") ||
-        ua.includes("Android") && ua.includes("Version/") && !ua.includes("Chrome") ||
-        ua.includes("MicroMessenger") ||
-        ua.includes("QQ/") ||
-        ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Firefox") && !ua.includes("Edge")
-      ) {
-        return true;
-      }
-
-      return false;
-    }
-
-    // 静默检测模式
-    setTimeout(async () => {
-      if (isUnsafeBrowser()) {
-        document.getElementById("notice3").textContent = "浏览器安全检测异常";
-        showConfirm(
-          "浏览器安全检测异常",
-          "当前设备 IP 异常，917813.com.cn 对此不负责。是否继续访问？"
-        );
-
-        btnConfirm.onclick = () => {
-          hideConfirm();
-          enterMainPage();
-          showAllWatermarks();
-        };
-
-        btnCancel.onclick = hideConfirm;
-        return;
-      }
-
-      const ipResult = await checkIPs();
-
-      if (ipResult === "foreign") {
-        document.getElementById("notice3").textContent = "检测到境外 IP";
-        showConfirm(
-          "检测到境外访问",
-          "当前设备 IP 异常，917813.com.cn 对此不负责。是否继续访问？"
-        );
-
-        btnConfirm.onclick = () => {
-          hideConfirm();
-          enterMainPage();
-          showAllWatermarks();
-        };
-
-        btnCancel.onclick = hideConfirm;
-
-      } else if (ipResult === "timeout") {
-        document.getElementById("notice3").textContent = "IP 检测超时（进入不安全模式）";
-        // 5 秒内无任何接口响应 → 直接进入不安全模式
-        setTimeout(() => {
-          enterMainPage();
-          showAllWatermarks();
-        }, 800);
-
-      } else {
-        document.getElementById("notice3").textContent = "IP 检测通过（中国境内）";
-        setTimeout(() => {
-          enterMainPage();
-        }, 800);
-      }
-
     }, 3000);
 
+    // iframe加载逻辑
     const iframe = document.getElementById("main-iframe");
     let iframeLoaded = false;
 
-    // 修复 iframe 提前显示加载完成的问题
     iframe.onload = () => {
       iframeLoaded = true;
       iframeLoader.style.display = "none";
@@ -568,6 +251,7 @@
       }
     }, 10000);
 
+    // 导航栏切换逻辑
     const pages = ["home", "gg", "xs", "cs", "zz", "hq"];
     const iframeUrls = {
       home: "https://917813.com.cn/fpv/index",
@@ -584,15 +268,17 @@
       currentPage = index;
       const target = pages[index];
 
+      // 切换激活状态
       document.querySelectorAll(".dock-item").forEach(item => item.classList.remove("active"));
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
 
+      // 加载对应iframe
       iframeLoader.style.display = "flex";
       iframeLoaded = false;
-
       iframe.src = iframeUrls[target];
     }
 
+    // 绑定导航点击事件
     document.querySelectorAll(".dock-item").forEach(item => {
       item.addEventListener("click", () => {
         const target = item.dataset.target;
