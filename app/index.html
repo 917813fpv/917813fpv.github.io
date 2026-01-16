@@ -7,7 +7,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-XSS-Protection" content="1; mode=block">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https://i.ooxx.ooo data:; frame-src 'self' https://917813.com.cn; font-src https://cdn.jsdelivr.net;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss https://cdn.jsdelivr.net https://busuanzi.ibruce.info; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https://i.ooxx.ooo data:; frame-src 'self' https://917813.com.cn; font-src https://cdn.jsdelivr.net;">
 
   <title>赛事中心｜2026线上FPV竞速赛</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -83,6 +83,22 @@
     }
 
     .splash-notice.show {
+      opacity: 1;
+    }
+
+    /* 开屏页访问量显示样式 */
+    .splash-visitor-count {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 12px;
+      color: var(--secondary);
+      text-shadow: 0 0 8px rgba(102, 204, 255, 0.4);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .splash-visitor-count.show {
       opacity: 1;
     }
 
@@ -190,6 +206,11 @@
 <body>
 
   <div class="splash" id="splash">
+    <!-- 开屏页访问量显示（新增） -->
+    <div class="splash-visitor-count" id="splashVisitorCount">
+      自2026.01.17起访问量：<span id="start_20260117_visitors">0</span>
+    </div>
+
     <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
     <div class="splash-title">Flyz Safety Unit</div>
     <div class="splash-notice" id="notice1">已连接服务器</div>
@@ -217,16 +238,24 @@
     <div class="dock-item" data-target="hq">后勤</div>
   </div>
 
+  <!-- 不蒜子统计脚本（新增） -->
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
   <script>
     const iframeLoader = document.getElementById("iframeLoader");
+    const splashVisitorCount = document.getElementById("splashVisitorCount");
 
-    // 开屏动画提示
+    // 开屏动画提示 + 访问量显示（同步动画节奏）
     setTimeout(() => {
       document.getElementById("notice1").classList.add("show");
     }, 500);
 
     setTimeout(() => {
       document.getElementById("notice2").classList.add("show");
+      // 访问量和第二个提示同步显示
+      splashVisitorCount.classList.add("show");
+      // 初始化访问量统计
+      initVisitorCount();
     }, 1500);
 
     // 直接进入主页面（无IP检测）
@@ -234,6 +263,34 @@
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
     }, 3000);
+
+    // 访问量统计核心逻辑（新增）
+    function initVisitorCount() {
+      // 监听不蒜子加载完成
+      if (window.busuanzi) {
+        calculate2026Count();
+      } else {
+        document.addEventListener('busuanzi:loaded', calculate2026Count);
+      }
+    }
+
+    function calculate2026Count() {
+      // 统计起始日期：2026年1月17日 00:00
+      const startDate = new Date('2026-01-17').getTime();
+      let customCount = 0;
+
+      // 获取不蒜子按天存储的访问记录，累加起始日后的所有访问量
+      const history = busuanzi.getHistory();
+      Object.keys(history).forEach(dateStr => {
+        const dateTime = new Date(dateStr).getTime();
+        if (dateTime >= startDate) {
+          customCount += history[dateStr]; // 按IP去重，同一IP当天仅算1次
+        }
+      });
+
+      // 显示到开屏页
+      document.getElementById("start_20260117_visitors").textContent = customCount;
+    }
 
     // iframe加载逻辑
     const iframe = document.getElementById("main-iframe");
