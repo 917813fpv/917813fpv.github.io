@@ -110,7 +110,6 @@
     .check-item:nth-child(1) .check-icon { animation-delay: 0.5s; }
     .check-item:nth-child(2) .check-icon { animation-delay: 0.8s; }
     .check-item:nth-child(3) .check-icon { animation-delay: 1.1s; }
-    .check-item:nth-child(4) .check-icon { animation-delay: 1.4s; }
 
     @keyframes popIn {
       to { opacity: 1; transform: scale(1); }
@@ -132,93 +131,6 @@
 
     @keyframes fadeIn {
       to { opacity: 1; }
-    }
-
-    #verify-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      z-index: 40;
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #verify-modal.active {
-      display: flex;
-    }
-
-    .modal-card {
-      width: 90%;
-      max-width: 380px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .modal-title {
-      font-size: 1.6rem;
-      color: var(--primary);
-      margin-bottom: 18px;
-    }
-
-    .verify-tip {
-      font-size: 1.1rem;
-      color: #ffffff;
-      margin-bottom: 12px;
-      text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-    }
-
-    .verify-area {
-      width: 100%;
-      height: 180px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      position: relative;
-      margin-bottom: 18px;
-      overflow: hidden;
-    }
-
-    .verify-dot {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(0, 255, 255, 0.2);
-      border: 2px solid var(--primary);
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 16px;
-      font-weight: bold;
-      color: var(--primary);
-      text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-    }
-
-    .verify-dot:hover {
-      background: rgba(0, 255, 255, 0.35);
-      transform: scale(1.1);
-    }
-
-    .verify-dot.correct {
-      background: rgba(0, 255, 0, 0.3);
-      border-color: #00ff00;
-      color: #00ff00;
-    }
-
-    .error-msg {
-      color: #ff6666;
-      font-size: 1rem;
-      margin-top: 12px;
-      display: none;
-    }
-
-    .error-msg.active {
-      display: block;
     }
 
     #pages {
@@ -316,6 +228,17 @@
       color: var(--secondary);
       background: rgba(0, 255, 255, 0.05);
     }
+
+    /* 超时提示文字样式 */
+    .timeout-text {
+      position: fixed;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.35);
+      pointer-events: none;   /* 不影响用户操作 */
+      z-index: 50;            /* 显示在最上层 */
+      user-select: none;
+      transition: left 0.05s linear, top 0.05s linear;
+    }
   </style>
 </head>
 
@@ -341,21 +264,7 @@
         <div>网络环境验证</div>
       </div>
 
-      <div class="check-item">
-        <div class="check-icon" id="check4"></div>
-        <div>人机验证</div>
-      </div>
-
       <div class="safety-status" id="safety-status"></div>
-    </div>
-  </div>
-
-  <div id="verify-modal">
-    <div class="modal-card">
-      <div class="modal-title">人机验证</div>
-      <div class="verify-tip">请依次点击 1、2、3</div>
-      <div class="verify-area" id="verify-area"></div>
-      <div class="error-msg" id="verify-error">请按数字顺序点击</div>
     </div>
   </div>
 
@@ -408,77 +317,65 @@
       }
     }
 
-    function initVerify() {
-      let clickOrder = [];
-      const correctOrder = [0, 1, 2];
-      const area = document.getElementById("verify-area");
-      const error = document.getElementById("verify-error");
+    // 超时提示文字随机移动
+    function createTimeoutText() {
+      const text = document.createElement("div");
+      text.className = "timeout-text";
+      text.textContent = "此设备安全检测超时不安全 我们对此不承担责任";
+      document.body.appendChild(text);
 
-      function generateDots() {
-        area.innerHTML = "";
-        clickOrder = [];
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-        const w = area.offsetWidth;
-        const h = area.offsetHeight;
-        const size = 36;
-        const pad = 12;
+      let x = Math.random() * (w - 300);
+      let y = Math.random() * (h - 60);
 
-        for (let i = 0; i < 3; i++) {
-          const x = Math.random() * (w - size - 2 * pad) + pad;
-          const y = Math.random() * (h - size - 2 * pad) + pad;
+      let dx = (Math.random() - 0.5) * 4;
+      let dy = (Math.random() - 0.5) * 4;
 
-          const dot = document.createElement("div");
-          dot.className = "verify-dot";
-          dot.style.left = x + "px";
-          dot.style.top = y + "px";
-          dot.dataset.index = i;
-          dot.textContent = i + 1;
+      function move() {
+        x += dx;
+        y += dy;
 
-          dot.onclick = function() {
-            const idx = parseInt(this.dataset.index);
+        if (x < 0 || x > w - 300) dx *= -1;
+        if (y < 0 || y > h - 60) dy *= -1;
 
-            if (idx !== correctOrder[clickOrder.length]) {
-              error.classList.add("active");
-              setTimeout(() => error.classList.remove("active"), 1500);
-              setTimeout(generateDots, 1500);
-              return;
-            }
+        text.style.left = x + "px";
+        text.style.top = y + "px";
 
-            clickOrder.push(idx);
-            this.classList.add("correct");
-
-            if (clickOrder.length === 3) {
-              document.getElementById("check4").textContent = "✔";
-              document.getElementById("check4").className = "check-icon success";
-              document.getElementById("verify-modal").classList.remove("active");
-
-              document.getElementById("safety-status").textContent = "验证通过，正在进入赛事中心...";
-              document.getElementById("safety-status").style.color = "var(--green)";
-
-              setTimeout(() => {
-                document.getElementById("safety-screen").classList.add("hidden");
-                document.getElementById("pages").classList.add("active");
-                isVerified = true;
-              }, 1200);
-            }
-          };
-
-          area.appendChild(dot);
-        }
+        requestAnimationFrame(move);
       }
 
-      document.getElementById("verify-modal").classList.add("active");
-      generateDots();
+      move();
     }
+
+    // 5 秒超时检测
+    let timeoutTimer = setTimeout(() => {
+      document.getElementById("safety-status").textContent = "安全检测超时，即将进入系统...";
+      document.getElementById("safety-status").style.color = "var(--red)";
+
+      // 直接进入页面
+      setTimeout(() => {
+        document.getElementById("safety-screen").classList.add("hidden");
+        document.getElementById("pages").classList.add("active");
+        isVerified = true;
+
+        // 创建随机移动的提示文字
+        createTimeoutText();
+      }, 1200);
+
+    }, 5000);
 
     checkForeignIP(isForeign => {
       if (isForeign) {
+        clearTimeout(timeoutTimer);
         document.getElementById("safety-status").textContent = "境外 IP 暂不支持访问";
         document.getElementById("safety-status").style.color = "var(--red)";
         return;
       }
 
       if (!isAllowedBrowser()) {
+        clearTimeout(timeoutTimer);
         document.getElementById("safety-status").textContent = "浏览器不受支持";
         document.getElementById("safety-status").style.color = "var(--red)";
         return;
@@ -493,7 +390,16 @@
       document.getElementById("check3").textContent = "✔";
       document.getElementById("check3").className = "check-icon success";
 
-      setTimeout(initVerify, 1000);
+      clearTimeout(timeoutTimer);
+
+      document.getElementById("safety-status").textContent = "验证通过，正在进入赛事中心...";
+      document.getElementById("safety-status").style.color = "var(--green)";
+
+      setTimeout(() => {
+        document.getElementById("safety-screen").classList.add("hidden");
+        document.getElementById("pages").classList.add("active");
+        isVerified = true;
+      }, 1200);
     });
 
     const iframe = document.getElementById("main-iframe");
