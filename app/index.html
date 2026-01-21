@@ -11,10 +11,7 @@
 
   <title>赛事中心｜2026线上FPV竞速赛</title>
 
-  <!-- ✅ 替换为你指定的 Cloudflare cdnjs Tailwind CSS 4.1.13 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/4.1.13/lib.min.js"></script>
-
-  <!-- ✅ 替换为你指定的 BootCDN Font Awesome 4.7.0 -->
   <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
   <style>
@@ -165,7 +162,7 @@
       color: var(--secondary);
     }
 
-    /* 纯文字导航栏（无图标） */
+    /* 纯文字导航栏 */
     #dock {
       position: fixed;
       bottom: 0;
@@ -210,23 +207,28 @@
 <body>
 
   <div class="splash" id="splash">
-    <!-- 开屏页访问量显示（新增） -->
+    <!-- 开屏页访问量显示 -->
     <div class="splash-visitor-count" id="splashVisitorCount">
       自2026.01.17起访问量：<span id="start_20260117_visitors">0</span>
     </div>
 
-    <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="splash-logo">
-    <div class="splash-title">Flyz Safety Unit</div>
-    <div class="splash-notice" id="notice1">已连接服务器</div>
-    <div class="splash-notice" id="notice2">已启用安全系统20260116版</div>
+    <!-- ✅ 开屏 Logo 改为赛事 Logo -->
+    <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="2026 线上 FPV 竞速赛" class="splash-logo">
+
+    <!-- ✅ 开屏标题改为赛事名称 -->
+    <div class="splash-title">2026 线上 FPV 竞速赛</div>
+
+    <!-- ✅ 开屏提示文字改为赛事相关 -->
+    <div class="splash-notice" id="notice1">欢迎来到赛事中心</div>
+    <div class="splash-notice" id="notice2">正在加载赛事内容...</div>
   </div>
 
   <div id="pages">
     <div class="iframe-wrap">
       <div class="iframe-loader" id="iframeLoader">
-        <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="Flyz Logo" class="iframe-loader-logo">
-        <div class="iframe-loader-title">Flyz Safety Unit</div>
-        <div class="iframe-loader-text">正在保障加载安全</div>
+        <img src="https://i.ooxx.ooo/i/N2ZlN.jpg" alt="2026 线上 FPV 竞速赛" class="iframe-loader-logo">
+        <div class="iframe-loader-title">2026 线上 FPV 竞速赛</div>
+        <div class="iframe-loader-text">页面加载中...</div>
       </div>
       <iframe src="https://917813.com.cn/fpv/gg" id="main-iframe"></iframe>
     </div>
@@ -242,35 +244,31 @@
     <div class="dock-item" data-target="hq">后勤</div>
   </div>
 
-  <!-- ✅ 替换为你指定的不蒜子官方源 -->
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   <script>
     const iframeLoader = document.getElementById("iframeLoader");
     const splashVisitorCount = document.getElementById("splashVisitorCount");
 
-    // 开屏动画提示 + 访问量显示（同步动画节奏）
+    // 开屏动画提示 + 访问量显示
     setTimeout(() => {
       document.getElementById("notice1").classList.add("show");
     }, 500);
 
     setTimeout(() => {
       document.getElementById("notice2").classList.add("show");
-      // 访问量和第二个提示同步显示
       splashVisitorCount.classList.add("show");
-      // 初始化访问量统计
       initVisitorCount();
     }, 1500);
 
-    // 直接进入主页面（无IP检测）
+    // 直接进入主页面
     setTimeout(() => {
       document.getElementById("splash").classList.add("hidden");
       document.getElementById("pages").classList.add("active");
     }, 3000);
 
-    // 访问量统计核心逻辑（新增）
+    // 访问量统计
     function initVisitorCount() {
-      // 监听不蒜子加载完成
       if (window.busuanzi) {
         calculate2026Count();
       } else {
@@ -279,20 +277,17 @@
     }
 
     function calculate2026Count() {
-      // 统计起始日期：2026年1月17日 00:00
       const startDate = new Date('2026-01-17').getTime();
       let customCount = 0;
 
-      // 获取不蒜子按天存储的访问记录，累加起始日后的所有访问量
       const history = busuanzi.getHistory();
       Object.keys(history).forEach(dateStr => {
         const dateTime = new Date(dateStr).getTime();
         if (dateTime >= startDate) {
-          customCount += history[dateStr]; // 按IP去重，同一IP当天仅算1次
+          customCount += history[dateStr];
         }
       });
 
-      // 显示到开屏页
       document.getElementById("start_20260117_visitors").textContent = customCount;
     }
 
@@ -305,7 +300,6 @@
       iframeLoader.style.display = "none";
     };
 
-    // 最大等待时间 10 秒
     setTimeout(() => {
       if (!iframeLoaded) {
         iframeLoader.style.display = "none";
@@ -329,17 +323,14 @@
       currentPage = index;
       const target = pages[index];
 
-      // 切换激活状态
       document.querySelectorAll(".dock-item").forEach(item => item.classList.remove("active"));
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add("active");
 
-      // 加载对应iframe
       iframeLoader.style.display = "flex";
       iframeLoaded = false;
       iframe.src = iframeUrls[target];
     }
 
-    // 绑定导航点击事件
     document.querySelectorAll(".dock-item").forEach(item => {
       item.addEventListener("click", () => {
         const target = item.dataset.target;
