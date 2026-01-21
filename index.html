@@ -301,22 +301,6 @@
       return isChrome || isSafari || isEdge || isFirefox || isWeChat;
     }
 
-    function checkForeignIP(callback) {
-      try {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", "https://ipapi.co/json/", true);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            callback(xhr.status === 200 ? JSON.parse(xhr.responseText).country_code !== "CN" : false);
-          }
-        };
-        xhr.onerror = () => callback(false);
-        xhr.send();
-      } catch (err) {
-        callback(false);
-      }
-    }
-
     // 超时提示文字随机移动
     function createTimeoutText() {
       const text = document.createElement("div");
@@ -327,11 +311,11 @@
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      let x = Math.random() * (w - 300);
-      let y = Math.random() * (h - 60);
+      let x = Math.random()*(w - 300);
+      let y = Math.random()*(h - 60);
 
-      let dx = (Math.random() - 0.5) * 4;
-      let dy = (Math.random() - 0.5) * 4;
+      let dx = (Math.random()-0.5)*4;
+      let dy = (Math.random()-0.5)*4;
 
       function move() {
         x += dx;
@@ -366,14 +350,8 @@
 
     }, 5000);
 
-    checkForeignIP(isForeign => {
-      if (isForeign) {
-        clearTimeout(timeoutTimer);
-        document.getElementById("safety-status").textContent = "境外 IP 暂不支持访问";
-        document.getElementById("safety-status").style.color = "var(--red)";
-        return;
-      }
-
+    // 移除境内外IP检测，直接执行浏览器检测
+    (function initSecurityCheck() {
       if (!isAllowedBrowser()) {
         clearTimeout(timeoutTimer);
         document.getElementById("safety-status").textContent = "浏览器不受支持";
@@ -400,7 +378,7 @@
         document.getElementById("pages").classList.add("active");
         isVerified = true;
       }, 1200);
-    });
+    })();
 
     const iframe = document.getElementById("main-iframe");
     const iframeLoader = document.getElementById("iframeLoader");
