@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>九年级六班|九上结业式|917813.com.cn</title>
+
+    <!-- 副标题使用霞鹜文楷屏显版 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css">
+
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF8DC;
+            --bright-gold: #FFE47F;
+            --crimson: #8B0000;
+            --dark-crimson: #2a0a0a;
+            --bg-base: #3a0f0f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: "LXGW WenKai Screen", sans-serif;
+            background-color: var(--bg-base);
+            color: var(--light-gold);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 30%, rgba(139, 0, 0, 0.4), transparent 70%),
+                        radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.1), transparent 50%);
+            z-index: 1;
+            animation: breathe-bg 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe-bg {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 60px;
+            transform-style: preserve-3d;
+        }
+
+        /* 3D 轻微浮动动画 */
+        @keyframes float3d {
+            0% { transform: rotateX(0deg) rotateY(0deg) translateY(0px); }
+            25% { transform: rotateX(1deg) rotateY(-1.2deg) translateY(-6px); }
+            50% { transform: rotateX(0deg) rotateY(1.2deg) translateY(0px); }
+            75% { transform: rotateX(-1deg) rotateY(-1deg) translateY(6px); }
+            100% { transform: rotateX(0deg) rotateY(0deg) translateY(0px); }
+        }
+
+        /* 主标题：强制使用系统华文行楷 */
+        .hidden-input-title {
+            width: 98%; /* 贴着屏幕两边 */
+            background: transparent;
+            border: none;
+            outline: none;
+            /* 主标题字体：系统华文行楷优先 */
+            font-family: "华文行楷", "STXingkai", "LXGW WenKai Screen", sans-serif;
+            font-size: clamp(5rem, 18vw, 12rem); /* 更大更霸气 */
+            color: var(--bright-gold);
+            text-align: center;
+            text-shadow: 0 0 15px rgba(139, 0, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6);
+            padding: 15px;
+            caret-color: var(--gold);
+            letter-spacing: 0.1em;
+            animation: float3d 8s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        .hidden-input-title::placeholder {
+            color: rgba(255, 248, 220, 0.3);
+            text-shadow: none;
+        }
+
+        /* 副标题：霞鹜文楷 */
+        .hidden-input-subtitle {
+            width: 70%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: "LXGW WenKai Screen", sans-serif;
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            color: var(--light-gold);
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            caret-color: var(--light-gold);
+            opacity: 0.9;
+            letter-spacing: 0.1em;
+            animation: float3d 10s ease-in-out infinite reverse;
+            transform-origin: center;
+        }
+
+        .hidden-input-subtitle::placeholder {
+            color: rgba(255, 248, 220, 0.3);
+        }
+
+        input[type="text"] {
+            -webkit-appearance: none;
+            appearance: none;
+            border-radius: 0;
+        }
+
+        .copyright {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: #ccc;
+            opacity: 0.7;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* 水印缩小 */
+        .watermark-fixed {
+            position: fixed;
+            bottom: 30px;
+            left: 15px;
+            pointer-events: none;
+            z-index: 15;
+            width: 168px;
+            height: 31.5px;
+        }
+
+        .watermark-3d-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: rotate-card-2d 10s ease-in-out infinite, scale-pulse 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .watermark-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8.4px 1.4px 8.4px 1.4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.8px 5.6px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            background: rgba(58, 15, 15, 0.6);
+            border: 0.7px solid var(--bright-gold);
+            box-shadow: 0 0 10.5px rgba(255,215,0,0.4);
+            overflow: hidden;
+        }
+
+        .watermark-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,210,0.6), transparent);
+            z-index: 1;
+            animation: card-light-shimmer 3s ease-in-out infinite;
+        }
+
+        .watermark-card-front {
+            background: linear-gradient(135deg, rgba(100, 20, 20, 0.9), rgba(180, 120, 0, 0.6));
+            transform: rotateY(0deg);
+        }
+
+        .watermark-card-back {
+            background: linear-gradient(135deg, rgba(180, 50, 0, 0.9), rgba(255, 170, 0, 0.6));
+            transform: rotateY(180deg);
+        }
+
+        .watermark-text {
+            font-family: "LXGW WenKai Screen", sans-serif;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 3;
+        }
+
+        .wm-main {
+            font-size: 11.2px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #ffd700, #fff8dc, #ffd700);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 4s linear infinite;
+        }
+
+        .wm-flyz {
+            font-size: 9.8px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #fff8dc, #ffd700, #fff8dc);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            display: block;
+            animation: gold-text-shimmer 4s linear infinite;
+        }
+
+        @keyframes rotate-card-2d {
+            0%, 20% { transform: rotateY(0deg); }
+            25%, 45% { transform: rotateY(90deg); }
+            50%, 70% { transform: rotateY(180deg); }
+            75%, 95% { transform: rotateY(270deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        @keyframes scale-pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
+        }
+
+        @keyframes card-light-shimmer {
+            0% { left: -100%; }
+            40%, 100% { left: 100%; }
+        }
+
+        @keyframes gold-text-shimmer {
+            0% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .main-container { gap: 40px; }
+            .hidden-input-title { 
+                font-size: clamp(4rem, 20vw, 10rem); 
+                width: 98%;
+            }
+            .hidden-input-subtitle { 
+                font-size: clamp(1.8rem, 7vw, 4rem); 
+                width: 85%;
+            }
+            .watermark-fixed { width: 126px; height: 24.5px; bottom: 20px; left: 10px; }
+            .wm-main { font-size: 8.4px; }
+            .wm-flyz { font-size: 7.7px; }
+            .copyright { font-size: 0.7rem; bottom: 15px; right: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div class="ambient-glow"></div>
+
+    <div class="main-container">
+        <input 
+            type="text" 
+            class="hidden-input-title" 
+            placeholder="—"
+            autocomplete="off"
+            spellcheck="false"
+        >
+        <input 
+            type="text" 
+            class="hidden-input-subtitle" 
+            placeholder="—"
+            autocomplete="off"
+            spellcheck="false"
+        >
+    </div>
+
+    <div class="watermark-fixed">
+        <div class="watermark-3d-container">
+            <div class="watermark-card watermark-card-front">
+                <div class="watermark-text">
+                    <span class="wm-main">九年级六班|九上结业式</span>
+                </div>
+            </div>
+            <div class="watermark-card watermark-card-back">
+                <div class="watermark-text">
+                    <span class="wm-flyz">Flyz远征飞</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright">powered by 917813.com.cn/96</div>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const particleCount = 150;
+        const colors = ['#FFD700', '#FFF8DC', '#FFE47F', '#A52A2A'];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : height + 10;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 1 + 0.2;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.fadeSpeed = Math.random() * 0.005 + 0.002;
+                this.fadeDir = 1;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = Math.random() * 0.02 - 0.01;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+                this.opacity += this.fadeSpeed * this.fadeDir;
+                if (this.opacity >= 0.8 || this.opacity <= 0.1) this.fadeDir *= -1;
+                if (this.y < -10) this.reset();
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                if (Math.random() > 0.5) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(this.size, 0);
+                    ctx.lineTo(0, this.size);
+                    ctx.lineTo(-this.size, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                if (this.opacity > 0.6) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                }
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.setAttribute('autocomplete', 'new-password');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('autocorrect', 'off');
+            });
+        });
+
+        window.addEventListener('resize', resize);
+        resize();
+        initParticles();
+        animate();
+
+        // ------------------------------
+        // 键盘控制主标题字体大小
+        // 右上角：+ / =  放大
+        // 右上角：-      缩小
+        // ------------------------------
+        const title = document.querySelector('.hidden-input-title');
+        let currentFontSize = 10; // 基准字号（vw）
+
+        document.addEventListener('keydown', function(e) {
+            // 防止输入框被键盘事件影响
+            e.preventDefault();
+
+            // 放大：+ 或 =
+            if (e.key === '+' || e.key === '=') {
+                currentFontSize += 0.5;
+                if (currentFontSize > 25) currentFontSize = 25; // 上限
+                title.style.fontSize = currentFontSize + 'vw';
+            }
+
+            // 缩小：-
+            if (e.key === '-') {
+                currentFontSize -= 0.5;
+                if (currentFontSize < 5) currentFontSize = 5; // 下限
+                title.style.fontSize = currentFontSize + 'vw';
+            }
+        });
+    </script>
+</body>
+</html>
