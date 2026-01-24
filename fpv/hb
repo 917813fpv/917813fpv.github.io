@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+  <title>第一届 魄客杯 · 2026线上UNC穿越机模拟器竞速赛</title>
+  <style>
+    :root {
+      --white: #FFFFFF;
+      --blue: #00ccff;
+      --blue-dark: #0088cc;
+      --gold: #FFD700;
+      --red: #D92121;
+      --panel-border: 1px solid rgba(0, 204, 255, 0.4);
+      --panel-shadow: 0 0 16px rgba(0, 204, 255, 0.3), inset 0 0 10px rgba(0, 204, 255, 0.2);
+      --radius: 12px;
+      --glass: rgba(0, 0, 0, 0.4);
+      --glass-2: rgba(0, 0, 0, 0.6);
+      --glow: 0 0 12px rgba(0, 204, 255, 0.6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "Microsoft YaHei", Arial, sans-serif;
+      background: #000;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--white);
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(0, 150, 255, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(0, 200, 200, 0.15), transparent 40%);
+    }
+
+    /* 截图区 */
+    #screenshot-area {
+      position: relative;
+      width: 100%;
+      max-width: 414px;
+      height: 100%;
+      max-height: 736px;
+      background: url("your-bg.jpg") no-repeat center / cover;
+      overflow: hidden;
+      border: var(--panel-border);
+      box-shadow: var(--panel-shadow);
+      padding: 16px;
+      border-radius: var(--radius);
+      background-blend-mode: overlay;
+    }
+
+    /* 背景上传 */
+    #bg-upload {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 100;
+    }
+    #bg-upload-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 99;
+      display: none;
+      backdrop-filter: blur(2px);
+    }
+
+    /* 顶部 Logo */
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: 0 0 12px rgba(255,255,255,.3);
+    }
+    .logo img { width: 100%; height: 100%; object-fit: cover; }
+    .site-info {
+      flex: 1;
+    }
+    .site-info .url {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00ccff, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(0,204,255,.5);
+    }
+    .site-info .slogan {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,.85);
+      margin-top: 2px;
+    }
+
+    /* 标题区 */
+    .title-wrap {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 12px rgba(255,215,0,.4);
+      letter-spacing: 2px;
+    }
+    .sub-title {
+      font-size: 1rem;
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 0 8px rgba(0,204,255,.4);
+      margin-top: 4px;
+    }
+
+    /* 承办方 */
+    .organizer {
+      text-align: center;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      text-shadow: 0 0 6px rgba(0,0,0,.8);
+      background: var(--glass);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.2);
+      display: inline-block;
+      backdrop-filter: blur(4px);
+    }
+    .organizer .label { display: inline; opacity: .8; }
+    .organizer .value { font-weight: 600; color: var(--blue); }
+
+    /* 赞助 */
+    .sponsors {
+      margin-bottom: 20px;
+    }
+    .sponsors h3 {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      text-shadow: 0 0 8px rgba(0,0,0,.8);
+      color: rgba(255,255,255,.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .sponsors h3::before,
+    .sponsors h3::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,204,255,.5), transparent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 10px;
+    }
+
+    /* 单个赞助商容器 */
+    .sponsor {
+      aspect-ratio: 3/2;
+      background: rgba(255,255,255,.95);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,.15);
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3), 0 0 10px rgba(0,204,255,.2);
+      transition: all .2s ease;
+    }
+    .sponsor:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 14px rgba(0,204,255,.3);
+    }
+    .sponsor::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,204,255,.5), rgba(255,255,255,.8), rgba(0,204,255,.5));
+      opacity: .7;
+    }
+
+    /* 赞助商预览图 */
+    .sponsor-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    /* 赛事介绍 */
+    .intro {
+      margin-bottom: 20px;
+    }
+    .intro h3 {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      text-shadow: 0 0 8px rgba(0,0,0,.8);
+      color: rgba(255,255,255,.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .intro h3::before,
+    .intro h3::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,204,255,.5), transparent);
+    }
+    .intro-card {
+      background: var(--glass-2);
+      border-radius: var(--radius);
+      padding: 14px;
+      border: var(--panel-border);
+      box-shadow: var(--panel-shadow);
+      height: 140px; /* 稍微加高一点更舒服 */
+      backdrop-filter: blur(6px);
+    }
+    #intro-text {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,.95);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+    #intro-text::placeholder {
+      color: rgba(255,255,255,.5);
+    }
+
+    /* 报名 & 二维码 */
+    .signup {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      background: var(--glass);
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.2);
+      backdrop-filter: blur(4px);
+    }
+    .signup-text {
+      flex: 1;
+      font-size: 0.98rem;
+      line-height: 1.6;
+      text-shadow: 0 0 6px rgba(0,0,0,.8);
+    }
+    .signup-text .highlight {
+      color: var(--blue);
+      text-shadow: 0 0 8px rgba(0,204,255,.5);
+    }
+
+    /* 二维码容器（留空） */
+    #qrcode-upload {
+      width: 104px;
+      height: 104px;
+      background: #FFF;
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: 0 0 14px rgba(0,0,0,.4), 0 0 10px rgba(0,204,255,.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,204,255,.4);
+    }
+    #qrcode-upload::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,204,255,.6), rgba(255,255,255,.9), rgba(0,204,255,.6));
+    }
+
+    /* 二维码预览图 */
+    #qrcode-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+    }
+
+    /* 法律声明 */
+    .legal {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,.85);
+      text-align: center;
+      text-shadow: 0 0 6px rgba(0,0,0,.8);
+      background: var(--glass);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.2);
+      backdrop-filter: blur(4px);
+    }
+
+    /* 截图按钮（截图区外） */
+    #screenshot-btn {
+      margin-top: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3), var(--glow);
+      transition: all .2s ease;
+    }
+    #screenshot-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 16px rgba(0,204,255,.7);
+    }
+
+    /* 外部上传按钮 */
+    .external-uploads {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0 10px;
+    }
+
+    .external-upload-btn {
+      padding: 9px 14px;
+      border: 1px solid rgba(0,204,255,.4);
+      border-radius: 10px;
+      background: rgba(0, 20, 40, 0.6);
+      color: rgba(255,255,255,.95);
+      cursor: pointer;
+      font-size: 0.9rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,.3);
+      transition: all .2s ease;
+    }
+
+    .external-upload-btn:hover {
+      background: rgba(0, 30, 60, 0.7);
+      border-color: rgba(0,204,255,.6);
+      box-shadow: 0 0 12px rgba(0,204,255,.5);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <!-- 截图区 -->
+  <div id="screenshot-area">
+    <!-- 背景上传 -->
+    <input type="file" id="bg-upload" accept="image/*" />
+    <div id="bg-upload-overlay"></div>
+
+    <!-- 顶部 Logo -->
+    <div class="top">
+      <div class="logo">
+        <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz 远征飞" />
+      </div>
+      <div class="site-info">
+        <div class="url">917813.com.cn</div>
+        <div class="slogan">Flyz 远征飞｜为方便模友而生</div>
+      </div>
+    </div>
+
+    <!-- 标题 -->
+    <div class="title-wrap">
+      <div class="title">第一届 魄客杯</div>
+      <div class="sub-title">2026线上UNC穿越机模拟器竞速赛</div>
+    </div>
+
+    <!-- 承办方 -->
+    <div style="text-align: center; margin-bottom: 16px;">
+      <div class="organizer">
+        <span class="label">赛事承办方：</span>
+        <span class="value">917813.com.cn</span>
+      </div>
+    </div>
+
+    <!-- 赞助 -->
+    <div class="sponsors">
+      <h3>赛事赞助商</h3>
+      <div class="grid">
+        <!-- 赞助商 1-8 -->
+        <div class="sponsor"><img class="sponsor-preview" id="sp1-preview" src="" alt="赞助商1" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp2-preview" src="" alt="赞助商2" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp3-preview" src="" alt="赞助商3" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp4-preview" src="" alt="赞助商4" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp5-preview" src="" alt="赞助商5" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp6-preview" src="" alt="赞助商6" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp7-preview" src="" alt="赞助商7" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp8-preview" src="" alt="赞助商8" /></div>
+      </div>
+
+      <!-- 新增一行 4 个赞助商 -->
+      <div class="grid" style="margin-top: 10px;">
+        <div class="sponsor"><img class="sponsor-preview" id="sp9-preview" src="" alt="赞助商9" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp10-preview" src="" alt="赞助商10" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp11-preview" src="" alt="赞助商11" /></div>
+        <div class="sponsor"><img class="sponsor-preview" id="sp12-preview" src="" alt="赞助商12" /></div>
+      </div>
+    </div>
+
+    <!-- 赛事介绍 -->
+    <div class="intro">
+      <h3>赛事介绍</h3>
+      <div class="intro-card">
+        <textarea id="intro-text" style="font-size: 0.95rem; line-height: 1.55;">本次线上FPV竞速赛面向所有飞手开放，采用多轮积分制选拔晋级选手。比赛将通过直播进行，全程公平公正，规则透明。欢迎各位模友积极参与，在虚拟赛道上展现技巧与速度，挑战自我极限，与全国飞手共同角逐最终荣誉。</textarea>
+      </div>
+    </div>
+
+    <!-- 报名 & 二维码 -->
+    <div class="signup">
+      <div class="signup-text">
+        <div>初赛现已开始</div>
+        <div>奖品市售总价超1万7</div>
+        <div class="highlight">丰厚奖金 · 精彩赛事</div>
+        <div>报名进行中 · 速扫右侧二维码报名</div>
+      </div>
+
+      <!-- 二维码容器（留空） -->
+      <div id="qrcode-upload">
+        <img id="qrcode-preview" src="" alt="二维码" />
+      </div>
+    </div>
+
+    <!-- 法律声明 -->
+    <div class="legal">
+      赛事最终解释权归917813.com.cn所有
+    </div>
+  </div>
+
+  <!-- 截图按钮（截图区外） -->
+  <button id="screenshot-btn">一键截图（4倍清晰）</button>
+
+  <!-- 外部上传按钮 -->
+  <div class="external-uploads">
+    <button class="external-upload-btn" id="btn-sp1">上传一</button>
+    <button class="external-upload-btn" id="btn-sp2">上传二</button>
+    <button class="external-upload-btn" id="btn-sp3">上传三</button>
+    <button class="external-upload-btn" id="btn-sp4">上传四</button>
+    <button class="external-upload-btn" id="btn-sp5">上传五</button>
+    <button class="external-upload-btn" id="btn-sp6">上传六</button>
+    <button class="external-upload-btn" id="btn-sp7">上传七</button>
+    <button class="external-upload-btn" id="btn-sp8">上传八</button>
+    <button class="external-upload-btn" id="btn-sp9">上传九</button>
+    <button class="external-upload-btn" id="btn-sp10">上传十</button>
+    <button class="external-upload-btn" id="btn-sp11">上传十一</button>
+    <button class="external-upload-btn" id="btn-sp12">上传十二</button>
+  </div>
+
+<script>
+  // 背景上传
+  const bgUpload = document.getElementById('bg-upload');
+  const bgOverlay = document.getElementById('bg-upload-overlay');
+  const screenshotArea = document.getElementById('screenshot-area');
+
+  bgUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      screenshotArea.style.backgroundImage = `url("${e.target.result}")`;
+      bgOverlay.style.display = 'block';
+      bgUpload.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // 外部上传按钮逻辑
+  function setupExternalUpload(btnId, previewId) {
+    const btn = document.getElementById(btnId);
+    const preview = document.getElementById(previewId);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png,image/jpeg,image/gif';
+    input.style.display = 'none';
+
+    btn.addEventListener('click', () => {
+      input.click();
+    });
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.body.appendChild(input);
+  }
+
+  // 初始化 12 个外部上传按钮
+  setupExternalUpload('btn-sp1', 'sp1-preview');
+  setupExternalUpload('btn-sp2', 'sp2-preview');
+  setupExternalUpload('btn-sp3', 'sp3-preview');
+  setupExternalUpload('btn-sp4', 'sp4-preview');
+  setupExternalUpload('btn-sp5', 'sp5-preview');
+  setupExternalUpload('btn-sp6', 'sp6-preview');
+  setupExternalUpload('btn-sp7', 'sp7-preview');
+  setupExternalUpload('btn-sp8', 'sp8-preview');
+  setupExternalUpload('btn-sp9', 'sp9-preview');
+  setupExternalUpload('btn-sp10', 'sp10-preview');
+  setupExternalUpload('btn-sp11', 'sp11-preview');
+  setupExternalUpload('btn-sp12', 'sp12-preview');
+
+  // 截图（4倍放大）
+  document.getElementById('screenshot-btn').addEventListener('click', async () => {
+    const area = document.getElementById('screenshot-area');
+    const rect = area.getBoundingClientRect();
+
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        preferCurrentTab: true,
+        video: { mediaSource: 'screen' }
+      });
+
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video.play().catch(()=>{});
+
+        const scale = 4;
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width * scale;
+        canvas.height = rect.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+
+        requestAnimationFrame(() => {
+          ctx.drawImage(video, rect.left, rect.top, rect.width, rect.height, 0, 0, rect.width, rect.height);
+          stream.getTracks().forEach(t => t.stop());
+
+          const a = document.createElement('a');
+          a.download = '魄客杯海报_' + new Date().toISOString().slice(0,10) + '.png';
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+        });
+      };
+    } catch (err) {
+      alert('截图失败：' + err.message + '\n请允许屏幕录制权限或换浏览器重试');
+    }
+  });
+</script>
+</body>
+</html>
