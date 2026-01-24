@@ -23,7 +23,7 @@
     body {
       font-family: -apple-system, "Microsoft YaHei", Arial, sans-serif;
       background: #000;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -31,25 +31,25 @@
       background-image: 
         radial-gradient(circle at 20% 20%, rgba(0, 150, 255, 0.15), transparent 40%),
         radial-gradient(circle at 80% 80%, rgba(0, 200, 200, 0.15), transparent 40%);
+      padding: 10px;
     }
 
-    /* 截图区 */
+    /* 截图区（精准截取目标） */
     #screenshot-area {
       position: relative;
       width: 100%;
-      max-width: 414px;
-      height: 100%;
-      max-height: 736px;
+      max-width: 480px;
+      min-height: 850px;
       background: url("your-bg.jpg") no-repeat center / cover;
       overflow: hidden;
       border: var(--panel-border);
       box-shadow: var(--panel-shadow);
-      padding: 16px;
-      border-radius: var(--radius);
-      background-blend-mode: overlay;
+      padding: 20px;
+      /* 移除圆角，避免截图带圆角 */
+      border-radius: 0;
     }
 
-    /* 背景上传 */
+    /* 背景上传（无遮罩） */
     #bg-upload {
       position: absolute;
       inset: 0;
@@ -57,25 +57,17 @@
       cursor: pointer;
       z-index: 100;
     }
-    #bg-upload-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      z-index: 99;
-      display: none;
-      backdrop-filter: blur(2px);
-    }
 
     /* 顶部 Logo */
     .top {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .logo {
-      width: 64px;
-      height: 64px;
+      width: 70px;
+      height: 70px;
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.6);
@@ -86,7 +78,7 @@
       flex: 1;
     }
     .site-info .url {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 700;
       background: linear-gradient(90deg, #00ccff, #00ffff);
       -webkit-background-clip: text;
@@ -94,7 +86,7 @@
       text-shadow: 0 0 8px rgba(0,204,255,.5);
     }
     .site-info .slogan {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: rgba(255,255,255,.85);
       margin-top: 2px;
     }
@@ -102,10 +94,10 @@
     /* 标题区 */
     .title-wrap {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .title {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 800;
       background: linear-gradient(135deg, var(--gold), #fff);
       -webkit-background-clip: text;
@@ -114,20 +106,20 @@
       letter-spacing: 2px;
     }
     .sub-title {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: rgba(255,255,255,.9);
       text-shadow: 0 0 8px rgba(0,204,255,.4);
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     /* 承办方 */
     .organizer {
       text-align: center;
-      font-size: 0.95rem;
-      margin-bottom: 16px;
+      font-size: 1rem;
+      margin-bottom: 20px;
       text-shadow: 0 0 6px rgba(0,0,0,.8);
       background: var(--glass);
-      padding: 8px 12px;
+      padding: 10px 16px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.2);
       display: inline-block;
@@ -136,14 +128,14 @@
     .organizer .label { display: inline; opacity: .8; }
     .organizer .value { font-weight: 600; color: var(--blue); }
 
-    /* 赞助 */
+    /* 赞助（放大赞助商卡片） */
     .sponsors {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .sponsors h3 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
       text-shadow: 0 0 8px rgba(0,0,0,.8);
       color: rgba(255,255,255,.95);
       display: flex;
@@ -161,15 +153,15 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(4,1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
-    /* 单个赞助商容器 */
+    /* 单个赞助商容器（放大） */
     .sponsor {
       aspect-ratio: 3/2;
       background: rgba(255,255,255,.95);
-      border-radius: 10px;
-      padding: 8px;
+      border-radius: 12px;
+      padding: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -200,14 +192,14 @@
       display: none;
     }
 
-    /* 赛事介绍 */
+    /* 赛事介绍（放大高度） */
     .intro {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .intro h3 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
       text-shadow: 0 0 8px rgba(0,0,0,.8);
       color: rgba(255,255,255,.95);
       display: flex;
@@ -225,10 +217,10 @@
     .intro-card {
       background: var(--glass-2);
       border-radius: var(--radius);
-      padding: 14px;
+      padding: 16px;
       border: var(--panel-border);
       box-shadow: var(--panel-shadow);
-      height: 140px; /* 稍微加高一点更舒服 */
+      height: 160px;
       backdrop-filter: blur(6px);
     }
     #intro-text {
@@ -237,33 +229,30 @@
       background: transparent;
       border: none;
       color: rgba(255,255,255,.95);
-      font-size: 0.95rem;
-      line-height: 1.55;
+      font-size: 1rem;
+      line-height: 1.6;
       resize: none;
       outline: none;
       font-family: inherit;
     }
-    #intro-text::placeholder {
-      color: rgba(255,255,255,.5);
-    }
 
-    /* 报名 & 二维码 */
+    /* 报名 & 二维码（放大） */
     .signup {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 15px;
+      margin-bottom: 25px;
       background: var(--glass);
-      padding: 12px;
+      padding: 15px;
       border-radius: var(--radius);
       border: 1px solid rgba(255,255,255,.2);
       backdrop-filter: blur(4px);
     }
     .signup-text {
       flex: 1;
-      font-size: 0.98rem;
-      line-height: 1.6;
+      font-size: 1.05rem;
+      line-height: 1.7;
       text-shadow: 0 0 6px rgba(0,0,0,.8);
     }
     .signup-text .highlight {
@@ -271,10 +260,10 @@
       text-shadow: 0 0 8px rgba(0,204,255,.5);
     }
 
-    /* 二维码容器（留空） */
+    /* 二维码容器（放大） */
     #qrcode-upload {
-      width: 104px;
-      height: 104px;
+      width: 110px;
+      height: 110px;
       background: #FFF;
       border-radius: 12px;
       padding: 4px;
@@ -286,13 +275,6 @@
       overflow: hidden;
       border: 1px solid rgba(0,204,255,.4);
     }
-    #qrcode-upload::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(0,204,255,.6), rgba(255,255,255,.9), rgba(0,204,255,.6));
-    }
 
     /* 二维码预览图 */
     #qrcode-preview {
@@ -303,29 +285,29 @@
       display: none;
     }
 
-    /* 法律声明 */
+    /* 法律声明（放大文字） */
     .legal {
-      font-size: 0.82rem;
+      font-size: 0.9rem;
       color: rgba(255,255,255,.85);
       text-align: center;
       text-shadow: 0 0 6px rgba(0,0,0,.8);
       background: var(--glass);
-      padding: 8px 12px;
+      padding: 10px 16px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.2);
       backdrop-filter: blur(4px);
     }
 
-    /* 截图按钮（截图区外） */
+    /* 截图按钮 */
     #screenshot-btn {
-      margin-top: 16px;
-      padding: 10px 20px;
+      margin-top: 20px;
+      padding: 12px 24px;
       border: none;
       border-radius: 10px;
       background: linear-gradient(135deg, var(--blue), var(--blue-dark));
       color: #fff;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.1rem;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,.3), var(--glow);
       transition: all .2s ease;
@@ -335,24 +317,24 @@
       box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 16px rgba(0,204,255,.7);
     }
 
-    /* 外部上传按钮 */
+    /* 外部上传按钮（放大） */
     .external-uploads {
       display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 12px;
+      margin-top: 20px;
       flex-wrap: wrap;
       justify-content: center;
       padding: 0 10px;
     }
 
     .external-upload-btn {
-      padding: 9px 14px;
+      padding: 10px 16px;
       border: 1px solid rgba(0,204,255,.4);
       border-radius: 10px;
       background: rgba(0, 20, 40, 0.6);
       color: rgba(255,255,255,.95);
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       box-shadow: 0 3px 8px rgba(0,0,0,.3);
       transition: all .2s ease;
     }
@@ -366,11 +348,10 @@
   </style>
 </head>
 <body>
-  <!-- 截图区 -->
+  <!-- 截图区（精准截取目标） -->
   <div id="screenshot-area">
     <!-- 背景上传 -->
     <input type="file" id="bg-upload" accept="image/*" />
-    <div id="bg-upload-overlay"></div>
 
     <!-- 顶部 Logo -->
     <div class="top">
@@ -390,7 +371,7 @@
     </div>
 
     <!-- 承办方 -->
-    <div style="text-align: center; margin-bottom: 16px;">
+    <div style="text-align: center; margin-bottom: 20px;">
       <div class="organizer">
         <span class="label">赛事承办方：</span>
         <span class="value">917813.com.cn</span>
@@ -413,7 +394,7 @@
       </div>
 
       <!-- 新增一行 4 个赞助商 -->
-      <div class="grid" style="margin-top: 10px;">
+      <div class="grid" style="margin-top: 12px;">
         <div class="sponsor"><img class="sponsor-preview" id="sp9-preview" src="" alt="赞助商9" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp10-preview" src="" alt="赞助商10" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp11-preview" src="" alt="赞助商11" /></div>
@@ -425,7 +406,7 @@
     <div class="intro">
       <h3>赛事介绍</h3>
       <div class="intro-card">
-        <textarea id="intro-text" style="font-size: 0.95rem; line-height: 1.55;">本次线上FPV竞速赛面向所有飞手开放，采用多轮积分制选拔晋级选手。比赛将通过直播进行，全程公平公正，规则透明。欢迎各位模友积极参与，在虚拟赛道上展现技巧与速度，挑战自我极限，与全国飞手共同角逐最终荣誉。</textarea>
+        <textarea id="intro-text" style="font-size: 1rem; line-height: 1.6;">本次线上FPV竞速赛面向所有飞手开放，采用多轮积分制选拔晋级选手。比赛将通过直播进行，全程公平公正，规则透明。欢迎各位模友积极参与，在虚拟赛道上展现技巧与速度，挑战自我极限，与全国飞手共同角逐最终荣誉。</textarea>
       </div>
     </div>
 
@@ -450,8 +431,8 @@
     </div>
   </div>
 
-  <!-- 截图按钮（截图区外） -->
-  <button id="screenshot-btn">一键截图（4倍清晰）</button>
+  <!-- 截图按钮 -->
+  <button id="screenshot-btn">一键截图（4倍高清）</button>
 
   <!-- 外部上传按钮 -->
   <div class="external-uploads">
@@ -472,7 +453,6 @@
 <script>
   // 背景上传
   const bgUpload = document.getElementById('bg-upload');
-  const bgOverlay = document.getElementById('bg-upload-overlay');
   const screenshotArea = document.getElementById('screenshot-area');
 
   bgUpload.addEventListener('change', (e) => {
@@ -482,7 +462,6 @@
     const reader = new FileReader();
     reader.onload = function(e) {
       screenshotArea.style.backgroundImage = `url("${e.target.result}")`;
-      bgOverlay.style.display = 'block';
       bgUpload.style.display = 'none';
     };
     reader.readAsDataURL(file);
@@ -530,22 +509,28 @@
   setupExternalUpload('btn-sp11', 'sp11-preview');
   setupExternalUpload('btn-sp12', 'sp12-preview');
 
-  // 截图（4倍放大）
+  // 精准截取截图区域 + 4倍放大
   document.getElementById('screenshot-btn').addEventListener('click', async () => {
     const area = document.getElementById('screenshot-area');
     const rect = area.getBoundingClientRect();
 
     try {
+      // 调用浏览器截图功能，选择当前标签页
       const stream = await navigator.mediaDevices.getDisplayMedia({
         preferCurrentTab: true,
-        video: { mediaSource: 'screen' }
+        video: {
+          width: rect.width,
+          height: rect.height,
+          frameRate: 30
+        }
       });
 
       const video = document.createElement('video');
       video.srcObject = stream;
       video.onloadedmetadata = () => {
-        video.play().catch(()=>{});
+        video.play().catch(() => {});
 
+        // 4倍放大
         const scale = 4;
         const canvas = document.createElement('canvas');
         canvas.width = rect.width * scale;
@@ -553,10 +538,16 @@
         const ctx = canvas.getContext('2d');
         ctx.scale(scale, scale);
 
+        // 仅绘制截图区域内的内容
         requestAnimationFrame(() => {
-          ctx.drawImage(video, rect.left, rect.top, rect.width, rect.height, 0, 0, rect.width, rect.height);
+          ctx.drawImage(
+            video,
+            rect.left, rect.top, rect.width, rect.height,
+            0, 0, rect.width, rect.height
+          );
           stream.getTracks().forEach(t => t.stop());
 
+          // 下载高清截图
           const a = document.createElement('a');
           a.download = '魄客杯海报_' + new Date().toISOString().slice(0,10) + '.png';
           a.href = canvas.toDataURL('image/png');
@@ -564,7 +555,7 @@
         });
       };
     } catch (err) {
-      alert('截图失败：' + err.message + '\n请允许屏幕录制权限或换浏览器重试');
+      alert('请允许浏览器的屏幕录制权限，或手动截图当前页面~');
     }
   });
 </script>
