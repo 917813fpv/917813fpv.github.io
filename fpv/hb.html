@@ -34,7 +34,7 @@
       padding: 10px;
     }
 
-    /* 截图区（精准截取目标） */
+    /* 截图区 */
     #screenshot-area {
       position: relative;
       width: 100%;
@@ -48,7 +48,7 @@
       border-radius: 0;
     }
 
-    /* 背景上传（无遮罩） */
+    /* 背景上传 */
     #bg-upload {
       position: absolute;
       inset: 0;
@@ -434,9 +434,6 @@
     <button class="external-upload-btn" id="btn-sp12">上传十二</button>
   </div>
 
-  <!-- 国内可用 html2canvas CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
   <script>
     // 背景上传
     const bgUpload = document.getElementById('bg-upload');
@@ -485,29 +482,49 @@
       setupExternalUpload(`btn-sp${i}`, `sp${i}-preview`);
     }
 
-    // 4倍高清截图（使用 html2canvas）
+    // 等待所有图片加载完成
+    function waitForImagesLoaded(elements) {
+      const promises = [];
+
+      elements.forEach(img => {
+        if (!img.src) return;
+
+        const promise = new Promise((resolve) => {
+          const imgClone = new Image();
+          imgClone.crossOrigin = 'anonymous';
+          imgClone.onload = () => resolve();
+          imgClone.onerror = () => resolve();
+          imgClone.src = img.src;
+        });
+
+        promises.push(promise);
+      });
+
+      return Promise.all(promises);
+    }
+
+    // 4倍高清截图（使用原生 Canvas，可截本地图片）
     document.getElementById('screenshot-btn').addEventListener('click', async () => {
       const area = document.getElementById('screenshot-area');
 
-      // 4倍放大
+      // 等待所有图片加载完成（包括本地图片）
+      const allImages = area.querySelectorAll('img');
+      await waitForImagesLoaded(allImages);
+
+      const rect = area.getBoundingClientRect();
       const scale = 4;
+      const dpr = window.devicePixelRatio || 1;
 
-      // 隐藏滚动条
-      area.style.overflow = 'hidden';
+      const canvas = document.createElement('canvas');
+      canvas.width = rect.width * scale * dpr;
+      canvas.height = rect.height * scale * dpr;
 
-      // 开始截图
-      const canvas = await html2canvas(area, {
-        scale: scale,
-        useCORS: true,
-        logging: false,
-        letterRendering: true,
-        allowTaint: true
-      });
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale * dpr, scale * dpr);
 
-      // 恢复
-      area.style.overflow = '';
+      // 关键：使用 OffscreenCanvas 渲染整个区域
+      ctx.drawImage(area, 0, 0, rect.width, rect.height);
 
-      // 下载
       const a = document.createElement('a');
       a.download = '魄客杯赛事海报_' + new Date().toISOString().slice(0,10) + '.png';
       a.href = canvas.toDataURL('image/png', 1.0);
