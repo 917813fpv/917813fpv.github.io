@@ -40,12 +40,11 @@
       width: 100%;
       max-width: 480px;
       min-height: 850px;
-      background: url("your-bg.jpg") no-repeat center / cover;
+      background: url("https://www.img520.com/PtZgCl.jpeg") no-repeat center / cover;
       overflow: hidden;
       border: var(--panel-border);
       box-shadow: var(--panel-shadow);
       padding: 20px;
-      /* 移除圆角，避免截图带圆角 */
       border-radius: 0;
     }
 
@@ -128,7 +127,7 @@
     .organizer .label { display: inline; opacity: .8; }
     .organizer .value { font-weight: 600; color: var(--blue); }
 
-    /* 赞助（放大赞助商卡片） */
+    /* 赞助 */
     .sponsors {
       margin-bottom: 25px;
     }
@@ -156,7 +155,7 @@
       gap: 12px;
     }
 
-    /* 单个赞助商容器（放大） */
+    /* 单个赞助商容器 */
     .sponsor {
       aspect-ratio: 3/2;
       background: rgba(255,255,255,.95);
@@ -192,7 +191,7 @@
       display: none;
     }
 
-    /* 赛事介绍（放大高度） */
+    /* 赛事介绍（隐藏滚动条） */
     .intro {
       margin-bottom: 25px;
     }
@@ -222,6 +221,7 @@
       box-shadow: var(--panel-shadow);
       height: 160px;
       backdrop-filter: blur(6px);
+      overflow: hidden;
     }
     #intro-text {
       width: 100%;
@@ -234,9 +234,14 @@
       resize: none;
       outline: none;
       font-family: inherit;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    #intro-text::-webkit-scrollbar {
+      display: none;
     }
 
-    /* 报名 & 二维码（放大） */
+    /* 报名 & 二维码 */
     .signup {
       display: flex;
       justify-content: space-between;
@@ -260,7 +265,7 @@
       text-shadow: 0 0 8px rgba(0,204,255,.5);
     }
 
-    /* 二维码容器（放大） */
+    /* 二维码容器 */
     #qrcode-upload {
       width: 110px;
       height: 110px;
@@ -275,17 +280,14 @@
       overflow: hidden;
       border: 1px solid rgba(0,204,255,.4);
     }
-
-    /* 二维码预览图 */
     #qrcode-preview {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 8px;
-      display: none;
+      display: block;
     }
 
-    /* 法律声明（放大文字） */
+    /* 法律声明 */
     .legal {
       font-size: 0.9rem;
       color: rgba(255,255,255,.85);
@@ -317,7 +319,7 @@
       box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 16px rgba(0,204,255,.7);
     }
 
-    /* 外部上传按钮（放大） */
+    /* 外部上传按钮 */
     .external-uploads {
       display: flex;
       gap: 12px;
@@ -326,7 +328,6 @@
       justify-content: center;
       padding: 0 10px;
     }
-
     .external-upload-btn {
       padding: 10px 16px;
       border: 1px solid rgba(0,204,255,.4);
@@ -338,7 +339,6 @@
       box-shadow: 0 3px 8px rgba(0,0,0,.3);
       transition: all .2s ease;
     }
-
     .external-upload-btn:hover {
       background: rgba(0, 30, 60, 0.7);
       border-color: rgba(0,204,255,.6);
@@ -348,12 +348,9 @@
   </style>
 </head>
 <body>
-  <!-- 截图区（精准截取目标） -->
   <div id="screenshot-area">
-    <!-- 背景上传 -->
     <input type="file" id="bg-upload" accept="image/*" />
 
-    <!-- 顶部 Logo -->
     <div class="top">
       <div class="logo">
         <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz 远征飞" />
@@ -364,13 +361,11 @@
       </div>
     </div>
 
-    <!-- 标题 -->
     <div class="title-wrap">
       <div class="title">第一届 魄客杯</div>
       <div class="sub-title">2026线上UNC穿越机模拟器竞速赛</div>
     </div>
 
-    <!-- 承办方 -->
     <div style="text-align: center; margin-bottom: 20px;">
       <div class="organizer">
         <span class="label">赛事承办方：</span>
@@ -378,11 +373,9 @@
       </div>
     </div>
 
-    <!-- 赞助 -->
     <div class="sponsors">
       <h3>赛事赞助商</h3>
       <div class="grid">
-        <!-- 赞助商 1-8 -->
         <div class="sponsor"><img class="sponsor-preview" id="sp1-preview" src="" alt="赞助商1" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp2-preview" src="" alt="赞助商2" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp3-preview" src="" alt="赞助商3" /></div>
@@ -392,8 +385,6 @@
         <div class="sponsor"><img class="sponsor-preview" id="sp7-preview" src="" alt="赞助商7" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp8-preview" src="" alt="赞助商8" /></div>
       </div>
-
-      <!-- 新增一行 4 个赞助商 -->
       <div class="grid" style="margin-top: 12px;">
         <div class="sponsor"><img class="sponsor-preview" id="sp9-preview" src="" alt="赞助商9" /></div>
         <div class="sponsor"><img class="sponsor-preview" id="sp10-preview" src="" alt="赞助商10" /></div>
@@ -402,7 +393,6 @@
       </div>
     </div>
 
-    <!-- 赛事介绍 -->
     <div class="intro">
       <h3>赛事介绍</h3>
       <div class="intro-card">
@@ -410,7 +400,6 @@
       </div>
     </div>
 
-    <!-- 报名 & 二维码 -->
     <div class="signup">
       <div class="signup-text">
         <div>初赛现已开始</div>
@@ -418,23 +407,18 @@
         <div class="highlight">丰厚奖金 · 精彩赛事</div>
         <div>报名进行中 · 速扫右侧二维码报名</div>
       </div>
-
-      <!-- 二维码容器（留空） -->
       <div id="qrcode-upload">
-        <img id="qrcode-preview" src="" alt="二维码" />
+        <img id="qrcode-preview" src="https://www.img520.com/CgaUT3.png" alt="二维码" />
       </div>
     </div>
 
-    <!-- 法律声明 -->
     <div class="legal">
       赛事最终解释权归917813.com.cn所有
     </div>
   </div>
 
-  <!-- 截图按钮 -->
   <button id="screenshot-btn">一键截图（4倍高清）</button>
 
-  <!-- 外部上传按钮 -->
   <div class="external-uploads">
     <button class="external-upload-btn" id="btn-sp1">上传一</button>
     <button class="external-upload-btn" id="btn-sp2">上传二</button>
@@ -450,114 +434,85 @@
     <button class="external-upload-btn" id="btn-sp12">上传十二</button>
   </div>
 
-<script>
-  // 背景上传
-  const bgUpload = document.getElementById('bg-upload');
-  const screenshotArea = document.getElementById('screenshot-area');
+  <!-- 国内可用 html2canvas CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-  bgUpload.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  <script>
+    // 背景上传
+    const bgUpload = document.getElementById('bg-upload');
+    const screenshotArea = document.getElementById('screenshot-area');
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      screenshotArea.style.backgroundImage = `url("${e.target.result}")`;
-      bgUpload.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // 外部上传按钮逻辑
-  function setupExternalUpload(btnId, previewId) {
-    const btn = document.getElementById(btnId);
-    const preview = document.getElementById(previewId);
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/png,image/jpeg,image/gif';
-    input.style.display = 'none';
-
-    btn.addEventListener('click', () => {
-      input.click();
-    });
-
-    input.addEventListener('change', (e) => {
+    bgUpload.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(e) {
-        preview.src = e.target.result;
-        preview.style.display = 'block';
+        screenshotArea.style.backgroundImage = `url("${e.target.result}")`;
+        bgUpload.style.display = 'none';
       };
       reader.readAsDataURL(file);
     });
 
-    document.body.appendChild(input);
-  }
+    // 赞助商上传
+    function setupExternalUpload(btnId, previewId) {
+      const btn = document.getElementById(btnId);
+      const preview = document.getElementById(previewId);
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/png,image/jpeg,image/gif';
+      input.style.display = 'none';
 
-  // 初始化 12 个外部上传按钮
-  setupExternalUpload('btn-sp1', 'sp1-preview');
-  setupExternalUpload('btn-sp2', 'sp2-preview');
-  setupExternalUpload('btn-sp3', 'sp3-preview');
-  setupExternalUpload('btn-sp4', 'sp4-preview');
-  setupExternalUpload('btn-sp5', 'sp5-preview');
-  setupExternalUpload('btn-sp6', 'sp6-preview');
-  setupExternalUpload('btn-sp7', 'sp7-preview');
-  setupExternalUpload('btn-sp8', 'sp8-preview');
-  setupExternalUpload('btn-sp9', 'sp9-preview');
-  setupExternalUpload('btn-sp10', 'sp10-preview');
-  setupExternalUpload('btn-sp11', 'sp11-preview');
-  setupExternalUpload('btn-sp12', 'sp12-preview');
+      btn.addEventListener('click', () => input.click());
 
-  // 精准截取截图区域 + 4倍放大
-  document.getElementById('screenshot-btn').addEventListener('click', async () => {
-    const area = document.getElementById('screenshot-area');
-    const rect = area.getBoundingClientRect();
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    try {
-      // 调用浏览器截图功能，选择当前标签页
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        preferCurrentTab: true,
-        video: {
-          width: rect.width,
-          height: rect.height,
-          frameRate: 30
-        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
       });
 
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.onloadedmetadata = () => {
-        video.play().catch(() => {});
-
-        // 4倍放大
-        const scale = 4;
-        const canvas = document.createElement('canvas');
-        canvas.width = rect.width * scale;
-        canvas.height = rect.height * scale;
-        const ctx = canvas.getContext('2d');
-        ctx.scale(scale, scale);
-
-        // 仅绘制截图区域内的内容
-        requestAnimationFrame(() => {
-          ctx.drawImage(
-            video,
-            rect.left, rect.top, rect.width, rect.height,
-            0, 0, rect.width, rect.height
-          );
-          stream.getTracks().forEach(t => t.stop());
-
-          // 下载高清截图
-          const a = document.createElement('a');
-          a.download = '魄客杯海报_' + new Date().toISOString().slice(0,10) + '.png';
-          a.href = canvas.toDataURL('image/png');
-          a.click();
-        });
-      };
-    } catch (err) {
-      alert('请允许浏览器的屏幕录制权限，或手动截图当前页面~');
+      document.body.appendChild(input);
     }
-  });
-</script>
+
+    // 初始化12个上传按钮
+    for (let i = 1; i <= 12; i++) {
+      setupExternalUpload(`btn-sp${i}`, `sp${i}-preview`);
+    }
+
+    // 4倍高清截图（使用 html2canvas）
+    document.getElementById('screenshot-btn').addEventListener('click', async () => {
+      const area = document.getElementById('screenshot-area');
+
+      // 4倍放大
+      const scale = 4;
+
+      // 隐藏滚动条
+      area.style.overflow = 'hidden';
+
+      // 开始截图
+      const canvas = await html2canvas(area, {
+        scale: scale,
+        useCORS: true,
+        logging: false,
+        letterRendering: true,
+        allowTaint: true
+      });
+
+      // 恢复
+      area.style.overflow = '';
+
+      // 下载
+      const a = document.createElement('a');
+      a.download = '魄客杯赛事海报_' + new Date().toISOString().slice(0,10) + '.png';
+      a.href = canvas.toDataURL('image/png', 1.0);
+      a.click();
+    });
+  </script>
 </body>
 </html>
