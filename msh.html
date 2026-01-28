@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MSH 立刻关免打扰</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            /* 粉为主+粉紫/粉蓝/橘粉 动态撞色渐变 - 超高速循环 */
+            background: linear-gradient(120deg, #ffc8e1, #f89ed6, #d89eff, #ffb8a8, #c8eeff);
+            background-size: 600% 600%;
+            animation: bgFlow 3s ease-in-out infinite;
+        }
+        /* 背景动态渐变动画 - 高速色彩流动 */
+        @keyframes bgFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* 背景光效层 - 叠加动态扫光，强化动感 */
+        .bg-light {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.4), transparent 70%);
+            animation: lightMove 2s infinite ease-in-out, lightFade 0.6s infinite alternate;
+            z-index: 1;
+            filter: blur(15px);
+        }
+        @keyframes lightMove {
+            0% { --x: 20%; --y: 30%; }
+            33% { --x: 80%; --y: 70%; }
+            66% { --x: 60%; --y: 20%; }
+            100% { --x: 20%; --y: 30%; }
+        }
+        @keyframes lightFade {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+        /* 七彩流光发光文字通用样式 - 非单调单色，渐变流光+多色阴影 */
+        .glow-text {
+            background: linear-gradient(90deg, #fff, #ffd800, #ff66cc, #66ccff, #ff9966, #fff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 2s linear infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,216,0,0.6), 0 0 30px rgba(255,102,204,0.5), 0 3px 5px rgba(0,0,0,0.3);
+        }
+        @keyframes textGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        /* 主容器 - 层级置顶 */
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+        }
+        /* 首字母强提醒 - 放大+快速弹跳+七彩流光 */
+        .name-title {
+            font-size: 60px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            animation: nameBounce 0.6s infinite alternate;
+            letter-spacing: 10px;
+        }
+        @keyframes nameBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-30px); }
+        }
+        /* 核心炸裂乱动文字 - 超高速0.4s循环+七彩流光 */
+        .crazy-text {
+            font-size: 90px;
+            font-weight: 900;
+            margin: 10px 0;
+            animation: crazyShake 0.4s infinite ease-in-out, flash 0.2s infinite alternate;
+            line-height: 1.2;
+        }
+        /* 超高速无规则乱动：位移/旋转/缩放拉满 */
+        @keyframes crazyShake {
+            0% { transform: translate(0,0) rotate(0deg) scale(1); }
+            20% { transform: translate(45px,-40px) rotate(25deg) scale(1.25); }
+            40% { transform: translate(-50px,35px) rotate(-30deg) scale(0.75); }
+            60% { transform: translate(35px,45px) rotate(20deg) scale(1.3); }
+            80% { transform: translate(-40px,-35px) rotate(-25deg) scale(0.8); }
+            100% { transform: translate(0,0) rotate(0deg) scale(1); }
+        }
+        @keyframes flash {
+            0% { opacity: 0.95; }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+        /* 强调提醒语 - 快速左右晃动+七彩流光 */
+        .tip-text {
+            font-size: 38px;
+            font-weight: 800;
+            animation: tipShake 0.7s infinite ease-in-out;
+        }
+        @keyframes tipShake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-25px); }
+            50% { transform: translateX(0); }
+            75% { transform: translateX(25px); }
+            100% { transform: translateX(0); }
+        }
+        /* 原神飘字 - 超高速动画+七彩流光，无延迟批量生成 */
+        .genshin-text {
+            position: absolute;
+            font-size: 16px;
+            font-weight: 700;
+            z-index: 5;
+            background: linear-gradient(90deg, #fff, #ffd800, #66ccff, #ff66cc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: genshinFloat 3s infinite linear, genshinGlow 1.5s linear infinite;
+            white-space: nowrap;
+        }
+        /* 原神飘字超高速动画：从下到上飞+旋转，2倍速 */
+        @keyframes genshinFloat {
+            0% {
+                transform: translate(0, 100vh) rotate(0deg) scale(0.9);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, -100px) rotate(360deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+        @keyframes genshinGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        /* 小屏手机适配 */
+        @media (max-width: 375px) {
+            .name-title { font-size: 45px; letter-spacing: 8px; }
+            .crazy-text { font-size: 65px; }
+            .tip-text { font-size: 28px; }
+            .genshin-text { font-size: 14px; }
+        }
+        @media (max-width: 425px) {
+            .name-title { font-size: 50px; letter-spacing: 9px; }
+            .crazy-text { font-size: 75px; }
+            .tip-text { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 多层背景光效，高动态扫光 -->
+    <div class="bg-light"></div>
+    <div class="bg-light" style="animation-delay: 0.3s; filter: blur(20px);"></div>
+    <div class="bg-light" style="animation-delay: 0.6s; filter: blur(10px);"></div>
+
+    <!-- 主内容 - 人名改为MSH首字母大写，全文字七彩流光发光 -->
+    <div class="container">
+        <div class="name-title glow-text">MSH！</div>
+        <div class="crazy-text glow-text">关免打扰</div>
+        <div class="tip-text glow-text">立刻 马上 现在！</div>
+    </div>
+
+    <script>
+        // 原神飘字：超高速生成+无延迟批量出现，动画3倍速，数量拉满
+        const body = document.body;
+        const textContent = "《原神》牛逼";
+        const total = 80; // 飘字数量拉满，满屏飞
+        const fontSizeArr = [14,15,16,17,18]; // 随机字号
+        // 立即生成，无延迟，瞬间满屏
+        for (let i = 0; i < total; i++) {
+            const genshin = document.createElement('div');
+            genshin.className = 'genshin-text';
+            genshin.innerText = textContent;
+            // 随机水平位置
+            const left = Math.random() * 95 + '%';
+            // 随机动画时长（3-5秒，超高速）
+            const duration = Math.random() * 2 + 3 + 's';
+            // 随机字号
+            const fontSize = fontSizeArr[Math.floor(Math.random() * fontSizeArr.length)] + 'px';
+            // 随机旋转方向
+            const rotate = Math.random() > 0.5 ? '' : 'scaleX(-1)';
+            // 随机初始偏移，避免扎堆
+            const top = Math.random() * 100 + 'vh';
+
+            genshin.style.left = left;
+            genshin.style.animationDuration = duration;
+            genshin.style.fontSize = fontSize;
+            genshin.style.transform = rotate;
+            genshin.style.top = top;
+            body.appendChild(genshin);
+        }
+        // 持续生成飘字，无限循环，一直满屏
+        setInterval(() => {
+            const genshin = document.createElement('div');
+            genshin.className = 'genshin-text';
+            genshin.innerText = textContent;
+            genshin.style.left = Math.random() * 95 + '%';
+            genshin.style.animationDuration = Math.random() * 2 + 3 + 's';
+            genshin.style.fontSize = fontSizeArr[Math.floor(Math.random() * fontSizeArr.length)] + 'px';
+            genshin.style.transform = Math.random() > 0.5 ? '' : 'scaleX(-1)';
+            genshin.style.top = '100vh';
+            body.appendChild(genshin);
+            // 清理旧飘字，避免卡顿
+            setTimeout(() => genshin.remove(), 5000);
+        }, 50);
+    </script>
+</body>
+</html>
