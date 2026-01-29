@@ -2,65 +2,53 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <!-- 必须保留viewport-fit=cover：才能让env(safe-area-inset-*)生效，获取设备物理边缘 -->
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="webkit-text-size-adjust" content="100%" />
-  <title>2026线上FPV竞速赛 | Flyz远征飞</title>
-
-  <!-- 国内极简CDN，无冗余 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/4.1.13/lib.min.js" integrity="sha512-5oT7+66hHZvR6hpz6s2A/mR+TtYG568YHj8zL29DY1plU0y0c2H90xS8eNWTL2e44Hawt00E0f0C+e084VkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+  <title>赛事中心｜2026线上FPV竞速赛</title>
+  <!-- 若需引入Cloudflare CDN的CSS/JS，直接加此处（如下示例，当前原生无需） -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
   <style>
-    /* ======================================
-       全局核心变量：新增设备物理底部适配，布局精准
-       ====================================== */
     :root {
-      --primary: #00ffff;       /* 青蓝霓虹（选中态发光） */
-      --url-blue: #87CEFA;      /* 标准淡蓝（Dock选中文字） */
-      --bg-deep: #000000;       /* 纯黑OLED背景，适配玻璃态 */
-      --dock-h: 58px;           /* Dock固定高度，全设备统一 */
-      --text-white: #ffffff;    /* 纯白文字，拉满对比度 */
-      --text-shadow: 0 0 1px #000, 0 0 3px rgba(0,0,0,0.8); /* 文字微描边，防模糊 */
-      --trans-page: 0.35s ease-in-out; /* 柔和切页，非硬切 */
-      --trans-splash: 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* 开屏动画 */
+      --primary: #00ffff;
+      --secondary: #87CEFA;
+      --bg-deep: #000000;
+      --bg-dark: #050505;
+      --dock-h: 58px;
+      /* Dock极简玻璃态：仅基础模糊+低透背景，无多层特效 */
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      /* 轻量发光：无多层叠加，简洁不刺眼 */
+      --glow-primary: 0 0 8px var(--primary), 0 0 16px rgba(0, 255, 255, 0.3);
+      --glow-secondary: 0 0 8px var(--secondary), 0 0 16px rgba(135, 206, 250, 0.3);
+      --glow-text: 0 0 2px #fff, 0 0 4px rgba(255, 255, 255, 0.7);
+      /* 统一轻量过渡 */
+      --trans-fast: 0.2s ease-out;
+      --trans-smooth: 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      --trans-fade: 0.4s ease-in-out;
     }
-
-    /* ======================================
-       全局重置：极致极简，无任何冗余样式，避免布局冲突
-       ====================================== */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      transform: translateZ(0);
-      backface-visibility: hidden;
       scrollbar-width: none;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      font-synthesis: none;
     }
     *::-webkit-scrollbar { display: none; }
-
     html, body {
       height: 100vh;
       overflow: hidden;
-      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Inter", monospace;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
       background: var(--bg-deep);
-      color: var(--text-white);
-      touch-action: pan-y; /* 全设备允许内嵌页上下滑，无交互冲突 */
-      /* 页面本身贴紧设备物理边缘，无默认边距 */
-      margin: 0;
-      padding: 0;
+      background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.25), transparent 70%);
+      color: #fff;
+      touch-action: pan-y;
     }
-
-    /* ======================================
-       开屏动画：保留所有认可设置，无修改
-       ====================================== */
+    /* 开屏动画：保留核心美化，无冗余 */
     #splash-screen {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0; /* 贴设备物理四周边缘 */
+      inset: 0;
       z-index: 100;
       background: var(--bg-deep);
       display: flex;
@@ -68,18 +56,18 @@
       justify-content: center;
       align-items: center;
       padding: 0 24px;
-      transition: opacity var(--trans-splash);
+      transition: opacity var(--trans-fade), pointer-events 0s linear var(--trans-fade);
     }
     .splash-logo {
       width: 140px;
       height: 140px;
       border-radius: 24px;
       border: 2px solid var(--primary);
-      box-shadow: 0 0 8px var(--primary), 0 0 16px var(--primary), 0 0 32px var(--primary);
+      box-shadow: var(--glow-primary);
       margin-bottom: 48px;
       transform: translateY(-300px) scale(0.85);
       opacity: 0;
-      animation: logoDownBounce var(--trans-splash) forwards 0.1s;
+      animation: logoDownBounce var(--trans-smooth) forwards 0.1s;
     }
     .splash-logo img {
       width: 100%;
@@ -88,38 +76,36 @@
       border-radius: 22px;
       filter: brightness(1.05);
     }
-    .splash-text-wrap {
-      text-align: center;
-      width: 100%;
-      max-width: 500px;
-    }
     .splash-main-title {
       font-size: 2.8rem;
       font-weight: 900;
-      line-height: 1.15;
+      line-height: 1.2;
       margin-bottom: 24px;
       color: var(--primary);
-      text-shadow: 0 0 8px var(--primary), 0 0 16px var(--primary), 0 0 32px var(--primary);
+      text-shadow: var(--glow-primary);
       letter-spacing: 2px;
       transform: translateY(150px);
       opacity: 0;
-      animation: textUpBounce var(--trans-splash) forwards 0.5s;
+      animation: textUpBounce var(--trans-smooth) forwards 0.5s;
     }
     .splash-url {
       font-size: 1.4rem;
       font-weight: 700;
-      color: var(--url-blue);
-      text-shadow: 0 0 8px var(--url-blue), 0 0 16px var(--url-blue), 0 0 32px rgba(135,206,250,0.3);
+      color: var(--secondary);
+      text-shadow: var(--glow-secondary);
       letter-spacing: 2px;
+      font-family: Consolas, monospace;
       transform: translateY(150px);
       opacity: 0;
-      animation: textUpBounce var(--trans-splash) forwards 0.5s;
-      font-family: "Consolas", "Monaco", monospace;
+      animation: textUpBounce var(--trans-smooth) forwards 0.5s;
+      padding: 6px 18px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(135,206,250,0.2);
     }
-    .splash-fade { opacity: 0; pointer-events: none; }
     @keyframes logoDownBounce {
       0% { transform: translateY(-300px) scale(0.85); opacity: 0; }
-      75% { transform: translateY(12px) scale(1.05); opacity: 1; }
+      75% { transform: translateY(10px) scale(1.02); opacity: 1; }
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
     @keyframes textUpBounce {
@@ -127,40 +113,27 @@
       75% { transform: translateY(-6px); opacity: 1; }
       100% { transform: translateY(0); opacity: 1; }
     }
-
-    /* ======================================
-       主内容区：核心修复！精准避让【设备物理底部+Dock】
-       bottom = calc(var(--dock-h) + env(safe-area-inset-bottom))：
-       同时避开Dock高度 + 设备物理底部安全区，永不重叠
-       ====================================== */
+    /* 主内容区：保留布局，无冗余样式 */
     #pages {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      /* 核心：计算底部距离，贴设备物理顶部，避开Dock+设备物理底部 */
       bottom: calc(var(--dock-h) + env(safe-area-inset-bottom));
       bottom: calc(var(--dock-h) + -webkit-env(safe-area-inset-bottom));
       z-index: 10;
-      display: none;
-      background: var(--bg-deep);
+      background: var(--bg-dark);
       overflow: hidden;
-      /* 无任何内边距，贴紧设备左右边缘 */
-      padding: 0;
-      margin: 0;
+      display: none;
+      border-radius: 0 0 16px 16px;
     }
     #pages.active { display: block; }
-    .iframe-wrap {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
     .page-container {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       opacity: 0;
       pointer-events: none;
-      transition: opacity var(--trans-page);
+      transition: opacity var(--trans-fade);
     }
     .page-container.active {
       opacity: 1;
@@ -170,126 +143,92 @@
       width: 100%;
       height: 100%;
       border: none;
-      background: var(--bg-deep);
+      background: var(--bg-dark);
       display: block;
-      -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
     }
-
-    /* ======================================
-       Dock栏：终极修复！强制贴**设备物理底部**
-       核心：bottom: env(safe-area-inset-bottom); 直接贴设备最下方
-       宽度100%，无任何边距，左右贴设备物理边缘
-       ====================================== */
+    /* Dock栏：极致精简！删除所有多层特效，仅基础玻璃态+轻量动效 */
     #dock {
-      position: fixed;
-      /* 核心：贴设备物理底部，不管是不是异形屏/直屏 */
-      bottom: env(safe-area-inset-bottom);
-      bottom: -webkit-env(safe-area-inset-bottom);
-      left: 0;
-      right: 0;
-      height: var(--dock-h); /* 固定高度，不被安全区挤压 */
-      z-index: 20;  /* 层级高于主内容区，无任何遮挡 */
-      border-radius: 16px 16px 0 0; /* 上圆角，高端视觉 */
-      display: flex; /* 纯flex布局，子项绝对居中 */
+      position: fixed !important;
+      bottom: env(safe-area-inset-bottom) !important;
+      bottom: -webkit-env(safe-area-inset-bottom) !important;
+      left: 0 !important;
+      right: 0 !important;
+      height: var(--dock-h);
+      z-index: 20;
+      border-radius: 20px 20px 0 0;
+      display: flex;
       justify-content: space-around;
       align-items: center;
       padding: 0 8px;
-      /* 无任何外边距，左右贴设备物理边缘 */
-      margin: 0;
-      /* 防止样式覆盖，定位优先级拉满 */
-      position: fixed !important;
-      left: 0 !important;
-      right: 0 !important;
+      /* 极简玻璃态：仅一层模糊+边框+轻微阴影，无多层嵌套 */
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
     }
-
-    /* ======================================
-       Dock项：文字绝对居中，层级置顶，清晰无遮挡
-       ====================================== */
+    /* Dock项：无伪元素/多层框，仅颜色+发光+底部边框的轻量变化 */
     .dock-item {
       width: 100%;
       height: 100%;
       display: flex;
       justify-content: center;
-      align-items: center; /* 垂直+水平双居中，永不错位 */
+      align-items: center;
       font-size: 15px;
       font-weight: 600;
       letter-spacing: 1px;
-      color: var(--text-white);
-      text-shadow: var(--text-shadow);
-      z-index: 21; /* 文字层级置顶，无任何元素遮挡 */
+      color: #fff;
+      text-shadow: var(--glow-text);
       cursor: pointer;
-      transition: all 0.2s ease-out;
+      transition: all var(--trans-fast);
+      border-bottom: 3px solid transparent;
     }
-    /* Dock选中态：淡蓝发光，清晰不刺眼，无冗余样式 */
+    /* hover：仅轻量颜色+发光变化，无额外框体 */
+    .dock-item:hover {
+      color: var(--secondary);
+      text-shadow: var(--glow-secondary), var(--glow-text);
+      background: rgba(135, 206, 250, 0.05);
+    }
+    /* 选中：仅青蓝底部边框+主色发光，简洁辨识度高 */
     .dock-item.active {
-      color: var(--url-blue);
-      text-shadow: 0 0 5px var(--url-blue), var(--text-shadow);
-    }
-
-    /* ======================================
-       样式1：iOS Safari专属 - 私有CSS系统玻璃态联动
-       关键：-webkit-backdrop-filter: auto; 触发系统部分联动（随主题/壁纸适配）
-       ====================================== */
-    .dock-ios-safari {
-      -webkit-backdrop-filter: auto; /* Safari私有属性，系统玻璃态联动核心 */
-      backdrop-filter: auto;
-      background: rgba(255,255,255,0.05); /* 极低透，适配系统玻璃态 */
-      border-top: 1px solid rgba(255,255,255,0.1); /* 轻微边框，增强层次 */
-    }
-
-    /* ======================================
-       样式2：安卓/非Safari（Chrome/Edge）- 标准高端玻璃态
-       国内机型适配的成熟参数，模糊12px，低透高对比
-       ====================================== */
-    .dock-standard {
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      background: rgba(255,255,255,0.12);
-      border-top: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 -2px 15px rgba(0,0,0,0.2); /* 轻微阴影，增强立体感 */
+      color: var(--primary);
+      text-shadow: var(--glow-primary), var(--glow-text);
+      border-bottom: 3px solid var(--primary);
+      background: rgba(0, 255, 255, 0.06);
     }
   </style>
 </head>
-
 <body>
-  <!-- 开屏动画：贴设备物理边缘，无修改 -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <img src="/logo.JPG" alt="Flyz远征飞" /> <!-- 【可修改】Logo路径，直接替换即可 -->
+      <img src="./logo.JPG" alt="Flyz远征飞" />
     </div>
-    <div class="splash-text-wrap">
-      <div class="splash-main-title">2026线上FPV竞速赛</div>
-      <div class="splash-url">cdn.917813.com.cn</div>
-    </div>
+    <div class="splash-main-title">2026线上FPV竞速赛</div>
+    <div class="splash-url">cdn.917813.com.cn</div>
   </div>
 
-  <!-- 主内容区：精准避让设备底部+Dock，无重叠 -->
   <div id="pages">
-    <div class="iframe-wrap">
-      <!-- 切页容器，每个页面独立，初始仅报名页激活 -->
-      <div class="page-container active" data-target="home">
-        <iframe src="/fpv/2026onlinerace/bm/index.html"></iframe>
-      </div>
-      <div class="page-container" data-target="gg">
-        <iframe src="/fpv/2026onlinerace/gg/index.html"></iframe>
-      </div>
-      <div class="page-container" data-target="xs">
-        <iframe src="/fpv/2026onlinerace/xs/index.html"></iframe>
-      </div>
-      <div class="page-container" data-target="cs">
-        <iframe src="/fpv/2026onlinerace/cs/index.html"></iframe>
-      </div>
-      <div class="page-container" data-target="zz">
-        <iframe src="/fpv/2026onlinerace/zz/index.html"></iframe>
-      </div>
-      <div class="page-container" data-target="hq">
-        <iframe src="/fpv/2026onlinerace/hq/index.html"></iframe>
-      </div>
+    <div class="page-container active" data-target="home">
+      <iframe src="/fpv/2026onlinerace/bm/index.html"></iframe>
+    </div>
+    <div class="page-container" data-target="gg">
+      <iframe src="/fpv/2026onlinerace/gg/index.html"></iframe>
+    </div>
+    <div class="page-container" data-target="xs">
+      <iframe src="/fpv/2026onlinerace/xs/index.html"></iframe>
+    </div>
+    <div class="page-container" data-target="cs">
+      <iframe src="/fpv/2026onlinerace/cs/index.html"></iframe>
+    </div>
+    <div class="page-container" data-target="zz">
+      <iframe src="/fpv/2026onlinerace/zz/index.html"></iframe>
+    </div>
+    <div class="page-container" data-target="hq">
+      <iframe src="/fpv/2026onlinerace/hq/index.html"></iframe>
     </div>
   </div>
 
-  <!-- Dock栏：强制贴设备物理底部，默认标准样式，纯点击切页 -->
-  <div id="dock" class="dock-standard">
+  <div id="dock">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
     <div class="dock-item" data-target="xs">选手</div>
@@ -299,69 +238,33 @@
   </div>
 
   <script>
+    // 纯原生JS，无任何外部依赖，若需Cloudflare CDN的JS，直接在head引入
     document.addEventListener("DOMContentLoaded", () => {
-      // ======================================
-      // 精准设备判断：仅【iOS + Safari】启用私有CSS系统玻璃态联动
-      // 其他设备（安卓/iPhone Chrome/Edge）保持标准玻璃态
-      // ======================================
-      const isIosSafari = (() => {
-        const ua = navigator.userAgent;
-        const isIOS = /iPhone|iPad|iPod/.test(ua) && !window.MSStream;
-        const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS|Edge|Brave/.test(ua);
-        return isIOS && isSafari;
-      })();
-
-      // 动态替换样式：iOS Safari用私有CSS系统玻璃态，其他用标准玻璃态
-      const dock = document.getElementById('dock');
-      if (isIosSafari) {
-        dock.classList.remove('dock-standard');
-        dock.classList.add('dock-ios-safari');
-      }
-
-      // ======================================
-      // 开屏动画：3秒精准完成，无缝显示主页面，全设备统一
-      // ======================================
-      const splashScreen = document.getElementById('splash-screen');
+      const splash = document.getElementById('splash-screen');
       const pages = document.getElementById('pages');
-      setTimeout(() => {
-        splashScreen.classList.add('splash-fade');
-        pages.classList.add('active');
-        // 预加载所有iframe，避免切页卡顿，无闪屏
-        document.querySelectorAll('iframe').forEach(iframe => {
-          iframe.onload = () => iframe.dataset.loaded = 'true';
-        });
-      }, 3000);
-
-      // ======================================
-      // 核心切页逻辑：全设备统一纯点击，柔和淡入淡出，无硬切
-      // 彻底删除所有拖动代码，极简稳定，无任何布局问题
-      // ======================================
       const dockItems = document.querySelectorAll('.dock-item');
       const pageContainers = document.querySelectorAll('.page-container');
       let currentTarget = 'home';
 
-      // 切页函数：仅切换选中态和页面透明度，无冗余逻辑
+      // 开屏动画3秒淡出
+      setTimeout(() => {
+        splash.style.opacity = 0;
+        splash.style.pointerEvents = 'none';
+        setTimeout(() => pages.classList.add('active'), 300);
+      }, 3000);
+
+      // 极简切页逻辑
       const switchPage = (target) => {
-        if (target === currentTarget) return; // 避免重复切页，提升性能
-        // 切换Dock项选中态
+        if (target === currentTarget) return;
         dockItems.forEach(item => item.classList.remove('active'));
-        dockItems.forEach(item => {
-          if (item.dataset.target === target) item.classList.add('active');
-        });
-        // 切换页面（柔和淡入淡出，非硬切）
-        pageContainers.forEach(container => container.classList.remove('active'));
-        pageContainers.forEach(container => {
-          if (container.dataset.target === target) container.classList.add('active');
-        });
+        pageContainers.forEach(cont => cont.classList.remove('active'));
+        document.querySelector(`.dock-item[data-target="${target}"]`).classList.add('active');
+        document.querySelector(`.page-container[data-target="${target}"]`).classList.add('active');
         currentTarget = target;
       };
 
-      // 绑定点击事件：全设备纯点击切页，响应即时，无延迟
-      dockItems.forEach(item => {
-        item.addEventListener('click', () => {
-          switchPage(item.dataset.target);
-        });
-      });
+      // 绑定点击事件
+      dockItems.forEach(item => item.addEventListener('click', () => switchPage(item.dataset.target)));
     });
   </script>
 </body>
