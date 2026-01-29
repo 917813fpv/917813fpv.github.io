@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="robots" content="index,follow" />
@@ -30,19 +30,24 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      scrollbar-width: none;
+      scrollbar-width: thin;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    *::-webkit-scrollbar { display: none; }
+    *::-webkit-scrollbar { 
+      width: 4px;
+      height: 4px;
+    }
+    *::-webkit-scrollbar-thumb {
+      background: var(--secondary);
+      border-radius: 2px;
+    }
     html, body {
-      height: 100vh;
-      overflow: hidden;
+      height: 100%;
       font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
       background: var(--bg-deep);
       background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.25), transparent 70%);
       color: #fff;
-      touch-action: pan-y;
     }
     #splash-screen {
       position: fixed;
@@ -119,7 +124,7 @@
       bottom: var(--dock-h);
       z-index: 10;
       background: var(--bg-dark);
-      overflow: hidden;
+      overflow: auto;
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--trans-fade);
@@ -134,6 +139,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--trans-fade);
+      overflow: auto;
     }
     .page-container.active {
       opacity: 1;
