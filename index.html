@@ -2,19 +2,19 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <!-- iOS适配核心：viewport-fit=cover 开启系统视觉联动，缺一不可 -->
+  <!-- 必须保留viewport-fit=cover：才能让env(safe-area-inset-*)生效，获取设备物理边缘 -->
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="webkit-text-size-adjust" content="100%" />
   <title>2026线上FPV竞速赛 | Flyz远征飞</title>
 
-  <!-- 国内极简CDN，无冗余，不干扰系统样式 -->
+  <!-- 国内极简CDN，无冗余 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/4.1.13/lib.min.js" integrity="sha512-5oT7+66hHZvR6hpz6s2A/mR+TtYG568YHj8zL29DY1plU0y0c2H90xS8eNWTL2e44Hawt00E0f0C+e084VkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
     /* ======================================
-       全局核心变量：极简统一，布局/清晰优先
+       全局核心变量：新增设备物理底部适配，布局精准
        ====================================== */
     :root {
       --primary: #00ffff;       /* 青蓝霓虹（选中态发光） */
@@ -50,6 +50,9 @@
       background: var(--bg-deep);
       color: var(--text-white);
       touch-action: pan-y; /* 全设备允许内嵌页上下滑，无交互冲突 */
+      /* 页面本身贴紧设备物理边缘，无默认边距 */
+      margin: 0;
+      padding: 0;
     }
 
     /* ======================================
@@ -57,7 +60,7 @@
        ====================================== */
     #splash-screen {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0; /* 贴设备物理四周边缘 */
       z-index: 100;
       background: var(--bg-deep);
       display: flex;
@@ -126,19 +129,25 @@
     }
 
     /* ======================================
-       主内容区：彻底校准，无重叠，永久在Dock上方
-       关键：bottom=var(--dock-h) + z-index=10（低于Dock的20）
+       主内容区：核心修复！精准避让【设备物理底部+Dock】
+       bottom = calc(var(--dock-h) + env(safe-area-inset-bottom))：
+       同时避开Dock高度 + 设备物理底部安全区，永不重叠
        ====================================== */
     #pages {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      bottom: var(--dock-h); /* 严格留Dock高度，无任何重叠 */
+      /* 核心：计算底部距离，贴设备物理顶部，避开Dock+设备物理底部 */
+      bottom: calc(var(--dock-h) + env(safe-area-inset-bottom));
+      bottom: calc(var(--dock-h) + -webkit-env(safe-area-inset-bottom));
       z-index: 10;
       display: none;
       background: var(--bg-deep);
       overflow: hidden;
+      /* 无任何内边距，贴紧设备左右边缘 */
+      padding: 0;
+      margin: 0;
     }
     #pages.active { display: block; }
     .iframe-wrap {
@@ -167,25 +176,34 @@
     }
 
     /* ======================================
-       Dock栏：彻底重构！极简结构，永久贴底，无任何错乱
-       核心：fixed+bottom:0+left:0+right:0，flex纯居中，z-index=20拉满
+       Dock栏：终极修复！强制贴**设备物理底部**
+       核心：bottom: env(safe-area-inset-bottom); 直接贴设备最下方
+       宽度100%，无任何边距，左右贴设备物理边缘
        ====================================== */
     #dock {
       position: fixed;
-      bottom: 0;    /* 写死贴底，优先级最高，永不跑顶 */
+      /* 核心：贴设备物理底部，不管是不是异形屏/直屏 */
+      bottom: env(safe-area-inset-bottom);
+      bottom: -webkit-env(safe-area-inset-bottom);
       left: 0;
       right: 0;
-      height: var(--dock-h); /* 固定58px，无伸缩，无动态计算 */
+      height: var(--dock-h); /* 固定高度，不被安全区挤压 */
       z-index: 20;  /* 层级高于主内容区，无任何遮挡 */
       border-radius: 16px 16px 0 0; /* 上圆角，高端视觉 */
-      display: flex; /* 纯flex布局，子项自动居中，无浮动/定位 */
+      display: flex; /* 纯flex布局，子项绝对居中 */
       justify-content: space-around;
       align-items: center;
       padding: 0 8px;
+      /* 无任何外边距，左右贴设备物理边缘 */
+      margin: 0;
+      /* 防止样式覆盖，定位优先级拉满 */
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
     }
 
     /* ======================================
-       Dock项：彻底重构，文字绝对居中，层级置顶，清晰无遮挡
+       Dock项：文字绝对居中，层级置顶，清晰无遮挡
        ====================================== */
     .dock-item {
       width: 100%;
@@ -211,7 +229,6 @@
     /* ======================================
        样式1：iOS Safari专属 - 私有CSS系统玻璃态联动
        关键：-webkit-backdrop-filter: auto; 触发系统部分联动（随主题/壁纸适配）
-       极低透背景，轻微边框，不干扰系统原生效果
        ====================================== */
     .dock-ios-safari {
       -webkit-backdrop-filter: auto; /* Safari私有属性，系统玻璃态联动核心 */
@@ -222,7 +239,7 @@
 
     /* ======================================
        样式2：安卓/非Safari（Chrome/Edge）- 标准高端玻璃态
-       国内机型适配的成熟参数，模糊12px，低透高对比，文字清晰
+       国内机型适配的成熟参数，模糊12px，低透高对比
        ====================================== */
     .dock-standard {
       -webkit-backdrop-filter: blur(12px);
@@ -235,7 +252,7 @@
 </head>
 
 <body>
-  <!-- 开屏动画：全设备统一，无修改 -->
+  <!-- 开屏动画：贴设备物理边缘，无修改 -->
   <div id="splash-screen">
     <div class="splash-logo">
       <img src="/logo.JPG" alt="Flyz远征飞" /> <!-- 【可修改】Logo路径，直接替换即可 -->
@@ -246,7 +263,7 @@
     </div>
   </div>
 
-  <!-- 主内容区：布局校准，无重叠，在Dock上方 -->
+  <!-- 主内容区：精准避让设备底部+Dock，无重叠 -->
   <div id="pages">
     <div class="iframe-wrap">
       <!-- 切页容器，每个页面独立，初始仅报名页激活 -->
@@ -271,7 +288,7 @@
     </div>
   </div>
 
-  <!-- Dock栏：彻底重构，默认标准样式，纯点击切页 -->
+  <!-- Dock栏：强制贴设备物理底部，默认标准样式，纯点击切页 -->
   <div id="dock" class="dock-standard">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
