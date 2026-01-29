@@ -97,7 +97,7 @@ footer{position:fixed;bottom:12px;width:100%;text-align:center;color:rgba(102,20
   <div id="msg">页面不存在或已被移动。请检查网址或返回首页。</div>
 
   <div id="count">
-    <b id="cd">5</b> 秒后自动返回首页
+    <b id="cd">5</b> 秒后自动跳转Gov网页
   </div>
 
   <div id="wx">
@@ -113,7 +113,7 @@ footer{position:fixed;bottom:12px;width:100%;text-align:center;color:rgba(102,20
 
 <script>
 let t=5,n=document.getElementById("cd");
-setInterval(()=>{t--;n.textContent=t;t<=0&&(location.href="/index.html")},1000);
+setInterval(()=>{t--;n.textContent=t;t<=0&&(location.href="https://www.mps.gov.cn/n2255079/n4876594/n5104076/n5104077/index.html")},1000);
 </script>
 
 </body>
