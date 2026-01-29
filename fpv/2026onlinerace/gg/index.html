@@ -146,7 +146,7 @@ footer{
 <body>
 <div class="page-container">
   <div class="header-logo">
-    <img src="https://img520.com/UIGuUV.jpeg" class="logo-img">
+    <img src="/logo.JPG" class="logo-img">
     <div class="logo-text-group">
       <div class="logo-domain">917813.com.cn</div>
       <div class="logo-slogan">Flyz远征飞｜为方便模友而生</div>
@@ -171,8 +171,8 @@ footer{
   </div>
 
   <div class="btn-group">
-    <button class="btn btn-primary" onclick="downloadNotice()">保存公告到相册</button>
-    <button class="btn btn-outline" onclick="location.href='/index.html'">返回首页</button>
+    <button class="btn btn-primary" onclick="downloadNotice()">保存到相册</button>
+    <button class="btn btn-outline" onclick="location.href='https://yzbjfpv.top'">探索更多</button>
   </div>
 </div>
 
@@ -185,7 +185,7 @@ footer{
 <script>
 // 加载公告
 function loadNotice() {
-  $.get('/fpv/gonggao.txt')
+  $.get('/fpv/2026onlinerace/gg/data.txt')
     .done(data => {
       $('#notice-content').text(data);
       const now = new Date().toLocaleString();
