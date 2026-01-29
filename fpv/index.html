@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>404</title>
+  <style>
+    :root {
+      --primary: #00ffff;
+      --bg-deep: #000000;
+      --glow-primary: 0 0 12px var(--primary), 0 0 24px rgba(0, 255, 255, 0.4);
+      --glow-text: 0 0 4px #fff, 0 0 8px rgba(255, 255, 255, 0.8);
+      --trans-fade: 0.6s ease-in-out;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
+      background: var(--bg-deep);
+      background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.3), transparent 70%);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .code-404 {
+      font-size: 8rem;
+      font-weight: 900;
+      color: var(--primary);
+      text-shadow: var(--glow-primary);
+      margin-bottom: 20px;
+      animation: fadeIn var(--trans-fade) forwards;
+    }
+    .error-text {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-shadow: var(--glow-text);
+      animation: fadeIn var(--trans-fade) forwards 0.3s;
+      opacity: 0;
+    }
+    .tip {
+      margin-top: 40px;
+      font-size: 1.2rem;
+      color: #888;
+      letter-spacing: 2px;
+      animation: fadeIn var(--trans-fade) forwards 0.6s;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="code-404">404</div>
+  <div class="error-text">此页面已失效</div>
+  <div class="tip">即将自动返回首页...</div>
+
+  <script>
+    // 3秒后自动跳转至index.html，可修改毫秒数调整跳转时间
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
+  </script>
+</body>
+</html>
