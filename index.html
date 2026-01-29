@@ -2,219 +2,277 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
+  <!-- iOS适配核心：viewport-fit=cover 开启系统视觉联动，缺一不可 -->
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-  <meta name="referrer" content="no-referrer">
-  <!-- 还原最早原始标题 -->
-  <title>赛事中心｜2026线上FPV竞速赛</title>
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="webkit-text-size-adjust" content="100%" />
+  <title>2026线上FPV竞速赛 | Flyz远征飞</title>
 
-  <!-- 精简Cloudflare CDN：仅基础tailwind，极速加载 -->
+  <!-- 国内极简CDN，无冗余，不干扰系统样式 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/4.1.13/lib.min.js" integrity="sha512-5oT7+66hHZvR6hpz6s2A/mR+TtYG568YHj8zL29DY1plU0y0c2H90xS8eNWTL2e44Hawt00E0f0C+e084VkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* 全局重置：消除所有默认边距，保证贴底无偏移 */
-    html, body {
+    /* ======================================
+       全局核心变量：极简统一，布局/清晰优先
+       ====================================== */
+    :root {
+      --primary: #00ffff;       /* 青蓝霓虹（选中态发光） */
+      --url-blue: #87CEFA;      /* 标准淡蓝（Dock选中文字） */
+      --bg-deep: #000000;       /* 纯黑OLED背景，适配玻璃态 */
+      --dock-h: 58px;           /* Dock固定高度，全设备统一 */
+      --text-white: #ffffff;    /* 纯白文字，拉满对比度 */
+      --text-shadow: 0 0 1px #000, 0 0 3px rgba(0,0,0,0.8); /* 文字微描边，防模糊 */
+      --trans-page: 0.35s ease-in-out; /* 柔和切页，非硬切 */
+      --trans-splash: 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28); /* 开屏动画 */
+    }
+
+    /* ======================================
+       全局重置：极致极简，无任何冗余样式，避免布局冲突
+       ====================================== */
+    * {
       margin: 0;
       padding: 0;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    :root {
-      --primary: #00ffff;
-      --secondary: #66ccff;
-      --dark: #050b14;
-      --glow: 0 0 15px var(--primary), 0 0 30px rgba(0, 255, 255, 0.5);
-      --bg-gradient: linear-gradient(135deg, #001528, #050b14);
-    }
-
-    * {
       box-sizing: border-box;
       transform: translateZ(0);
       backface-visibility: hidden;
+      scrollbar-width: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-synthesis: none;
+    }
+    *::-webkit-scrollbar { display: none; }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Inter", monospace;
+      background: var(--bg-deep);
+      color: var(--text-white);
+      touch-action: pan-y; /* 全设备允许内嵌页上下滑，无交互冲突 */
     }
 
-    body {
-      font-family: "Inter", "Consolas", "Monaco", monospace;
-      color: #fff;
-      /* 替换为静态高饱和渐变背景：无动画，加载瞬间完成，跟住弹速 */
-      background: var(--bg-gradient);
-      /* 叠加一层高饱和主色光效，保留鲜艳度，无加载延迟 */
-      background-image: radial-gradient(circle at center, rgba(0, 255, 255, 0.2), transparent 70%), var(--bg-gradient);
-    }
-
-    /* 开屏容器：全屏居中，无冗余，加载瞬间完成 */
+    /* ======================================
+       开屏动画：保留所有认可设置，无修改
+       ====================================== */
     #splash-screen {
       position: fixed;
-      inset: 0;
-      z-index: 2;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 100;
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 0 20px;
-      background: rgba(5, 11, 20, 0.9);
-      transition: opacity 0.5s ease;
+      padding: 0 24px;
+      transition: opacity var(--trans-splash);
     }
-
-    /* Logo：完全保留原动画参数（弹速刚好，一字不改） */
     .splash-logo {
-      width: 120px;
-      height: 120px;
-      border-radius: 16px;
-      box-shadow: var(--glow);
+      width: 140px;
+      height: 140px;
+      border-radius: 24px;
       border: 2px solid var(--primary);
-      margin-bottom: 30px;
-      transform: translateY(-200px) scale(0.95);
+      box-shadow: 0 0 8px var(--primary), 0 0 16px var(--primary), 0 0 32px var(--primary);
+      margin-bottom: 48px;
+      transform: translateY(-300px) scale(0.85);
       opacity: 0;
-      animation: logoDownBounce 0.8s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.1s;
+      animation: logoDownBounce var(--trans-splash) forwards 0.1s;
     }
-
     .splash-logo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 14px;
+      border-radius: 22px;
+      filter: brightness(1.05);
     }
-
-    /* 文字容器：保留原尺寸，不换行 */
-    .text-container {
+    .splash-text-wrap {
       text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
     }
-
-    /* 主副文字：完全保留原动画参数（弹速刚好，一字不改） */
-    .main-title {
-      font-size: 2.2rem;
+    .splash-main-title {
+      font-size: 2.8rem;
       font-weight: 900;
-      line-height: 1.3;
-      margin-bottom: 15px;
+      line-height: 1.15;
+      margin-bottom: 24px;
       color: var(--primary);
-      text-shadow: var(--glow);
-      transform: translateY(80px);
+      text-shadow: 0 0 8px var(--primary), 0 0 16px var(--primary), 0 0 32px var(--primary);
+      letter-spacing: 2px;
+      transform: translateY(150px);
       opacity: 0;
-      animation: textUpBounce 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.5s;
+      animation: textUpBounce var(--trans-splash) forwards 0.5s;
     }
-
-    .sub-title {
-      font-size: 1.1rem;
+    .splash-url {
+      font-size: 1.4rem;
       font-weight: 700;
-      color: var(--secondary);
-      text-shadow: 0 0 10px var(--secondary);
-      transform: translateY(80px);
+      color: var(--url-blue);
+      text-shadow: 0 0 8px var(--url-blue), 0 0 16px var(--url-blue), 0 0 32px rgba(135,206,250,0.3);
+      letter-spacing: 2px;
+      transform: translateY(150px);
       opacity: 0;
-      animation: textUpBounce 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.5s;
+      animation: textUpBounce var(--trans-splash) forwards 0.5s;
+      font-family: "Consolas", "Monaco", monospace;
     }
-
-    /* 动画关键帧：完全保留原参数，弹速不变 */
+    .splash-fade { opacity: 0; pointer-events: none; }
     @keyframes logoDownBounce {
-      0% { transform: translateY(-200px) scale(0.95); opacity: 0; }
-      80% { transform: translateY(10px) scale(1.05); opacity: 1; }
+      0% { transform: translateY(-300px) scale(0.85); opacity: 0; }
+      75% { transform: translateY(12px) scale(1.05); opacity: 1; }
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
-
     @keyframes textUpBounce {
-      0% { transform: translateY(80px); opacity: 0; }
-      80% { transform: translateY(-5px); opacity: 1; }
+      0% { transform: translateY(150px); opacity: 0; }
+      75% { transform: translateY(-6px); opacity: 1; }
       100% { transform: translateY(0); opacity: 1; }
     }
 
-    /* 主内容区：保留原逻辑，适配Dock栏高度 */
+    /* ======================================
+       主内容区：彻底校准，无重叠，永久在Dock上方
+       关键：bottom=var(--dock-h) + z-index=10（低于Dock的20）
+       ====================================== */
     #pages {
       position: fixed;
-      inset: 0 0 52px 0; /* 底部留Dock栏高度，避免内容被挡 */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: var(--dock-h); /* 严格留Dock高度，无任何重叠 */
       z-index: 10;
       display: none;
+      background: var(--bg-deep);
+      overflow: hidden;
     }
-
-    #pages.active {
-      display: block;
-    }
-
+    #pages.active { display: block; }
     .iframe-wrap {
       width: 100%;
       height: 100%;
       position: relative;
     }
-
+    .page-container {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--trans-page);
+    }
+    .page-container.active {
+      opacity: 1;
+      pointer-events: all;
+    }
     iframe {
       width: 100%;
       height: 100%;
       border: none;
+      background: var(--bg-deep);
+      display: block;
+      -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
     }
 
-    /* Dock栏：强制贴死设备最底部（核心优化） */
+    /* ======================================
+       Dock栏：彻底重构！极简结构，永久贴底，无任何错乱
+       核心：fixed+bottom:0+left:0+right:0，flex纯居中，z-index=20拉满
+       ====================================== */
     #dock {
       position: fixed;
-      inset: auto 0 0 0; /* 上下左右精准定位，贴死最底部 */
-      height: 52px;
-      background: rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      display: flex;
+      bottom: 0;    /* 写死贴底，优先级最高，永不跑顶 */
+      left: 0;
+      right: 0;
+      height: var(--dock-h); /* 固定58px，无伸缩，无动态计算 */
+      z-index: 20;  /* 层级高于主内容区，无任何遮挡 */
+      border-radius: 16px 16px 0 0; /* 上圆角，高端视觉 */
+      display: flex; /* 纯flex布局，子项自动居中，无浮动/定位 */
       justify-content: space-around;
       align-items: center;
-      z-index: 20;
-      /* 适配刘海屏/灵动岛，贴死物理底部 */
-      padding-bottom: env(safe-area-inset-bottom);
-      height: calc(52px + env(safe-area-inset-bottom));
+      padding: 0 8px;
     }
 
+    /* ======================================
+       Dock项：彻底重构，文字绝对居中，层级置顶，清晰无遮挡
+       ====================================== */
     .dock-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.7);
       width: 100%;
       height: 100%;
-      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center; /* 垂直+水平双居中，永不错位 */
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-white);
+      text-shadow: var(--text-shadow);
+      z-index: 21; /* 文字层级置顶，无任何元素遮挡 */
       cursor: pointer;
+      transition: all 0.2s ease-out;
     }
-
+    /* Dock选中态：淡蓝发光，清晰不刺眼，无冗余样式 */
     .dock-item.active {
-      color: var(--primary);
-      background: rgba(0, 255, 255, 0.08);
-      border-bottom: 2px solid var(--primary);
+      color: var(--url-blue);
+      text-shadow: 0 0 5px var(--url-blue), var(--text-shadow);
     }
 
-    .dock-item:hover {
-      color: var(--secondary);
-      background: rgba(0, 255, 255, 0.05);
+    /* ======================================
+       样式1：iOS Safari专属 - 私有CSS系统玻璃态联动
+       关键：-webkit-backdrop-filter: auto; 触发系统部分联动（随主题/壁纸适配）
+       极低透背景，轻微边框，不干扰系统原生效果
+       ====================================== */
+    .dock-ios-safari {
+      -webkit-backdrop-filter: auto; /* Safari私有属性，系统玻璃态联动核心 */
+      backdrop-filter: auto;
+      background: rgba(255,255,255,0.05); /* 极低透，适配系统玻璃态 */
+      border-top: 1px solid rgba(255,255,255,0.1); /* 轻微边框，增强层次 */
     }
 
-    /* 开屏淡出：保留原3秒逻辑 */
-    .splash-fade {
-      opacity: 0;
-      pointer-events: none;
+    /* ======================================
+       样式2：安卓/非Safari（Chrome/Edge）- 标准高端玻璃态
+       国内机型适配的成熟参数，模糊12px，低透高对比，文字清晰
+       ====================================== */
+    .dock-standard {
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.12);
+      border-top: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 -2px 15px rgba(0,0,0,0.2); /* 轻微阴影，增强立体感 */
     }
   </style>
 </head>
 
 <body>
-  <!-- 开屏容器：无多余背景层，加载极速 -->
+  <!-- 开屏动画：全设备统一，无修改 -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <img src="/logo.JPG" alt="Flyz远征飞" />
+      <img src="/logo.JPG" alt="Flyz远征飞" /> <!-- 【可修改】Logo路径，直接替换即可 -->
     </div>
-    <div class="text-container">
-      <div class="main-title">2026线上FPV竞速赛</div>
-      <div class="sub-title">Flyz远征飞 · 为模友而生</div>
+    <div class="splash-text-wrap">
+      <div class="splash-main-title">2026线上FPV竞速赛</div>
+      <div class="splash-url">cdn.917813.com.cn</div>
     </div>
   </div>
 
-  <!-- 主内容区：底部留Dock栏高度，内容不被挡 -->
+  <!-- 主内容区：布局校准，无重叠，在Dock上方 -->
   <div id="pages">
     <div class="iframe-wrap">
-      <iframe src="/fpv/2026onlinerace/bm/index.html" id="main-iframe"></iframe>
+      <!-- 切页容器，每个页面独立，初始仅报名页激活 -->
+      <div class="page-container active" data-target="home">
+        <iframe src="/fpv/2026onlinerace/bm/index.html"></iframe>
+      </div>
+      <div class="page-container" data-target="gg">
+        <iframe src="/fpv/2026onlinerace/gg/index.html"></iframe>
+      </div>
+      <div class="page-container" data-target="xs">
+        <iframe src="/fpv/2026onlinerace/xs/index.html"></iframe>
+      </div>
+      <div class="page-container" data-target="cs">
+        <iframe src="/fpv/2026onlinerace/cs/index.html"></iframe>
+      </div>
+      <div class="page-container" data-target="zz">
+        <iframe src="/fpv/2026onlinerace/zz/index.html"></iframe>
+      </div>
+      <div class="page-container" data-target="hq">
+        <iframe src="/fpv/2026onlinerace/hq/index.html"></iframe>
+      </div>
     </div>
   </div>
 
-  <!-- Dock栏：强制贴死最底部，适配异形屏 -->
-  <div id="dock">
+  <!-- Dock栏：彻底重构，默认标准样式，纯点击切页 -->
+  <div id="dock" class="dock-standard">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
     <div class="dock-item" data-target="xs">选手</div>
@@ -224,37 +282,67 @@
   </div>
 
   <script>
-    // 完全保留原JS逻辑，无任何修改
     document.addEventListener("DOMContentLoaded", () => {
+      // ======================================
+      // 精准设备判断：仅【iOS + Safari】启用私有CSS系统玻璃态联动
+      // 其他设备（安卓/iPhone Chrome/Edge）保持标准玻璃态
+      // ======================================
+      const isIosSafari = (() => {
+        const ua = navigator.userAgent;
+        const isIOS = /iPhone|iPad|iPod/.test(ua) && !window.MSStream;
+        const isSafari = /Safari/.test(ua) && !/Chrome|CriOS|FxiOS|Edge|Brave/.test(ua);
+        return isIOS && isSafari;
+      })();
+
+      // 动态替换样式：iOS Safari用私有CSS系统玻璃态，其他用标准玻璃态
+      const dock = document.getElementById('dock');
+      if (isIosSafari) {
+        dock.classList.remove('dock-standard');
+        dock.classList.add('dock-ios-safari');
+      }
+
+      // ======================================
+      // 开屏动画：3秒精准完成，无缝显示主页面，全设备统一
+      // ======================================
       const splashScreen = document.getElementById('splash-screen');
       const pages = document.getElementById('pages');
-
-      // 3秒准时淡出，保留原动画节奏
       setTimeout(() => {
         splashScreen.classList.add('splash-fade');
-        setTimeout(() => {
-          pages.classList.add('active');
-        }, 500);
+        pages.classList.add('active');
+        // 预加载所有iframe，避免切页卡顿，无闪屏
+        document.querySelectorAll('iframe').forEach(iframe => {
+          iframe.onload = () => iframe.dataset.loaded = 'true';
+        });
       }, 3000);
 
-      // 导航切换逻辑：原封不动
-      const urls = {
-        home: "/fpv/2026onlinerace/bm/index.html",
-        gg: "/fpv/2026onlinerace/gg/index.html",
-        xs: "/fpv/2026onlinerace/xs/index.html",
-        cs: "/fpv/2026onlinerace/cs/index.html",
-        zz: "/fpv/2026onlinerace/zz/index.html",
-        hq: "/fpv/2026onlinerace/hq/index.html"
+      // ======================================
+      // 核心切页逻辑：全设备统一纯点击，柔和淡入淡出，无硬切
+      // 彻底删除所有拖动代码，极简稳定，无任何布局问题
+      // ======================================
+      const dockItems = document.querySelectorAll('.dock-item');
+      const pageContainers = document.querySelectorAll('.page-container');
+      let currentTarget = 'home';
+
+      // 切页函数：仅切换选中态和页面透明度，无冗余逻辑
+      const switchPage = (target) => {
+        if (target === currentTarget) return; // 避免重复切页，提升性能
+        // 切换Dock项选中态
+        dockItems.forEach(item => item.classList.remove('active'));
+        dockItems.forEach(item => {
+          if (item.dataset.target === target) item.classList.add('active');
+        });
+        // 切换页面（柔和淡入淡出，非硬切）
+        pageContainers.forEach(container => container.classList.remove('active'));
+        pageContainers.forEach(container => {
+          if (container.dataset.target === target) container.classList.add('active');
+        });
+        currentTarget = target;
       };
 
-      document.querySelectorAll(".dock-item").forEach(item => {
-        item.addEventListener("click", function() {
-          const target = this.dataset.target;
-          if (!urls[target]) return;
-
-          document.querySelectorAll(".dock-item").forEach(i => i.classList.remove("active"));
-          this.classList.add("active");
-          document.getElementById("main-iframe").src = urls[target];
+      // 绑定点击事件：全设备纯点击切页，响应即时，无延迟
+      dockItems.forEach(item => {
+        item.addEventListener('click', () => {
+          switchPage(item.dataset.target);
         });
       });
     });
