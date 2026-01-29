@@ -2,60 +2,49 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-XSS-Protection" content="1; mode=block">
   <meta name="referrer" content="no-referrer">
-  <!-- 还原最早的原始标题，一字不改 -->
+  <!-- 还原最早原始标题 -->
   <title>赛事中心｜2026线上FPV竞速赛</title>
 
-  <!-- Cloudflare cdnjs 真实可用完整链接（带校验，可直接加载，无任何无效资源） -->
+  <!-- 精简Cloudflare CDN：仅基础tailwind，极速加载 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/4.1.13/lib.min.js" integrity="sha512-5oT7+66hHZvR6hpz6s2A/mR+TtYG568YHj8zL29DY1plU0y0c2H90xS8eNWTL2e44Hawt00E0f0C+e084VkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
+    /* 全局重置：消除所有默认边距，保证贴底无偏移 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
     :root {
       --primary: #00ffff;
       --secondary: #66ccff;
       --dark: #050b14;
       --glow: 0 0 15px var(--primary), 0 0 30px rgba(0, 255, 255, 0.5);
+      --bg-gradient: linear-gradient(135deg, #001528, #050b14);
     }
 
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
-      /* 硬件加速保证流畅，无重排重绘 */
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
     body {
-      height: 100vh;
-      overflow: hidden;
       font-family: "Inter", "Consolas", "Monaco", monospace;
       color: #fff;
-      background: var(--dark);
+      /* 替换为静态高饱和渐变背景：无动画，加载瞬间完成，跟住弹速 */
+      background: var(--bg-gradient);
+      /* 叠加一层高饱和主色光效，保留鲜艳度，无加载延迟 */
+      background-image: radial-gradient(circle at center, rgba(0, 255, 255, 0.2), transparent 70%), var(--bg-gradient);
     }
 
-    /* 纯CSS鲜艳斜向流光背景（真实可加载，无JS，斜向流动，亮度拉满） */
-    #flow-bg {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      background: linear-gradient(135deg, #00ffff, #ff00ff, #ffff00, #00ffff);
-      background-size: 400% 400%;
-      animation: flow 8s linear infinite;
-      opacity: 0.25;
-      pointer-events: none;
-    }
-
-    /* 斜向流光动画关键帧（纯CSS，无任何依赖） */
-    @keyframes flow {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 100% 100%; }
-    }
-
-    /* 开屏动画容器（全屏，标准上下布局，无任何冗余元素） */
+    /* 开屏容器：全屏居中，无冗余，加载瞬间完成 */
     #splash-screen {
       position: fixed;
       inset: 0;
@@ -65,11 +54,11 @@
       justify-content: center;
       align-items: center;
       padding: 0 20px;
-      background: rgba(5, 11, 20, 0.85);
+      background: rgba(5, 11, 20, 0.9);
       transition: opacity 0.5s ease;
     }
 
-    /* Logo：回归最早的向下摆动+回弹（从上方视口外划入，基础款动画） */
+    /* Logo：完全保留原动画参数（弹速刚好，一字不改） */
     .splash-logo {
       width: 120px;
       height: 120px;
@@ -77,10 +66,8 @@
       box-shadow: var(--glow);
       border: 2px solid var(--primary);
       margin-bottom: 30px;
-      /* 初始在视口上方，准备向下摆动 */
       transform: translateY(-200px) scale(0.95);
       opacity: 0;
-      /* 0.8秒完成向下摆动+回弹，0.1秒延迟启动，基础慢回弹质感 */
       animation: logoDownBounce 0.8s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.1s;
     }
 
@@ -91,21 +78,14 @@
       border-radius: 14px;
     }
 
-    /* Logo向下摆动+回弹关键帧（基础款，和最早风格一致） */
-    @keyframes logoDownBounce {
-      0% { transform: translateY(-200px) scale(0.95); opacity: 0; }
-      80% { transform: translateY(10px) scale(1.05); opacity: 1; } /* 向下摆动到最低点，轻微回弹 */
-      100% { transform: translateY(0) scale(1); opacity: 1; } /* 静止在中间位置 */
-    }
-
-    /* 文字容器（标准上下，两行居中，严格控制宽度避免换行） */
+    /* 文字容器：保留原尺寸，不换行 */
     .text-container {
       text-align: center;
       width: 100%;
       max-width: 400px;
     }
 
-    /* 主标题：2026线上FPV竞速赛（适配竖屏不换行，字体大小精准） */
+    /* 主副文字：完全保留原动画参数（弹速刚好，一字不改） */
     .main-title {
       font-size: 2.2rem;
       font-weight: 900;
@@ -113,35 +93,38 @@
       margin-bottom: 15px;
       color: var(--primary);
       text-shadow: var(--glow);
+      transform: translateY(80px);
+      opacity: 0;
+      animation: textUpBounce 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.5s;
     }
 
-    /* 副标题：Flyz远征飞·为模友而生（和主标题匹配，无多余样式） */
     .sub-title {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--secondary);
       text-shadow: 0 0 10px var(--secondary);
-    }
-
-    /* 两行文字：从下向上同步弹入+回弹（基础款，同步动，无逐字，和最早风格一致） */
-    .main-title, .sub-title {
       transform: translateY(80px);
       opacity: 0;
-      /* 0.7秒完成从下向上弹入+回弹，0.5秒延迟（等Logo开始摆动后同步动） */
       animation: textUpBounce 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1) forwards 0.5s;
     }
 
-    /* 文字从下向上弹入+回弹关键帧（基础款，同步回弹，无复杂效果） */
-    @keyframes textUpBounce {
-      0% { transform: translateY(80px); opacity: 0; }
-      80% { transform: translateY(-5px); opacity: 1; } /* 向上弹到最高点，轻微回弹 */
-      100% { transform: translateY(0); opacity: 1; } /* 静止对齐 */
+    /* 动画关键帧：完全保留原参数，弹速不变 */
+    @keyframes logoDownBounce {
+      0% { transform: translateY(-200px) scale(0.95); opacity: 0; }
+      80% { transform: translateY(10px) scale(1.05); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
     }
 
-    /* 主内容区（和最早代码一致，无修改） */
+    @keyframes textUpBounce {
+      0% { transform: translateY(80px); opacity: 0; }
+      80% { transform: translateY(-5px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* 主内容区：保留原逻辑，适配Dock栏高度 */
     #pages {
       position: fixed;
-      inset: 0;
+      inset: 0 0 52px 0; /* 底部留Dock栏高度，避免内容被挡 */
       z-index: 10;
       display: none;
     }
@@ -162,12 +145,10 @@
       border: none;
     }
 
-    /* 底部导航（完全还原最早的样式和逻辑，一字不改） */
+    /* Dock栏：强制贴死设备最底部（核心优化） */
     #dock {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      inset: auto 0 0 0; /* 上下左右精准定位，贴死最底部 */
       height: 52px;
       background: rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(8px);
@@ -177,6 +158,9 @@
       justify-content: space-around;
       align-items: center;
       z-index: 20;
+      /* 适配刘海屏/灵动岛，贴死物理底部 */
+      padding-bottom: env(safe-area-inset-bottom);
+      height: calc(52px + env(safe-area-inset-bottom));
     }
 
     .dock-item {
@@ -202,7 +186,7 @@
       background: rgba(0, 255, 255, 0.05);
     }
 
-    /* 开屏淡出（3秒后执行，和最早的过渡效果一致） */
+    /* 开屏淡出：保留原3秒逻辑 */
     .splash-fade {
       opacity: 0;
       pointer-events: none;
@@ -211,13 +195,10 @@
 </head>
 
 <body>
-  <!-- 纯CSS斜向流光背景（无JS，真实可加载） -->
-  <div id="flow-bg"></div>
-
-  <!-- 开屏动画容器（仅Logo+两行文字，无任何按钮/加载/冗余文案） -->
+  <!-- 开屏容器：无多余背景层，加载极速 -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <img src="/logo.JPG" alt="Flyz远征飞" /> <!-- Logo路径和最早一致 -->
+      <img src="/logo.JPG" alt="Flyz远征飞" />
     </div>
     <div class="text-container">
       <div class="main-title">2026线上FPV竞速赛</div>
@@ -225,14 +206,14 @@
     </div>
   </div>
 
-  <!-- 主内容区（完全还原最早的代码，路径无修改） -->
+  <!-- 主内容区：底部留Dock栏高度，内容不被挡 -->
   <div id="pages">
     <div class="iframe-wrap">
       <iframe src="/fpv/2026onlinerace/bm/index.html" id="main-iframe"></iframe>
     </div>
   </div>
 
-  <!-- 底部导航（完全还原最早的代码，无任何修改） -->
+  <!-- Dock栏：强制贴死最底部，适配异形屏 -->
   <div id="dock">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
@@ -243,20 +224,20 @@
   </div>
 
   <script>
-    // 仅保留基础JS：3秒动画完成后淡出开屏，显示主内容（无任何多余代码）
+    // 完全保留原JS逻辑，无任何修改
     document.addEventListener("DOMContentLoaded", () => {
       const splashScreen = document.getElementById('splash-screen');
       const pages = document.getElementById('pages');
 
-      // 严格3秒完成所有动画，然后淡出开屏（和要求完全一致）
+      // 3秒准时淡出，保留原动画节奏
       setTimeout(() => {
         splashScreen.classList.add('splash-fade');
         setTimeout(() => {
           pages.classList.add('active');
-        }, 500); // 0.5秒淡出过渡，和最早的效果一致
+        }, 500);
       }, 3000);
 
-      // 导航切换逻辑（完全还原最早的代码，无任何修改，保证功能一致）
+      // 导航切换逻辑：原封不动
       const urls = {
         home: "/fpv/2026onlinerace/bm/index.html",
         gg: "/fpv/2026onlinerace/gg/index.html",
