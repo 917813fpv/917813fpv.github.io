@@ -1,27 +1,26 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" /> <!-- 强制UTF-8，杜绝乱码 -->
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="robots" content="index,follow" />
-  <!-- 适配Cloudflare跨域：放宽非必要限制，仅保留核心安全策略 -->
+  <!-- 放宽CSP：仅限制iframe，允许所有第三方资源加载 -->
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io https://cdnjs.cloudflare.com;
-    frame-src 'self' https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io;
-    img-src 'self' https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io data:;
-    script-src 'self' https://cdnjs.cloudflare.com;
-    style-src 'self' https://cdnjs.cloudflare.com;
-    connect-src 'self' https://cdn.917813.com.cn https://cdnjs.cloudflare.com;
+    default-src * 'unsafe-inline' 'unsafe-eval';
+    frame-src https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io;
+    img-src * data:;
+    script-src * 'unsafe-inline' 'unsafe-eval';
+    style-src * 'unsafe-inline';
+    connect-src *;
     object-src 'none';
     media-src 'none';
-    font-src 'self';
   ">
   <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
   <title>赛事｜2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
   <meta name="keywords" content="2026线上FPV竞速赛,2026线上穿越机竞速赛,Flyz远征飞,魄客杯,FPV,穿越机,FPV穿越机,穿越机竞速,FPV比赛,穿越机比赛,线上FPV赛,线上穿越机赛,FPV飞手,穿越机飞手,竞速飞手,航模飞手,无人机飞手,花飞手,FPV爱好者,穿越机爱好者,航模爱好者,无人机爱好者,沉浸式飞行,第一人称飞行,FPV Drone,Drone Racing,RC航模,遥控航模,航模竞赛,线上航模赛,FPV赛事报名,穿越机赛事报名,赛事入口,参赛通道,飞手报名,竞速赛报名" />
-  <!-- 仅用Cloudflare CDN资源（加载速度<0.3秒） -->
+  <!-- 保留Cloudflare CDN资源（可自由替换其他第三方资源） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap-grid.min.css" />
   <style>
@@ -487,40 +486,6 @@
     </div>
   </div>
 
-  <div id="browser-alert" class="alert-container fullscreen-alert">
-    <div class="alert-card">
-      <div class="alert-logo">
-        <img src="logo.JPG" alt="Flyz远征飞" />
-      </div>
-      <div class="alert-title">安全验证 - 浏览器不支持</div>
-      <div class="alert-desc">
-        检测到你使用的是非主流/不合规浏览器，为保障访问安全和体验<br>
-        仅支持：微信内置浏览器、Safari、Chrome、Edge、夸克、小米/华为/OPPO/VIVO浏览器
-      </div>
-      <div class="alert-btn-group">
-        <button class="alert-btn btn-primary" onclick="window.location.reload()">重试</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="cdn-alert" class="alert-container top-alert">
-    <div class="alert-card">
-      <div class="alert-logo">
-        <img src="logo.JPG" alt="Flyz远征飞" />
-      </div>
-      <div class="alert-title">安全提示 - 建议CDN访问</div>
-      <div class="alert-desc">
-        检测到你访问的是非CDN域名，可能存在加载不稳定或劫持风险<br>
-        推荐使用官方高速CDN链接，保障访问安全流畅
-      </div>
-      <div class="alert-cdn">https://cdn.917813.com.cn</div>
-      <div class="alert-btn-group">
-        <button class="alert-btn btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转</button>
-        <button class="alert-btn btn-secondary" onclick="document.getElementById('cdn-alert').classList.remove('active')">继续访问</button>
-      </div>
-    </div>
-  </div>
-
   <div id="hijack-alert-template" class="alert-container" style="display: none;">
     <div class="alert-card" id="hijack-alert">
       <div class="alert-logo">
@@ -612,9 +577,10 @@
   <script>
     const config = {
       trustedDomain: 'cdn.917813.com.cn',
-      trustedBrowsers: [
-        'MicroMessenger', 'Safari', 'Chrome', 'Edg', 'Quark',
-        'MiuiBrowser', 'HuaweiBrowser', 'OPPOBrowser', 'VIVOBrowser'
+      trustedDomains: [
+        'cdn.917813.com.cn',
+        '917813fpv-github-io.pages.dev',
+        '917813.github.io'
       ],
       targets: ['home', 'gg', 'xs', 'cs', 'zz', 'hq'],
       verificationState: {}
@@ -626,8 +592,6 @@
 
     const elements = {
       httpsAlert: document.getElementById('https-alert'),
-      browserAlert: document.getElementById('browser-alert'),
-      cdnAlert: document.getElementById('cdn-alert'),
       splash: document.getElementById('splash-screen'),
       pages: document.getElementById('pages'),
       dockItems: document.querySelectorAll('.dock-item'),
@@ -636,6 +600,7 @@
       verificationTemplate: document.getElementById('device-verification-template')
     };
 
+    // 仅保留核心校验：HTTPS + iframe劫持
     const baseChecks = () => {
       let isValid = true;
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -643,23 +608,10 @@
         elements.httpsAlert.classList.add('active');
         isValid = false;
       }
-      if (isValid) {
-        const userAgent = navigator.userAgent;
-        const isTrusted = config.trustedBrowsers.some(browser => userAgent.includes(browser));
-        if (!isTrusted) {
-          elements.browserAlert.classList.add('active');
-          isValid = false;
-        }
-      }
-      if (isValid) {
-        const currentHost = window.location.hostname;
-        if (currentHost !== config.trustedDomain) {
-          elements.cdnAlert.classList.add('active');
-        }
-      }
       return isValid;
     };
 
+    // 简化设备校验（仅基础检测，不严格限制）
     const checkDevice = () => {
       const userAgent = navigator.userAgent;
       const isVM = /VirtualBox|VMware|Hyper-V|QEMU|Genymotion/.test(userAgent);
@@ -732,21 +684,17 @@
       result.textContent = '';
     };
 
+    // 核心：仅拦截非信任域名的iframe
     const checkIframeHijack = (target) => {
       const iframe = document.getElementById(`iframe-${target}`);
       try {
         const iframeLocation = iframe.contentWindow.location;
         const iframeDomain = new URL(iframeLocation.href).hostname;
-        // 仅拦截非信任域名，允许Cloudflare/GitHub相关跨域
-        const trustedDomains = [config.trustedDomain, '917813fpv-github-io.pages.dev', '917813.github.io'];
-        if (!trustedDomains.includes(iframeDomain) || iframeLocation.protocol !== 'https:') {
+        if (!config.trustedDomains.includes(iframeDomain) || iframeLocation.protocol !== 'https:') {
           renderPopup(target, 'hijack');
         }
       } catch (e) {
-        // 忽略Cloudflare/GitHub正常跨域错误
-        if (!e.message.includes('cross-origin') && !e.message.includes('跨域')) {
-          renderPopup(target, 'hijack');
-        }
+        renderPopup(target, 'hijack');
       }
     };
 
@@ -761,19 +709,22 @@
     const initPageChecks = (target) => {
       const isDeviceValid = checkDevice();
       const state = config.verificationState[target];
+      
       config.targets.forEach(t => {
         if (t !== target) {
           const popups = document.querySelectorAll(`.page-container[data-target="${t}"] .alert-container`);
           popups.forEach(popup => popup.classList.remove('active'));
         }
       });
+
       if (!isDeviceValid && !state.passed) {
         renderPopup(target, 'verification');
       }
+
       const iframe = document.getElementById(`iframe-${target}`);
       if (iframe) {
         iframe.onload = () => checkIframeHijack(target);
-        setTimeout(() => checkIframeHijack(target), 300); // 缩短延迟，适配CF加载速度
+        setTimeout(() => checkIframeHijack(target), 300);
       }
     };
 
@@ -782,7 +733,7 @@
       if (isValid) {
         setTimeout(() => {
           elements.splash.style.opacity = 0;
-          elements.splash.style.pointerEvents = 'none';
+          elements.splash.style.pointer-events = 'none';
           elements.pages.style.display = 'block';
           initPageChecks('home');
         }, 3000);
