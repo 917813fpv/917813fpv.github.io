@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>奖品列表｜Flyz远征飞魄客杯</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+:root{
+  --tech-blue:#0096FF;--tech-dark:#0066CC;--tech-light:#66CCFF;
+  --text-main:#333;--text-light:#fff;--radius:12px;
+  --shadow:0 4px 20px rgba(0,150,255,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:#000814;
+  background-image:
+    linear-gradient(rgba(0,150,255,.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,150,255,.1) 1px,transparent 1px);
+  background-size:30px 30px;
+  color:var(--text-main);
+  min-height:100vh;
+  padding:20px 0;
+  position:relative;
+}
+.page-container{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 20px;
+}
+.header-logo{
+  display:flex;align-items:center;
+  margin-bottom:20px;
+}
+.logo-img{
+  width:60px;height:60px;border-radius:10px;
+  box-shadow:0 0 20px var(--tech-light);
+  transition:all .3s ease;
+}
+.logo-img:hover{transform:rotate(5deg) scale(1.1);box-shadow:0 0 30px var(--tech-blue)}
+.logo-text-group{margin-left:15px}
+.logo-domain{
+  font-size:1.5rem;font-weight:bold;
+  background:linear-gradient(90deg,var(--tech-light),var(--tech-blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.logo-slogan{
+  font-size:1rem;color:var(--tech-light);
+  text-shadow:0 0 10px rgba(0,150,255,.3);
+}
+.page-title{
+  text-align:center;font-size:2.5rem;color:var(--text-light);
+  margin:10px 0 10px;
+  text-shadow:0 0 20px rgba(0,150,255,.4);
+  position:relative;
+}
+.page-title::after{
+  content:'';display:block;width:120px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--tech-blue),transparent);
+  margin:12px auto 0;border-radius:2px;
+}
+.sort-note{
+  text-align:center;color:var(--tech-light);
+  font-size:1rem;margin-bottom:30px;
+  text-shadow:0 0 10px rgba(0,150,255,.3);
+}
+.card{
+  background:rgba(255,255,255,.95);
+  border-radius:var(--radius);
+  padding:30px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(0,150,255,.3);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--tech-blue),var(--tech-light));
+}
+.card-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding-bottom:12px;
+  border-bottom:1px solid rgba(0,150,255,.15);
+}
+.card-title{
+  font-size:1.6rem;color:var(--tech-dark);font-weight:600;
+}
+.refresh-time{
+  font-size:.95rem;color:#666;
+  margin-top:-10px;
+  margin-bottom:15px;
+  text-align:right;
+}
+.refresh-time span{
+  color:var(--tech-blue);
+  font-weight:600;
+}
+/* 表格核心样式 */
+.prize-table{
+  width:100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1.1rem;
+  min-height: 220px;
+}
+.table-header{
+  background: linear-gradient(90deg, var(--tech-dark), var(--tech-blue));
+  color: var(--text-light);
+}
+.table-header th{
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  border: none;
+}
+/* 表头圆角样式 */
+.table-header th:first-child{
+  border-top-left-radius: 8px;
+}
+.table-header th:last-child{
+  border-top-right-radius: 8px;
+}
+.table-row{
+  transition: all .2s ease;
+}
+.table-row:hover{
+  background: rgba(0,150,255,.09);
+}
+.table-row td{
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0,150,255,.08);
+  border: none;
+}
+/* 品牌列样式 */
+.table-row td:nth-child(1){
+  color: var(--tech-dark);
+  font-weight: 500;
+}
+/* 产品列样式 */
+.table-row td:nth-child(2){
+  flex: 2;
+}
+/* 数量列样式 */
+.table-row td:last-child{
+  color: var(--tech-dark);
+  font-family: monospace;
+  background: rgba(0,150,255,.05);
+  border-radius: 6px;
+  text-align: center;
+}
+.empty-tip{
+  color: #ff4d4f;
+  text-align: center;
+  padding: 40px 20px;
+}
+.btn-group{
+  display:flex;justify-content:center;gap:16px;
+  margin-top:28px;
+}
+.btn{
+  padding:12px 28px;border-radius:50px;border:none;
+  font-size:1.1rem;cursor:pointer;transition:all .3s ease;
+}
+.btn-primary{
+  background:linear-gradient(90deg,var(--tech-dark),var(--tech-blue));
+  color:#fff;box-shadow:0 4px 15px rgba(0,150,255,.3);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,150,255,.4)}
+.btn-outline{
+  background:transparent;border:2px solid var(--tech-blue);
+  color:var(--tech-blue);
+}
+.btn-outline:hover{background:rgba(0,150,255,.06);box-shadow:0 0 15px rgba(0,150,255,.2)}
+footer{
+  margin-top:40px;text-align:center;
+  color:rgba(102,204,255,.7);font-size:.95rem;
+  text-shadow:0 0 10px rgba(0,150,255,.3);
+}
+@media (max-width:768px){
+  .logo-img{width:50px;height:50px}
+  .logo-domain{font-size:1.2rem}
+  .page-title{font-size:2rem}
+  .sort-note{font-size:.9rem}
+  .card{padding:20px}
+  .card-title{font-size:1.4rem}
+  .prize-table{font-size:1rem}
+  .table-header th{padding:12px 10px}
+  .table-row td{padding:10px 10px}
+  .btn{padding:10px 22px;font-size:1rem}
+}
+</style>
+</head>
+<body>
+<div class="page-container">
+  <div class="header-logo">
+    <img src="/logo.JPG" class="logo-img">
+    <div class="logo-text-group">
+      <div class="logo-domain">cdn.917813.com.cn</div>
+      <div class="logo-slogan">Flyz远征飞｜为方便模友而生</div>
+    </div>
+  </div>
+
+  <h1 class="page-title">奖品列表</h1>
+  <div class="sort-note">📌 按品牌拼音首字母排序</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">赛事奖品信息</div>
+    </div>
+
+    <div class="refresh-time">
+      最后刷新：<span id="last-refresh"></span>
+    </div>
+
+    <table class="prize-table">
+      <thead class="table-header">
+        <tr>
+          <th>品牌</th>
+          <th>奖品名称</th>
+          <th>数量</th>
+        </tr>
+      </thead>
+      <tbody id="prize-body">
+        <tr>
+          <td colspan="3" class="empty-tip">加载中...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-outline" onclick="location.href='/index.html'">返回首页</button>
+  </div>
+</div>
+
+<footer>
+  © 2026 Flyz远征飞 · 917813.com.cn
+</footer>
+
+<script>
+// 加载奖品列表
+const loadPrizes = function(){
+  const container =$('#prize-body');
+  // 奖品数据（已按品牌拼音首字母排序）
+  const prizeList = [
+    ["大黄狗", "1550 6s电池", "8块"],
+    ["嘟嘟电池", "1550 6s电池", "1个"],
+    ["飞阅fpv", "背包（一大一小）", "1套（含一大一小两个背包）"],
+    ["飞阅fpv", "3s机架", "2个"],
+    ["丰云电机", "天狼2306.5（粉）", "4个"],
+    ["GeeCoofpv", "GeeCoo兽5 5寸宽X花飞机架", "3个"],
+    ["普锐微GPS", "PU - 182（gps）", "10个"],
+    ["PandaRC", "Nano25 图传", "2个"],
+    ["PandaRC", "R1 图传", "2个"],
+    ["PandaRC", "mini x 图传", "2个"],
+    ["乾丰", "桨叶（5129）", "100套"],
+    ["掠影fpv", "TK掠影2.0（五寸竞速机架）", "5个"],
+    ["博士电池", "1550 6s电池（暂定）", "5块"]
+  ];
+
+  container.empty();
+  if(prizeList.length === 0){
+    container.html('<tr><td colspan="3" class="empty-tip">暂无奖品信息</td></tr>');
+  }else{
+    prizeList.forEach((item) => {
+      container.append(`
+        <tr class="table-row">
+          <td>${item[0]}</td>
+          <td>${item[1]}</td>
+          <td>${item[2]}</td>
+        </tr>
+      `);
+    });
+  }
+  $('#last-refresh').text(new Date().toLocaleString());
+};
+
+// 页面加载时执行
+$(document).ready(function(){
+  loadPrizes();
+});
+</script>
+</body>
+</html>
