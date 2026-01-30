@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="robots" content="index,follow" />
   <meta http-equiv="Content-Security-Policy" content="
     default-src * 'unsafe-inline' 'unsafe-eval';
     frame-src https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io;
@@ -19,21 +20,29 @@
     :root {
       --primary: #00ffff;
       --secondary: #87CEFA;
+      --danger: #ff3d00;
       --bg-deep: #000000;
       --bg-dark: #050505;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(0, 255, 255, 0.3);
       --glow-primary: 0 0 15px var(--primary), 0 0 30px rgba(0, 255, 255, 0.5);
+      --glow-warning: 0 0 15px var(--secondary), 0 0 30px rgba(135, 206, 250, 0.5);
       --trans-fast: 0.3s ease-out;
-      --trans-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      --trans-smooth: 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      --trans-fade: 1s ease-in-out;
       --dock-h: 58px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Consolas;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
       background: var(--bg-deep);
+      background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.25), transparent 70%);
       color: #fff;
       min-height: 100vh;
+      overflow-x: hidden;
     }
-    /* 开屏动画-极简提速 */
+
+    /* 开屏动画-3秒完整版 陆续滑入+晃动+发光渐变 */
     #splash-screen {
       position: fixed;
       inset: 0;
@@ -44,29 +53,83 @@
       justify-content: center;
       align-items: center;
       padding: 0 24px;
-      transition: opacity 0.8s ease, pointer-events 0s linear 0.8s;
+      transition: opacity var(--trans-fade), pointer-events 0s linear var(--trans-fade);
     }
     .splash-logo {
-      width: 120px;
-      height: 120px;
-      border-radius: 20px;
+      width: 140px;
+      height: 140px;
+      border-radius: 24px;
       border: 2px solid var(--primary);
       box-shadow: var(--glow-primary);
-      margin-bottom: 32px;
-      overflow: hidden;
+      margin-bottom: 48px;
+      transform: translateX(-800px) rotate(-15deg);
+      opacity: 0;
+      animation: logoSlideIn 1s var(--trans-smooth) forwards 0.2s, logoShake 0.8s ease-in-out forwards 1.2s, glowPulse 3s ease-in-out infinite 1.5s;
     }
-    .splash-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .splash-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 22px;
+      filter: brightness(1.05);
+    }
     .splash-main-title {
-      font-size: 2.2rem;
+      font-size: 2.8rem;
       font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 24px;
       color: var(--primary);
       text-shadow: var(--glow-primary);
       letter-spacing: 2px;
+      transform: translateX(800px);
+      opacity: 0;
+      animation: textSlideIn 1s var(--trans-smooth) forwards 0.6s, glowPulse 3s ease-in-out infinite 2s;
     }
-    /* 页面容器-秒显 */
+    .splash-url {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--secondary);
+      text-shadow: var(--glow-warning);
+      letter-spacing: 2px;
+      font-family: Consolas, monospace;
+      transform: translateY(500px);
+      opacity: 0;
+      animation: urlSlideIn 1s var(--trans-smooth) forwards 1s, glowPulse 3s ease-in-out infinite 2.5s;
+      padding: 6px 18px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(135,206,250,0.2);
+    }
+    /* 开屏动画关键帧 - 左滑入+晃动+发光脉冲 */
+    @keyframes logoSlideIn {
+      0% { transform: translateX(-800px) rotate(-15deg); opacity: 0; }
+      100% { transform: translateX(0) rotate(0); opacity: 1; }
+    }
+    @keyframes logoShake {
+      0% { transform: rotate(0); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+      100% { transform: rotate(0); }
+    }
+    @keyframes textSlideIn {
+      0% { transform: translateX(800px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes urlSlideIn {
+      0% { transform: translateY(500px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: var(--glow-primary); opacity: 0.9; }
+      50% { box-shadow: 0 0 20px var(--primary), 0 0 40px rgba(0,255,255,0.7), 0 0 60px rgba(0,255,255,0.5); opacity: 1; }
+    }
+
+    /* 页面容器 + iframe秒显加载中 */
     #pages {
       position: relative;
       z-index: 10;
+      background: var(--bg-dark);
       min-height: calc(100vh - var(--dock-h));
       display: none;
     }
@@ -77,7 +140,7 @@
       position: relative;
     }
     .page-container.active { display: block; }
-    /* iframe加载中-秒显，覆盖整个容器 */
+    /* iframe加载中-秒显 科技感加载动画 */
     .iframe-loading {
       position: absolute;
       inset: 0;
@@ -87,23 +150,35 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
     }
     .loading-spinner {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(0,255,255,0.2);
-      border-top: 4px solid var(--primary);
+      width: 70px;
+      height: 70px;
+      border: 5px solid rgba(0,255,255,0.2);
+      border-top: 5px solid var(--primary);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 1.2s linear infinite;
+      box-shadow: 0 0 15px rgba(0,255,255,0.3);
     }
     .loading-text {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: var(--secondary);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(135,206,250,0.3);
+    }
+    .loading-text::after {
+      content: '';
+      animation: dotPulse 1.5s linear infinite;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    /* iframe-加载完成后覆盖loading */
+    @keyframes dotPulse {
+      0% { content: '.'; }
+      33% { content: '..'; }
+      66% { content: '...'; }
+      100% { content: '.'; }
+    }
+    /* iframe-加载完成隐藏加载中 */
     iframe {
       position: relative;
       z-index: 2;
@@ -112,8 +187,11 @@
       border: none;
       background: var(--bg-dark);
       display: block;
+      pointer-events: auto;
+      touch-action: auto;
     }
-    /* 底部导航-极简 */
+
+    /* 底部导航-保留原科技风格 */
     #dock {
       position: fixed;
       bottom: 0;
@@ -121,15 +199,16 @@
       right: 0;
       height: var(--dock-h);
       z-index: 20;
-      background: rgba(255,255,255,0.08);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(0,255,255,0.3);
       border-radius: 20px 20px 0 0;
       display: flex;
       justify-content: space-around;
       align-items: center;
       padding: 0 8px;
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--glass-border);
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
     }
     .dock-item {
       width: 100%;
@@ -139,34 +218,45 @@
       align-items: center;
       font-size: 15px;
       font-weight: 600;
+      letter-spacing: 1px;
       color: #fff;
+      text-shadow: 0 0 4px rgba(255,255,255,0.3);
       cursor: pointer;
-      border-bottom: 3px solid transparent;
       transition: all var(--trans-fast);
+      border-bottom: 3px solid transparent;
     }
-    .dock-item:hover { color: var(--secondary); }
+    .dock-item:hover {
+      color: var(--secondary);
+      text-shadow: var(--glow-warning);
+      background: rgba(135, 206, 250, 0.05);
+    }
     .dock-item.active {
       color: var(--primary);
+      text-shadow: var(--glow-primary);
       border-bottom: 3px solid var(--primary);
+      background: rgba(0, 255, 255, 0.06);
     }
-    /* HTTPS警告-极简 */
+
+    /* HTTPS极简校验提示 */
     #https-alert {
       position: fixed;
       inset: 0;
       z-index: 999;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 20px;
       text-align: center;
+      backdrop-filter: blur(8px);
     }
     #https-alert.active { display: flex; }
     #https-alert .title {
       font-size: 1.8rem;
-      color: #ff3d00;
+      color: var(--danger);
       margin-bottom: 16px;
+      text-shadow: 0 0 10px rgba(255,61,0,0.3);
     }
     #https-alert .desc {
       font-size: 1rem;
@@ -175,85 +265,93 @@
       line-height: 1.6;
     }
     #https-alert .btn {
-      padding: 10px 30px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      padding: 12px 35px;
+      border-radius: 10px;
       border: none;
-      border-radius: 8px;
-      color: #000;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    #https-alert .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,255,255,0.2);
     }
   </style>
 </head>
 <body>
-  <!-- HTTPS极简校验-仅全局阻断，无其他校验 -->
+  <!-- HTTPS极简校验 -->
   <div id="https-alert">
-    <div class="title">安全警告</div>
-    <div class="desc">本页面仅支持HTTPS加密访问<br>请通过官方HTTPS链接重新访问</div>
-    <button class="btn" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转</button>
+    <div class="title">安全警告 - 非加密传输</div>
+    <div class="desc">本页面仅支持HTTPS加密访问<br>请通过官方HTTPS链接重新访问，避免数据泄露</div>
+    <button class="btn" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转官方</button>
   </div>
 
-  <!-- 开屏动画-极简提速 -->
+  <!-- 开屏动画-3秒完整版 陆续滑入+晃动+发光 -->
   <div id="splash-screen">
     <div class="splash-logo">
       <img src="logo.JPG" alt="Flyz远征飞" />
     </div>
     <div class="splash-main-title">2026线上FPV竞速赛</div>
+    <div class="splash-url">cdn.917813.com.cn</div>
   </div>
 
-  <!-- 页面容器-秒进加载中 -->
+  <!-- 页面容器 - 秒显iframe加载中 -->
   <div id="pages">
-    <!-- 报名页-带秒显加载中 -->
+    <!-- 报名页 -->
     <div class="page-container active" data-target="home">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">报名页面加载中...</div>
+        <div class="loading-text">报名页面加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="报名入口" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="2026线上FPV竞速赛-报名入口" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-    <!-- 公告页-带秒显加载中 -->
+    <!-- 公告页 -->
     <div class="page-container" data-target="gg">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">赛事公告加载中...</div>
+        <div class="loading-text">赛事公告加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="赛事公告" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="2026线上FPV竞速赛-赛事公告" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-    <!-- 选手页-带秒显加载中 -->
+    <!-- 选手页 -->
     <div class="page-container" data-target="xs">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">参赛选手加载中...</div>
+        <div class="loading-text">参赛选手加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="参赛选手" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="2026线上FPV竞速赛-参赛选手" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-    <!-- 奖品页-带秒显加载中 -->
+    <!-- 奖品页 -->
     <div class="page-container" data-target="cs">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">奖品信息加载中...</div>
+        <div class="loading-text">奖品信息加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="奖品信息" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="2026线上FPV竞速赛-奖品信息" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-    <!-- 赞助页-带秒显加载中 -->
+    <!-- 赞助页 -->
     <div class="page-container" data-target="zz">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">赞助合作加载中...</div>
+        <div class="loading-text">赞助合作加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="赞助合作" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="2026线上FPV竞速赛-赞助合作" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-    <!-- 后勤页-带秒显加载中 -->
+    <!-- 后勤页 -->
     <div class="page-container" data-target="hq">
       <div class="iframe-loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">赛事后勤加载中...</div>
+        <div class="loading-text">赛事后勤加载中</div>
       </div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="赛事后勤" onload="this.previousElementSibling.style.display='none'"></iframe>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="2026线上FPV竞速赛-赛事后勤" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
   </div>
 
-  <!-- 底部导航-极简切页 -->
+  <!-- 底部导航 -->
   <div id="dock">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
@@ -264,10 +362,11 @@
   </div>
 
   <script>
-    // 全局极简配置
+    // 全局配置
     const config = {
       trustedDomain: 'cdn.917813.com.cn',
-      targets: ['home', 'gg', 'xs', 'cs', 'zz', 'hq']
+      targets: ['home', 'gg', 'xs', 'cs', 'zz', 'hq'],
+      splashDuration: 3000 // 开屏动画固定3秒
     };
     // DOM元素
     const el = {
@@ -278,23 +377,23 @@
       pageContainers: document.querySelectorAll('.page-container')
     };
 
-    // 1. 极简HTTPS校验-仅本地跳过，无其他校验
+    // HTTPS极简校验
     const checkHttps = () => {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (!isLocal && window.location.protocol !== 'https:') {
         el.httpsAlert.classList.add('active');
         el.splash.style.display = 'none';
       } else {
-        // 开屏动画播完直接显示页面-无阻塞
+        // 3秒开屏动画结束后 秒显页面+加载中
         setTimeout(() => {
           el.splash.style.opacity = 0;
           el.splash.style.pointerEvents = 'none';
           el.pages.style.display = 'block';
-        }, 1200); // 开屏动画总时长1.2秒，秒进页面
+        }, config.splashDuration);
       }
     };
 
-    // 2. 极简切页-无校验，秒切
+    // 导航切页-秒切 无阻塞
     const switchPage = (target) => {
       el.dockItems.forEach(item => item.classList.remove('active'));
       el.pageContainers.forEach(cont => cont.classList.remove('active'));
@@ -302,10 +401,10 @@
       document.querySelector(`.page-container[data-target="${target}"]`).classList.add('active');
     };
 
-    // 绑定事件-极简
+    // 绑定事件
     document.addEventListener("DOMContentLoaded", () => {
       checkHttps();
-      // 导航切页
+      // 底部导航点击
       el.dockItems.forEach(item => {
         item.addEventListener('click', () => switchPage(item.dataset.target));
       });
