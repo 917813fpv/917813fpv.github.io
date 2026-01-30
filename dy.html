@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClashMI 安卓端配置教程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 24px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        h2 {
+            color: #4299e1;
+            font-size: 20px;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2::before {
+            content: "";
+            width: 8px;
+            height: 24px;
+            background: #4299e1;
+            border-radius: 4px;
+        }
+        .step {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .step p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .link-box {
+            background: #e8f4f8;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .link {
+            font-size: 14px;
+            word-break: break-all;
+            color: #2d3748;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            background: #4299e1;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .copy-btn:hover {
+            background: #3182ce;
+        }
+        .tip {
+            background: #fef7fb;
+            border-left: 4px solid #9f7aea;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .success {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ClashMI 安卓端配置教程</h1>
+
+        <div class="step">
+            <h2>第一步：下载 ClashMI 安卓端</h2>
+            <p>1. 打开手机浏览器（如Chrome、华为浏览器、UC浏览器等）；</p>
+            <p>2. 在浏览器搜索框中输入 <strong>“ClashMI 安卓版下载”</strong>；</p>
+            <p>3. 选择正规下载渠道（如官方网站、可靠应用市场），下载并安装 ClashMI 应用；</p>
+            <p>4. 安装完成后，打开 ClashMI 应用（首次打开需允许相关权限）。</p>
+        </div>
+
+        <div class="step">
+            <h2>第二步：获取科学上网配置链接</h2>
+            <p>以下是需要配置的专属链接，复制后在应用中使用：</p>
+            <div class="link-box">
+                <span class="link" id="configLink">https://dash.pqjc.site/api/v1/client/subscribe?token=0b07f268a2f4d960cc32d26a576dd715</span>
+                <button class="copy-btn" onclick="copyLink()">复制链接</button>
+            </div>
+            <p>点击上方「复制链接」按钮，即可将配置链接复制到剪贴板。</p>
+        </div>
+
+        <div class="step">
+            <h2>第三步：在 ClashMI 中添加配置链接</h2>
+            <p>1. 打开 ClashMI 应用，在底部导航栏中找到并点击 <strong>“我的配置”</strong> 选项；</p>
+            <p>2. 进入“我的配置”页面后，点击右上角的 <strong>“+” 号</strong> 按钮；</p>
+            <p>3. 在弹出的菜单中，选择 <strong>“添加配置链接”</strong> 选项；</p>
+            <p>4. 粘贴之前复制的配置链接到输入框中，无需修改其他参数；</p>
+            <p>5. 点击「确认添加」或「保存」按钮，等待配置加载完成（加载时间根据网络情况而定，通常1-3秒）。</p>
+        </div>
+
+        <div class="success">
+            <p>✅ 配置完成！现在可以正常使用科学上网功能了~</p>
+        </div>
+
+        <div class="tip">
+            <strong>温馨提示：</strong>
+            1. 若添加后无法使用，请检查链接是否复制完整，或重新复制链接重试；
+            2. 确保手机网络正常，且应用已获得网络访问权限；
+            3. 请勿随意分享配置链接，避免账号被滥用。
+        </div>
+    </div>
+
+    <script>
+        // 复制链接功能
+        function copyLink() {
+            const linkElement = document.getElementById('configLink');
+            const text = linkElement.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '复制成功！';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('复制失败，请手动复制链接');
+                console.error('复制失败:', err);
+            });
+        }
+    </script>
+</body>
+</html>
