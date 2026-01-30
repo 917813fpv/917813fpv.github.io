@@ -7,25 +7,78 @@
   <title>2026线上FPV竞速赛-魄客杯-Flyz远征飞</title>
   <style>
     * {margin:0;padding:0;box-sizing:border-box;transform:translateZ(0);-webkit-transform:translateZ(0);}
-    html,body {width:100%;height:100vh;background:#000;overflow:hidden;}
-    .loading {position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;color:#00ffff;font-family:PingFang SC,Microsoft YaHei;}
+    html,body {width:100%;height:100vh;background:#000;overflow:hidden;font-family:PingFang SC,Microsoft YaHei;}
+    /* 加载动画 */
+    .loading {position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;color:#00ffff;opacity:0;animation:fadeIn 0.8s ease forwards 0.3s;}
     .spinner {width:60px;height:60px;border:4px solid rgba(0,255,255,0.2);border-top:4px solid #00ffff;border-radius:50%;animation:spin 1.2s linear infinite;}
-    .loading-text {font-size:1.2rem;letter-spacing:1px;}
+    .loading-text {font-size:1.2rem;letter-spacing:1px;text-shadow:0 0 10px rgba(0,255,255,0.5);}
     @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-    #video-player {position:fixed;inset:0;z-index:5;width:100%;height:100%;object-fit:contain;display:none;}
-    .error {position:fixed;inset:0;z-index:10;display:none;flex-direction:column;justify-content:center;align-items:center;gap:20px;color:#ff3d00;padding:20px;text-align:center;font-family:PingFang SC,Microsoft YaHei;}
-    .error-text {font-size:1.1rem;line-height:1.8;max-width:400px;}
-    .error-reload {padding:10px 30px;border:1px solid #00ffff;border-radius:8px;background:transparent;color:#00ffff;font-size:1rem;cursor:pointer;transition:all 0.3s ease;}
-    .error-reload:hover {background:rgba(0,255,255,0.1);box-shadow:0 0 10px #00ffff;}
+    @keyframes fadeIn {0%{opacity:0;}100%{opacity:1;}}
+    @keyframes fadeOut {0%{opacity:1;}100%{opacity:0;}}
+    @keyframes scaleUp {0%{opacity:0;transform:scale(0.8);}100%{opacity:1;transform:scale(1);}}
+    @keyframes pulseGlow {0%{box-shadow:0 0 20px rgba(0,255,255,0.4),0 0 30px rgba(0,255,255,0.2) inset;}50%{box-shadow:0 0 30px rgba(0,255,255,0.6),0 0 40px rgba(0,255,255,0.3) inset;}100%{box-shadow:0 0 20px rgba(0,255,255,0.4),0 0 30px rgba(0,255,255,0.2) inset;}}
+    @keyframes countDownPulse {0%{transform:scale(1);text-shadow:0 0 10px rgba(0,255,255,0.6);}50%{transform:scale(1.2);text-shadow:0 0 20px rgba(0,255,255,0.8);}100%{transform:scale(1);text-shadow:0 0 10px rgba(0,255,255,0.6);}}
+    /* 视频容器 - 高级边框+自适应+呼吸发光 */
+    .video-wrap {position:fixed;inset:0;z-index:10;display:flex;justify-content:center;align-items:center;padding:2vw;display:none;}
+    #video-player {width:100%;height:100%;max-width:100vw;max-height:100vh;object-fit:contain;border-radius:24px;border:3px solid #00ffff;animation:pulseGlow 3s ease-in-out infinite;}
+    /* 点击播放遮罩 */
+    .play-mask {position:absolute;inset:0;z-index:15;background:rgba(0,0,0,0.7);border-radius:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;backdrop-filter:blur(5px);}
+    .play-icon {width:90px;height:90px;border:3px solid #00ffff;border-radius:50%;display:flex;justify-content:center;align-items:center;margin-bottom:25px;box-shadow:0 0 25px rgba(0,255,255,0.6);animation:pulseGlow 2s ease infinite;}
+    .play-icon::after {content:'';width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-left:30px solid #00ffff;margin-left:6px;}
+    .play-text {color:#00ffff;font-size:1.4rem;letter-spacing:3px;text-shadow:0 0 15px rgba(0,255,255,0.6);}
+    /* 错误提示 */
+    .error {position:fixed;inset:0;z-index:20;display:none;flex-direction:column;justify-content:center;align-items:center;gap:25px;color:#ff3d00;padding:20px;text-align:center;animation:fadeIn 0.8s ease forwards;}
+    .error-text {font-size:1.2rem;line-height:1.8;max-width:400px;text-shadow:0 0 10px rgba(255,61,0,0.5);}
+    .error-reload {padding:12px 35px;border:2px solid #00ffff;border-radius:12px;background:rgba(0,255,255,0.05);color:#00ffff;font-size:1.1rem;cursor:pointer;transition:all 0.3s ease;box-shadow:0 0 10px rgba(0,255,255,0.3);}
+    .error-reload:hover {background:rgba(0,255,255,0.15);box-shadow:0 0 20px rgba(0,255,255,0.5);transform:translateY(-3px);}
+    /* 设备选择弹窗 - 高级动效+磨砂玻璃+logo展示 */
+    .device-modal {position:fixed;inset:0;z-index:30;background:rgba(0,0,0,0.9);backdrop-filter:blur(15px);display:flex;justify-content:center;align-items:center;padding:20px;animation:fadeIn 0.6s ease forwards;}
+    .modal-content {width:100%;max-width:420px;background:rgba(15,15,15,0.95);border:2px solid #00ffff;border-radius:24px;padding:40px 30px;box-shadow:0 0 40px rgba(0,255,255,0.4),0 0 20px rgba(0,255,255,0.2) inset;animation:scaleUp 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards;}
+    .modal-logo {width:80px;height:80px;border-radius:16px;overflow:hidden;border:2px solid #00ffff;margin:0 auto 30px auto;box-shadow:0 0 20px rgba(0,255,255,0.5);}
+    .modal-logo img {width:100%;height:100%;object-fit:cover;}
+    .modal-title {font-size:1.8rem;color:#00ffff;text-align:center;margin-bottom:35px;letter-spacing:2px;text-shadow:0 0 10px rgba(0,255,255,0.6);}
+    .device-list {display:flex;flex-direction:column;gap:18px;margin-bottom:40px;}
+    .device-item {padding:20px;border:2px solid transparent;border-radius:16px;background:rgba(30,30,30,0.8);color:#fff;font-size:1.3rem;text-align:center;cursor:pointer;transition:all 0.4s ease;letter-spacing:1px;}
+    .device-item:hover {border-color:#00ffff;background:rgba(0,255,255,0.1);box-shadow:0 0 20px rgba(0,255,255,0.3);transform:translateY(-5px);}
+    .device-item.active {border-color:#00ffff;background:rgba(0,255,255,0.18);color:#00ffff;text-shadow:0 0 12px rgba(0,255,255,0.7);box-shadow:0 0 25px rgba(0,255,255,0.4);}
+    .countdown-text {color:#87CEFA;text-align:center;font-size:1.1rem;letter-spacing:1px;display:flex;justify-content:center;align-items:center;gap:8px;}
+    .countdown-num {color:#00ffff;font-weight:700;font-size:1.4rem;animation:countDownPulse 1s ease infinite;}
   </style>
 </head>
 <body>
+  <!-- 设备选择弹窗 -->
+  <div class="device-modal" id="deviceModal">
+    <div class="modal-content">
+      <!-- 网站Logo -->
+      <div class="modal-logo">
+        <img src="./logo.JPG" alt="Flyz远征飞">
+      </div>
+      <div class="modal-title">请选择您的设备品牌</div>
+      <div class="device-list">
+        <div class="device-item" data-device="apple">苹果</div>
+        <div class="device-item" data-device="huawei">华为</div>
+        <div class="device-item" data-device="iqoo">iQOO</div>
+      </div>
+      <div class="countdown-text">
+        <span>将在</span>
+        <span class="countdown-num" id="countdownNum">5</span>
+        <span>秒后自动选择检测到的设备</span>
+      </div>
+    </div>
+  </div>
+
   <div class="loading" id="loading">
     <div class="spinner"></div>
     <div class="loading-text">视频加载中...</div>
   </div>
 
-  <video id="video-player" controls playsinline webkit-playsinline preload="auto"></video>
+  <div class="video-wrap" id="videoWrap">
+    <div class="play-mask" id="playMask">
+      <div class="play-icon"></div>
+      <div class="play-text">点击播放视频</div>
+    </div>
+    <video id="video-player" controls playsinline webkit-playsinline preload="none"></video>
+  </div>
 
   <div class="error" id="error">
     <div class="error-text">视频加载失败<br>请检查网络或稍后重试</div>
@@ -33,54 +86,145 @@
   </div>
 
   <script>
+    // 基础配置
     const baseUrl = 'https://cdn.917813.com.cn/fpv/2026onlinerace/video/';
-    const player = document.getElementById('video-player');
-    const loading = document.getElementById('loading');
-    const error = document.getElementById('error');
+    const videoUrls = {
+      apple: baseUrl + 'apple.MP4',
+      huawei: baseUrl + 'hw.mp4',
+      iqoo: baseUrl + 'iqqo.mp4'
+    };
+    // 元素获取
+    const el = {
+      deviceModal: document.getElementById('deviceModal'),
+      countdownNum: document.getElementById('countdownNum'),
+      deviceItems: document.querySelectorAll('.device-item'),
+      loading: document.getElementById('loading'),
+      videoWrap: document.getElementById('videoWrap'),
+      playMask: document.getElementById('playMask'),
+      player: document.getElementById('video-player'),
+      error: document.getElementById('error'),
+      modalLogo: document.querySelector('.modal-logo img')
+    };
     const ua = navigator.userAgent.toLowerCase();
+    let detectDevice = 'apple';
+    let countdown = 5;
+    let countdownTimer = null;
 
-    // 设备识别：苹果/华为/iQOO/默认
-    function getVideoUrl() {
+    // Logo加载容错
+    el.modalLogo.onerror = function() {
+      this.src = './logo.jpg';
+      this.onerror = function() {
+        el.modalLogo.parentElement.style.display = 'none';
+      }
+    };
+
+    // 设备自动检测
+    function detectUserDevice() {
       if (/iphone|ipad|ipod|macintosh/.test(ua)) {
-        return baseUrl + 'apple.MP4';
+        detectDevice = 'apple';
       } else if (ua.includes('huawei') || ua.includes('honor')) {
-        return baseUrl + 'hw.mp4';
+        detectDevice = 'huawei';
       } else if (ua.includes('iqoo')) {
-        return baseUrl + 'iqqo.mp4';
-      } else {
-        return baseUrl + 'apple.MP4'; // 其他设备默认加载苹果版
+        detectDevice = 'iqoo';
+      }
+      // 标记选中设备
+      el.deviceItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.device === detectDevice);
+      });
+    }
+
+    // 三视频并行预加载
+    function preloadAllVideos() {
+      for (let key in videoUrls) {
+        const preloadVideo = document.createElement('video');
+        preloadVideo.src = videoUrls[key];
+        preloadVideo.preload = 'auto';
+        preloadVideo.style.display = 'none';
+        preloadVideo.setAttribute('playsinline', true);
+        document.body.appendChild(preloadVideo);
       }
     }
 
-    // 初始化视频
-    function initVideo() {
-      player.src = getVideoUrl();
-      // 加载完成显示并自动播放
-      player.addEventListener('loadeddata', () => {
-        loading.style.display = 'none';
-        player.style.display = 'block';
-        player.play().catch(err => {}); // 捕获自动播放限制异常
+    // 倒计时逻辑 - 数字绑定动效
+    function startCountdown() {
+      countdownTimer = setInterval(() => {
+        countdown--;
+        el.countdownNum.innerText = countdown;
+        if (countdown <= 0) {
+          clearInterval(countdownTimer);
+          selectDevice(detectDevice);
+        }
+      }, 1000);
+    }
+
+    // 设备选择核心逻辑
+    function selectDevice(device) {
+      clearInterval(countdownTimer);
+      // 弹窗淡出隐藏
+      el.deviceModal.style.animation = 'fadeOut 0.6s ease forwards';
+      setTimeout(() => {
+        el.deviceModal.style.display = 'none';
+        el.loading.style.display = 'flex';
+        // 设置视频地址
+        el.player.src = videoUrls[device];
+        initVideoPlay();
+      }, 600);
+    }
+
+    // 视频播放初始化
+    function initVideoPlay() {
+      // 加载完成
+      el.player.addEventListener('loadeddata', () => {
+        el.loading.style.animation = 'fadeOut 0.6s ease forwards';
+        setTimeout(() => {
+          el.loading.style.display = 'none';
+          el.videoWrap.style.display = 'flex';
+        }, 600);
       });
-      // 播放结束跳转首页
-      player.addEventListener('ended', () => {
+      // 播放结束跳转
+      el.player.addEventListener('ended', () => {
         window.location.href = './index.html';
       });
-      // 加载失败显示错误
-      player.addEventListener('error', () => {
-        loading.style.display = 'none';
-        error.style.display = 'flex';
+      // 加载失败
+      el.player.addEventListener('error', () => {
+        el.loading.style.display = 'none';
+        el.error.style.display = 'flex';
+      });
+      // 点击遮罩播放
+      el.playMask.addEventListener('click', () => {
+        el.player.play().then(() => {
+          el.playMask.style.animation = 'fadeOut 0.5s ease forwards';
+          setTimeout(() => {
+            el.playMask.style.display = 'none';
+          }, 500);
+        }).catch(err => {});
+      });
+      // 兜底播放
+      document.addEventListener('click', () => {
+        if (el.player.paused && el.videoWrap.style.display === 'flex') {
+          el.player.play();
+        }
       });
     }
 
-    // 页面加载完成初始化
-    document.addEventListener('DOMContentLoaded', initVideo);
+    // 设备项点击事件
+    function bindDeviceClick() {
+      el.deviceItems.forEach(item => {
+        item.addEventListener('click', () => {
+          selectDevice(item.dataset.device);
+        });
+      });
+    }
 
-    // 点击空白处触发播放（解决移动端自动播放限制）
-    document.addEventListener('click', () => {
-      if (player.paused && player.style.display === 'block') {
-        player.play();
-      }
-    });
+    // 初始化
+    function init() {
+      detectUserDevice();
+      preloadAllVideos();
+      startCountdown();
+      bindDeviceClick();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
