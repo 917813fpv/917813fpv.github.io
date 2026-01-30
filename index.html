@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="robots" content="index,follow" />
-  <!-- 放宽CSP：仅限制iframe，允许所有第三方资源加载 -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src * 'unsafe-inline' 'unsafe-eval';
     frame-src https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io;
@@ -15,44 +13,27 @@
     style-src * 'unsafe-inline';
     connect-src *;
     object-src 'none';
-    media-src 'none';
   ">
-  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
   <title>赛事｜2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
-  <meta name="keywords" content="2026线上FPV竞速赛,2026线上穿越机竞速赛,Flyz远征飞,魄客杯,FPV,穿越机,FPV穿越机,穿越机竞速,FPV比赛,穿越机比赛,线上FPV赛,线上穿越机赛,FPV飞手,穿越机飞手,竞速飞手,航模飞手,无人机飞手,花飞手,FPV爱好者,穿越机爱好者,航模爱好者,无人机爱好者,沉浸式飞行,第一人称飞行,FPV Drone,Drone Racing,RC航模,遥控航模,航模竞赛,线上航模赛,FPV赛事报名,穿越机赛事报名,赛事入口,参赛通道,飞手报名,竞速赛报名" />
-  <!-- 保留Cloudflare CDN资源（可自由替换其他第三方资源） -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap-grid.min.css" />
   <style>
     :root {
       --primary: #00ffff;
       --secondary: #87CEFA;
-      --danger: #ff3d00;
-      --success: #00ff9d;
       --bg-deep: #000000;
       --bg-dark: #050505;
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(0, 255, 255, 0.3);
       --glow-primary: 0 0 15px var(--primary), 0 0 30px rgba(0, 255, 255, 0.5);
-      --glow-danger: 0 0 15px var(--danger), 0 0 30px rgba(255, 61, 0, 0.5);
-      --glow-warning: 0 0 15px var(--secondary), 0 0 30px rgba(135, 206, 250, 0.5);
       --trans-fast: 0.3s ease-out;
       --trans-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-      --trans-fade: 0.8s ease-in-out;
       --dock-h: 58px;
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Consolas;
       background: var(--bg-deep);
-      background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.25), transparent 70%);
       color: #fff;
       min-height: 100vh;
     }
+    /* 开屏动画-极简提速 */
     #splash-screen {
       position: fixed;
       inset: 0;
@@ -63,72 +44,32 @@
       justify-content: center;
       align-items: center;
       padding: 0 24px;
-      transition: opacity var(--trans-fade), pointer-events 0s linear var(--trans-fade);
+      transition: opacity 0.8s ease, pointer-events 0s linear 0.8s;
     }
     .splash-logo {
-      width: 140px;
-      height: 140px;
-      border-radius: 24px;
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
       border: 2px solid var(--primary);
       box-shadow: var(--glow-primary);
-      margin-bottom: 48px;
-      transform: translateY(-300px) scale(0.85);
-      opacity: 0;
-      animation: logoDownBounce var(--trans-smooth) forwards 0.1s;
+      margin-bottom: 32px;
+      overflow: hidden;
     }
-    .splash-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 22px;
-      filter: brightness(1.05);
-    }
+    .splash-logo img { width: 100%; height: 100%; object-fit: cover; }
     .splash-main-title {
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: 900;
-      line-height: 1.2;
-      margin-bottom: 24px;
       color: var(--primary);
       text-shadow: var(--glow-primary);
       letter-spacing: 2px;
-      transform: translateY(150px);
-      opacity: 0;
-      animation: textUpBounce var(--trans-smooth) forwards 0.5s;
     }
-    .splash-url {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--secondary);
-      text-shadow: var(--glow-warning);
-      letter-spacing: 2px;
-      font-family: Consolas, monospace;
-      transform: translateY(150px);
-      opacity: 0;
-      animation: textUpBounce var(--trans-smooth) forwards 0.5s;
-      padding: 6px 18px;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(135,206,250,0.2);
-    }
-    @keyframes logoDownBounce {
-      0% { transform: translateY(-300px) scale(0.85); opacity: 0; }
-      75% { transform: translateY(10px) scale(1.02); opacity: 1; }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    @keyframes textUpBounce {
-      0% { transform: translateY(150px); opacity: 0; }
-      75% { transform: translateY(-6px); opacity: 1; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
+    /* 页面容器-秒显 */
     #pages {
       position: relative;
       z-index: 10;
-      background: var(--bg-dark);
       min-height: calc(100vh - var(--dock-h));
-      padding: 0;
       display: none;
     }
-    #pages.active { display: block; }
     .page-container {
       display: none;
       width: 100%;
@@ -136,15 +77,43 @@
       position: relative;
     }
     .page-container.active { display: block; }
+    /* iframe加载中-秒显，覆盖整个容器 */
+    .iframe-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(0,255,255,0.2);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      letter-spacing: 1px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    /* iframe-加载完成后覆盖loading */
     iframe {
+      position: relative;
+      z-index: 2;
       width: 100%;
       min-height: calc(100vh - var(--dock-h));
       border: none;
       background: var(--bg-dark);
       display: block;
-      pointer-events: auto;
-      touch-action: auto;
     }
+    /* 底部导航-极简 */
     #dock {
       position: fixed;
       bottom: 0;
@@ -152,16 +121,15 @@
       right: 0;
       height: var(--dock-h);
       z-index: 20;
+      background: rgba(255,255,255,0.08);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(0,255,255,0.3);
       border-radius: 20px 20px 0 0;
       display: flex;
       justify-content: space-around;
       align-items: center;
       padding: 0 8px;
-      background: var(--glass-bg);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid var(--glass-border);
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
     }
     .dock-item {
       width: 100%;
@@ -171,400 +139,121 @@
       align-items: center;
       font-size: 15px;
       font-weight: 600;
-      letter-spacing: 1px;
       color: #fff;
-      text-shadow: 0 0 4px rgba(255,255,255,0.3);
       cursor: pointer;
-      transition: all var(--trans-fast);
       border-bottom: 3px solid transparent;
+      transition: all var(--trans-fast);
     }
-    .dock-item:hover {
-      color: var(--secondary);
-      text-shadow: var(--glow-warning);
-      background: rgba(135, 206, 250, 0.05);
-    }
+    .dock-item:hover { color: var(--secondary); }
     .dock-item.active {
       color: var(--primary);
-      text-shadow: var(--glow-primary);
       border-bottom: 3px solid var(--primary);
-      background: rgba(0, 255, 255, 0.06);
     }
-    .alert-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 15;
-      display: flex;
+    /* HTTPS警告-极简 */
+    #https-alert {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,0.9);
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all var(--trans-smooth);
-    }
-    .alert-container.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .alert-card {
-      max-width: 550px;
-      width: 90%;
-      padding: 35px 25px;
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.6);
-      position: relative;
-      overflow: hidden;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      transform: scale(0.9);
-      transition: transform var(--trans-smooth);
-    }
-    .alert-container.active .alert-card {
-      transform: scale(1);
-    }
-    .alert-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      animation: glowPulse 3s ease-in-out infinite;
-    }
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-    .alert-logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 16px;
-      border: 2px solid var(--primary);
-      box-shadow: var(--glow-primary);
-      margin: 0 auto 25px;
-      overflow: hidden;
-      animation: logoRotate 6s linear infinite;
-    }
-    @keyframes logoRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .alert-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 14px;
-      filter: brightness(1.1);
-    }
-    .alert-title {
-      font-size: 2rem;
-      font-weight: 900;
-      text-align: center;
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px rgba(0,0,0,0.4);
-      background: linear-gradient(90deg, var(--secondary), var(--primary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .alert-desc {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      text-align: center;
-      margin-bottom: 25px;
-      color: #eee;
-      padding: 0 10px;
-    }
-    .alert-cdn {
-      font-size: 1.1rem;
-      font-family: Consolas, monospace;
-      padding: 12px 16px;
-      border-radius: 10px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.2);
-      margin: 15px auto;
-      color: var(--secondary);
-      text-shadow: var(--glow-warning);
-      word-break: break-all;
-      max-width: 90%;
       text-align: center;
     }
-    .alert-btn-group {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 25px;
-    }
-    .alert-btn {
-      padding: 12px 35px;
-      border-radius: 10px;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      text-shadow: 0 0 5px rgba(0,0,0,0.2);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .alert-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    .btn-primary {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: #000;
-    }
-    .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-    }
-    #hijack-alert.alert-card::before {
-      background: linear-gradient(90deg, transparent, var(--danger), transparent);
-      box-shadow: var(--glow-danger);
-    }
-    #hijack-alert .alert-title {
-      background: linear-gradient(90deg, #ff6b35, var(--danger));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    #hijack-alert .alert-logo {
-      border-color: var(--danger);
-      box-shadow: var(--glow-danger);
-    }
-    #hijack-alert .btn-primary {
-      background: linear-gradient(90deg, #ff6b35, var(--danger));
-      color: #fff;
-    }
-    #device-verification.alert-card::before {
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
-      box-shadow: var(--glow-primary);
-    }
-    .verification-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .verification-subtitle {
-      font-size: 1rem;
-      color: var(--secondary);
-      text-shadow: var(--glow-warning);
-      margin-top: -10px;
-    }
-    .verification-tip {
-      font-size: 1.1rem;
-      color: var(--secondary);
-      text-align: center;
-      margin: 15px 0;
-      text-shadow: 0 0 8px rgba(0,0,0,0.3);
-    }
-    .verification-balls {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin: 25px 0;
-      padding: 15px;
-      border-radius: 15px;
-      background: rgba(0,0,0,0.3);
-    }
-    .verification-ball {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #00ccff, var(--primary));
-      box-shadow: var(--glow-primary);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    #https-alert.active { display: flex; }
+    #https-alert .title {
       font-size: 1.8rem;
-      font-weight: bold;
+      color: #ff3d00;
+      margin-bottom: 16px;
+    }
+    #https-alert .desc {
+      font-size: 1rem;
+      color: #eee;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    #https-alert .btn {
+      padding: 10px 30px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 8px;
       color: #000;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      position: relative;
-      border: 2px solid transparent;
-    }
-    .verification-ball:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px var(--primary), 0 0 30px rgba(0, 255, 255, 0.6);
-    }
-    .verification-ball.active {
-      background: linear-gradient(135deg, #00ff9d, var(--success));
-      box-shadow: 0 0 20px var(--success), 0 0 30px rgba(0, 255, 157, 0.6);
-      border-color: var(--success);
-    }
-    .verification-ball.correct {
-      background: linear-gradient(135deg, #00ff9d, var(--success));
-      box-shadow: 0 0 20px var(--success), 0 0 30px rgba(0, 255, 157, 0.6);
-    }
-    #verification-result {
-      font-size: 1.2rem;
       font-weight: 700;
-      text-align: center;
-      margin: 15px 0;
-      display: none;
-    }
-    #verification-result.success {
-      color: var(--success);
-      text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
-      display: block;
-    }
-    #verification-result.error {
-      color: var(--danger);
-      text-shadow: 0 0 10px rgba(255, 61, 0, 0.5);
-      display: block;
-    }
-    .fullscreen-alert {
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      background: rgba(0,0,0,0.7);
-    }
-    .top-alert {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
-      z-index: 90;
-      max-width: 500px;
-      width: 90%;
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .top-alert.active {
-      transform: translateX(-50%) translateY(0);
-    }
-    .top-alert .alert-card {
-      padding: 25px 15px;
-    }
-    .top-alert .alert-logo {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 15px;
-    }
-    .top-alert .alert-title {
-      font-size: 1.6rem;
-    }
-    .top-alert .alert-desc {
-      font-size: 1rem;
-      margin-bottom: 15px;
-    }
-    .top-alert .alert-btn-group {
-      margin-top: 15px;
-    }
-    .top-alert .alert-btn {
-      padding: 10px 25px;
-      font-size: 1rem;
-    }
-    html {
-      overflow-x: hidden;
-      overflow-y: auto;
+      cursor: pointer;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-  <div id="https-alert" class="alert-container fullscreen-alert">
-    <div class="alert-card">
-      <div class="alert-logo">
-        <img src="logo.JPG" alt="Flyz远征飞" />
-      </div>
-      <div class="alert-title">安全警告 - 非加密传输</div>
-      <div class="alert-desc">
-        为保障赛事数据安全，本页面仅支持HTTPS加密访问<br>
-        请通过以下官方HTTPS链接重新访问，避免数据泄露
-      </div>
-      <div class="alert-cdn">https://cdn.917813.com.cn</div>
-      <div class="alert-btn-group">
-        <button class="alert-btn btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转官方</button>
-      </div>
-    </div>
+  <!-- HTTPS极简校验-仅全局阻断，无其他校验 -->
+  <div id="https-alert">
+    <div class="title">安全警告</div>
+    <div class="desc">本页面仅支持HTTPS加密访问<br>请通过官方HTTPS链接重新访问</div>
+    <button class="btn" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转</button>
   </div>
 
-  <div id="hijack-alert-template" class="alert-container" style="display: none;">
-    <div class="alert-card" id="hijack-alert">
-      <div class="alert-logo">
-        <img src="logo.JPG" alt="Flyz远征飞" />
-      </div>
-      <div class="alert-title">安全警告 - 页面被劫持</div>
-      <div class="alert-desc">
-        当前内嵌页面已被非信任站点替换，存在安全风险<br>
-        请关闭页面并通过官方HTTPS链接重新访问，谨防诈骗
-      </div>
-      <div class="alert-cdn">https://cdn.917813.com.cn</div>
-      <div class="alert-btn-group">
-        <button class="alert-btn btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
-        <button class="alert-btn btn-secondary" onclick="location.reload()">重试</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="device-verification-template" class="alert-container" style="display: none;">
-    <div class="alert-card" id="device-verification">
-      <div class="verification-header">
-        <div class="alert-logo">
-          <img src="logo.JPG" alt="Flyz远征飞" />
-        </div>
-        <div class="alert-title">安全验证系统</div>
-        <div class="verification-subtitle">设备校验 - 人机验证</div>
-      </div>
-      <div class="alert-desc">
-        检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
-        <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
-      </div>
-      <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球（点击后会高亮）</div>
-      <div class="verification-balls">
-        <div class="verification-ball" data-index="1">01</div>
-        <div class="verification-ball" data-index="2">02</div>
-        <div class="verification-ball" data-index="3">03</div>
-      </div>
-      <div id="verification-result">验证结果</div>
-      <div class="alert-btn-group">
-        <button class="alert-btn btn-primary" id="verify-btn">提交验证</button>
-        <button class="alert-btn btn-secondary" id="reset-verify-btn">重新验证</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- 开屏动画-极简提速 -->
   <div id="splash-screen">
     <div class="splash-logo">
       <img src="logo.JPG" alt="Flyz远征飞" />
     </div>
     <div class="splash-main-title">2026线上FPV竞速赛</div>
-    <div class="splash-url">cdn.917813.com.cn</div>
   </div>
 
+  <!-- 页面容器-秒进加载中 -->
   <div id="pages">
+    <!-- 报名页-带秒显加载中 -->
     <div class="page-container active" data-target="home">
-      <iframe id="iframe-home" src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="2026线上FPV竞速赛-报名入口" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">报名页面加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="报名入口" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-
+    <!-- 公告页-带秒显加载中 -->
     <div class="page-container" data-target="gg">
-      <iframe id="iframe-gg" src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="2026线上FPV竞速赛-赛事公告" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">赛事公告加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="赛事公告" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-
+    <!-- 选手页-带秒显加载中 -->
     <div class="page-container" data-target="xs">
-      <iframe id="iframe-xs" src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="2026线上FPV竞速赛-参赛选手" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">参赛选手加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="参赛选手" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-
+    <!-- 奖品页-带秒显加载中 -->
     <div class="page-container" data-target="cs">
-      <iframe id="iframe-cs" src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="2026线上FPV竞速赛-奖品信息" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">奖品信息加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="奖品信息" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-
+    <!-- 赞助页-带秒显加载中 -->
     <div class="page-container" data-target="zz">
-      <iframe id="iframe-zz" src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="2026线上FPV竞速赛-赞助合作" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">赞助合作加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="赞助合作" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
-
+    <!-- 后勤页-带秒显加载中 -->
     <div class="page-container" data-target="hq">
-      <iframe id="iframe-hq" src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="2026线上FPV竞速赛-赛事后勤" scrolling="yes"></iframe>
+      <div class="iframe-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">赛事后勤加载中...</div>
+      </div>
+      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="赛事后勤" onload="this.previousElementSibling.style.display='none'"></iframe>
     </div>
   </div>
 
+  <!-- 底部导航-极简切页 -->
   <div id="dock">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
@@ -575,173 +264,49 @@
   </div>
 
   <script>
+    // 全局极简配置
     const config = {
       trustedDomain: 'cdn.917813.com.cn',
-      trustedDomains: [
-        'cdn.917813.com.cn',
-        '917813fpv-github-io.pages.dev',
-        '917813.github.io'
-      ],
-      targets: ['home', 'gg', 'xs', 'cs', 'zz', 'hq'],
-      verificationState: {}
+      targets: ['home', 'gg', 'xs', 'cs', 'zz', 'hq']
     };
-
-    config.targets.forEach(target => {
-      config.verificationState[target] = { selected: [], passed: false };
-    });
-
-    const elements = {
-      httpsAlert: document.getElementById('https-alert'),
+    // DOM元素
+    const el = {
       splash: document.getElementById('splash-screen'),
       pages: document.getElementById('pages'),
+      httpsAlert: document.getElementById('https-alert'),
       dockItems: document.querySelectorAll('.dock-item'),
-      pageContainers: document.querySelectorAll('.page-container'),
-      hijackTemplate: document.getElementById('hijack-alert-template'),
-      verificationTemplate: document.getElementById('device-verification-template')
+      pageContainers: document.querySelectorAll('.page-container')
     };
 
-    // 仅保留核心校验：HTTPS + iframe劫持
-    const baseChecks = () => {
-      let isValid = true;
+    // 1. 极简HTTPS校验-仅本地跳过，无其他校验
+    const checkHttps = () => {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (!isLocal && window.location.protocol !== 'https:') {
-        elements.httpsAlert.classList.add('active');
-        isValid = false;
-      }
-      return isValid;
-    };
-
-    // 简化设备校验（仅基础检测，不严格限制）
-    const checkDevice = () => {
-      const userAgent = navigator.userAgent;
-      const isVM = /VirtualBox|VMware|Hyper-V|QEMU|Genymotion/.test(userAgent);
-      const hasDeviceName = /iPhone|iPad|iPod|Android|Windows Phone|Macintosh|Windows/.test(userAgent);
-      return !isVM && hasDeviceName;
-    };
-
-    const renderPopup = (target, type) => {
-      const currentPage = document.querySelector(`.page-container[data-target="${target}"]`);
-      let popup = currentPage.querySelector(`.${type}-popup`);
-      if (popup) {
-        popup.classList.add('active');
-        return;
-      }
-      let template = type === 'hijack' ? elements.hijackTemplate : elements.verificationTemplate;
-      popup = template.cloneNode(true);
-      popup.style.display = 'flex';
-      popup.classList.add(`${type}-popup`);
-      currentPage.appendChild(popup);
-      if (type === 'verification') {
-        bindVerificationEvents(target, popup);
-      }
-      setTimeout(() => popup.classList.add('active'), 10);
-    };
-
-    const bindVerificationEvents = (target, popup) => {
-      const balls = popup.querySelectorAll('.verification-ball');
-      const verifyBtn = popup.querySelector('#verify-btn');
-      const resetBtn = popup.querySelector('#reset-verify-btn');
-      const result = popup.querySelector('#verification-result');
-      const state = config.verificationState[target];
-
-      balls.forEach(ball => {
-        ball.addEventListener('click', () => {
-          const index = parseInt(ball.dataset.index);
-          if (!state.selected.includes(index) && (state.selected.length === 0 || index === state.selected[state.selected.length - 1] + 1)) {
-            state.selected.push(index);
-            ball.classList.add('active');
-          }
-        });
-      });
-
-      verifyBtn.addEventListener('click', () => {
-        if (state.selected.join(',') === '1,2,3') {
-          state.passed = true;
-          result.classList.add('success');
-          result.textContent = '验证通过！正在加载页面...';
-          setTimeout(() => {
-            popup.classList.remove('active');
-            setTimeout(() => popup.remove(), 500);
-          }, 1500);
-        } else {
-          result.classList.add('error');
-          result.textContent = '验证失败！请按 01→02→03 顺序点击';
-          balls.forEach(ball => ball.classList.add('correct'));
-          setTimeout(() => resetVerification(target, popup), 3000);
-        }
-      });
-
-      resetBtn.addEventListener('click', () => resetVerification(target, popup));
-    };
-
-    const resetVerification = (target, popup) => {
-      const state = config.verificationState[target];
-      state.selected = [];
-      const balls = popup.querySelectorAll('.verification-ball');
-      const result = popup.querySelector('#verification-result');
-      balls.forEach(ball => ball.classList.remove('active', 'correct'));
-      result.classList.remove('success', 'error');
-      result.textContent = '';
-    };
-
-    // 核心：仅拦截非信任域名的iframe
-    const checkIframeHijack = (target) => {
-      const iframe = document.getElementById(`iframe-${target}`);
-      try {
-        const iframeLocation = iframe.contentWindow.location;
-        const iframeDomain = new URL(iframeLocation.href).hostname;
-        if (!config.trustedDomains.includes(iframeDomain) || iframeLocation.protocol !== 'https:') {
-          renderPopup(target, 'hijack');
-        }
-      } catch (e) {
-        renderPopup(target, 'hijack');
+        el.httpsAlert.classList.add('active');
+        el.splash.style.display = 'none';
+      } else {
+        // 开屏动画播完直接显示页面-无阻塞
+        setTimeout(() => {
+          el.splash.style.opacity = 0;
+          el.splash.style.pointerEvents = 'none';
+          el.pages.style.display = 'block';
+        }, 1200); // 开屏动画总时长1.2秒，秒进页面
       }
     };
 
+    // 2. 极简切页-无校验，秒切
     const switchPage = (target) => {
-      elements.dockItems.forEach(item => item.classList.remove('active'));
-      elements.pageContainers.forEach(cont => cont.classList.remove('active'));
+      el.dockItems.forEach(item => item.classList.remove('active'));
+      el.pageContainers.forEach(cont => cont.classList.remove('active'));
       document.querySelector(`.dock-item[data-target="${target}"]`).classList.add('active');
       document.querySelector(`.page-container[data-target="${target}"]`).classList.add('active');
-      initPageChecks(target);
     };
 
-    const initPageChecks = (target) => {
-      const isDeviceValid = checkDevice();
-      const state = config.verificationState[target];
-      
-      config.targets.forEach(t => {
-        if (t !== target) {
-          const popups = document.querySelectorAll(`.page-container[data-target="${t}"] .alert-container`);
-          popups.forEach(popup => popup.classList.remove('active'));
-        }
-      });
-
-      if (!isDeviceValid && !state.passed) {
-        renderPopup(target, 'verification');
-      }
-
-      const iframe = document.getElementById(`iframe-${target}`);
-      if (iframe) {
-        iframe.onload = () => checkIframeHijack(target);
-        setTimeout(() => checkIframeHijack(target), 300);
-      }
-    };
-
+    // 绑定事件-极简
     document.addEventListener("DOMContentLoaded", () => {
-      const isValid = baseChecks();
-      if (isValid) {
-        setTimeout(() => {
-          elements.splash.style.opacity = 0;
-          elements.splash.style.pointer-events = 'none';
-          elements.pages.style.display = 'block';
-          initPageChecks('home');
-        }, 3000);
-      } else {
-        elements.splash.style.display = 'none';
-        elements.pages.style.display = 'none';
-      }
-      elements.dockItems.forEach(item => {
+      checkHttps();
+      // 导航切页
+      el.dockItems.forEach(item => {
         item.addEventListener('click', () => switchPage(item.dataset.target));
       });
     });
