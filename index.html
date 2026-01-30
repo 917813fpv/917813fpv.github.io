@@ -6,24 +6,47 @@
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="robots" content="index,follow" />
+  <!-- 内容安全策略：仅允许HTTPS的信任域名，强化跨域限制 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' https://cdn.917813.com.cn;
+    frame-src https://cdn.917813.com.cn;
+    img-src 'self' https://cdn.917813.com.cn data:;
+    script-src 'self' https://cdn.bootcdn.net;
+    style-src 'self';
+    connect-src https://cdn.917813.com.cn;
+    object-src 'none';
+    media-src 'none';
+    font-src 'none';
+  ">
+  <!-- 强制HTTPS传输（浏览器自动跳转） -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
   <title>赛事｜2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
   <meta name="keywords" content="2026线上FPV竞速赛,2026线上穿越机竞速赛,Flyz远征飞,魄客杯,FPV,穿越机,FPV穿越机,穿越机竞速,FPV比赛,穿越机比赛,线上FPV赛,线上穿越机赛,FPV飞手,穿越机飞手,竞速飞手,航模飞手,无人机飞手,花飞手,FPV爱好者,穿越机爱好者,航模爱好者,无人机爱好者,沉浸式飞行,第一人称飞行,FPV Drone,Drone Racing,RC航模,遥控航模,航模竞赛,线上航模赛,FPV赛事报名,穿越机赛事报名,赛事入口,参赛通道,飞手报名,竞速赛报名" />
   <style>
     :root {
       --primary: #00ffff;
       --secondary: #87CEFA;
+      --danger: #ff3d00;
+      --danger-glow: 0 0 12px #ff3d00, 0 0 24px rgba(255, 61, 0, 0.4);
+      --warning: #ffcc00;
+      --warning-glow: 0 0 12px #ffcc00, 0 0 24px rgba(255, 204, 0, 0.4);
+      --success: #00ff9d;
+      --success-glow: 0 0 12px #00ff9d, 0 0 24px rgba(0, 255, 157, 0.4);
+      --ball-color: #00ffff;
+      --ball-glow: 0 0 10px var(--ball-color), 0 0 20px rgba(0, 255, 255, 0.5);
+      --ball-active: #00ff9d;
+      --ball-active-glow: 0 0 15px var(--ball-active), 0 0 25px rgba(0, 255, 157, 0.6);
       --bg-deep: #000000;
       --bg-dark: #050505;
-      --dock-h: 58px;
       --glass-bg: rgba(255, 255, 255, 0.12);
       --glass-border: rgba(255, 255, 255, 0.2);
       --glow-primary: 0 0 8px var(--primary), 0 0 16px rgba(0, 255, 255, 0.3);
       --glow-secondary: 0 0 8px var(--secondary), 0 0 16px rgba(135, 206, 250, 0.3);
       --glow-text: 0 0 2px #fff, 0 0 4px rgba(255, 255, 255, 0.7);
       --trans-fast: 0.2s ease-out;
-      /* 核心修改1：动画时长从0.35s延长到0.8s，播放更慢更丝滑 */
       --trans-smooth: 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       --trans-fade: 0.6s ease-in-out;
+      --dock-h: 58px;
     }
     * {
       margin: 0;
@@ -37,7 +60,7 @@
       color: #fff;
       min-height: 100vh;
     }
-    /* 开屏动画 */
+    /* 开屏动画（正常播放，不被阻断） */
     #splash-screen {
       position: fixed;
       inset: 0;
@@ -59,7 +82,6 @@
       margin-bottom: 48px;
       transform: translateY(-300px) scale(0.85);
       opacity: 0;
-      /* 核心修改2：动画时长延长，保持3秒总时长 */
       animation: logoDownBounce var(--trans-smooth) forwards 0.1s;
     }
     .splash-logo img {
@@ -79,7 +101,6 @@
       letter-spacing: 2px;
       transform: translateY(150px);
       opacity: 0;
-      /* 核心修改3：动画时长延长 */
       animation: textUpBounce var(--trans-smooth) forwards 0.5s;
     }
     .splash-url {
@@ -91,7 +112,6 @@
       font-family: Consolas, monospace;
       transform: translateY(150px);
       opacity: 0;
-      /* 核心修改4：动画时长延长 */
       animation: textUpBounce var(--trans-smooth) forwards 0.5s;
       padding: 6px 18px;
       border-radius: 10px;
@@ -123,6 +143,7 @@
       display: none;
       width: 100%;
       min-height: 100%;
+      position: relative; /* 为iframe劫持遮挡层做父容器定位 */
     }
     .page-container.active { display: block; }
     /* iframe - 自适应高度，完全放开交互 */
@@ -132,18 +153,17 @@
       border: none;
       background: var(--bg-dark);
       display: block;
-      /* 彻底放开iframe交互限制 */
       pointer-events: auto;
       touch-action: auto;
     }
-    /* 底部导航栏 - 无安全区 */
+    /* 底部导航栏 - 始终可见，不被遮挡 */
     #dock {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: var(--dock-h);
-      z-index: 20;
+      z-index: 20; /* 高于页面容器，低于开屏动画和提示框 */
       border-radius: 20px 20px 0 0;
       display: flex;
       justify-content: space-around;
@@ -181,9 +201,409 @@
       border-bottom: 3px solid var(--primary);
       background: rgba(0, 255, 255, 0.06);
     }
+    /* 通用提示框样式 - 科技风玻璃态 */
+    .alert-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: fadeIn var(--trans-fade) forwards;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .alert-card {
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .alert-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+    .alert-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px currentColor;
+    }
+    .alert-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(0,0,0,0.3);
+    }
+    .alert-desc {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: #eee;
+    }
+    .alert-cdn {
+      font-size: 1.2rem;
+      font-family: Consolas, monospace;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      margin: 15px 0;
+      color: var(--secondary);
+      text-shadow: var(--glow-secondary);
+      word-break: break-all;
+    }
+    .alert-btn-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .alert-btn {
+      padding: 12px 30px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 4px rgba(0,0,0,0.2);
+    }
+    /* 🔥 核心修改：iframe劫持提示框 - 仅遮挡iframe区域，不遮导航栏 */
+    #hijack-alert {
+      position: absolute; /* 相对于.page-container定位 */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0; /* 高度与iframe一致，不超出.page-container */
+      z-index: 15; /* 高于iframe，低于导航栏z-index:20 */
+      background: rgba(255, 61, 0, 0.2);
+      display: none;
+    }
+    #hijack-alert.active { display: flex; }
+    #hijack-alert .alert-card {
+      background: rgba(25, 5, 0, 0.9);
+      border: 1px solid rgba(255, 61, 0, 0.5);
+    }
+    #hijack-alert .alert-card::before {
+      background: linear-gradient(90deg, transparent, var(--danger), transparent);
+      box-shadow: var(--danger-glow);
+    }
+    #hijack-alert .alert-icon {
+      color: var(--danger);
+      text-shadow: var(--danger-glow);
+    }
+    #hijack-alert .alert-title {
+      color: var(--danger);
+    }
+    #hijack-alert .alert-btn-primary {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
+    }
+    #hijack-alert .alert-btn-primary:hover {
+      background: #e03300;
+      box-shadow: 0 6px 20px rgba(255, 61, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    #hijack-alert .alert-btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    #hijack-alert .alert-btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+    /* 浏览器不支持提示 - 全屏（严重错误，需阻断） */
+    #browser-alert {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(255, 204, 0, 0.1);
+      display: none;
+    }
+    #browser-alert.active { display: flex; }
+    #browser-alert .alert-card {
+      background: rgba(30, 25, 0, 0.9);
+      border: 1px solid rgba(255, 204, 0, 0.5);
+    }
+    #browser-alert .alert-card::before {
+      background: linear-gradient(90deg, transparent, var(--warning), transparent);
+      box-shadow: var(--warning-glow);
+    }
+    #browser-alert .alert-icon {
+      color: var(--warning);
+      text-shadow: var(--warning-glow);
+    }
+    #browser-alert .alert-title {
+      color: var(--warning);
+    }
+    #browser-alert .alert-btn-primary {
+      background: var(--warning);
+      color: #222;
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+    }
+    #browser-alert .alert-btn-primary:hover {
+      background: #e6b800;
+      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    /* HTTPS未加密提示 - 全屏（严重错误，需阻断） */
+    #https-alert {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(255, 61, 0, 0.2);
+      display: none;
+    }
+    #https-alert.active { display: flex; }
+    #https-alert .alert-card {
+      background: rgba(25, 5, 0, 0.9);
+      border: 1px solid rgba(255, 61, 0, 0.5);
+    }
+    #https-alert .alert-card::before {
+      background: linear-gradient(90deg, transparent, var(--danger), transparent);
+      box-shadow: var(--danger-glow);
+    }
+    #https-alert .alert-icon {
+      color: var(--danger);
+      text-shadow: var(--danger-glow);
+    }
+    #https-alert .alert-title {
+      color: var(--danger);
+    }
+    #https-alert .alert-btn-primary {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
+    }
+    #https-alert .alert-btn-primary:hover {
+      background: #e03300;
+      box-shadow: 0 6px 20px rgba(255, 61, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    /* 非CDN访问提示 - 顶部提示（不阻断，仅提示） */
+    #cdn-alert {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      max-width: 500px;
+      width: 90%;
+      display: none;
+    }
+    #cdn-alert.active { display: block; }
+    #cdn-alert .alert-card {
+      background: rgba(0, 15, 25, 0.9);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      padding: 20px 15px;
+    }
+    #cdn-alert .alert-card::before {
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      box-shadow: var(--glow-primary);
+    }
+    #cdn-alert .alert-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--primary);
+      text-shadow: var(--glow-primary);
+    }
+    #cdn-alert .alert-title {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    #cdn-alert .alert-desc {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    #cdn-alert .alert-cdn {
+      font-size: 1rem;
+      padding: 8px 10px;
+      margin: 10px 0;
+    }
+    #cdn-alert .alert-btn-group {
+      margin-top: 15px;
+      gap: 10px;
+    }
+    #cdn-alert .alert-btn {
+      padding: 8px 20px;
+      font-size: 1rem;
+    }
+    #cdn-alert .alert-btn-primary {
+      background: var(--primary);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+    #cdn-alert .alert-btn-primary:hover {
+      background: #00e6e6;
+      box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    #cdn-alert .alert-btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    /* 设备校验失败 - 人机验证（仅遮挡iframe区域） */
+    #device-verification {
+      position: absolute; /* 相对于.page-container定位 */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 15; /* 高于iframe，低于导航栏 */
+      background: rgba(0, 30, 60, 0.3);
+      display: none;
+    }
+    #device-verification.active { display: flex; }
+    #device-verification .alert-card {
+      background: rgba(0, 15, 30, 0.95);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      padding: 30px 20px;
+    }
+    #device-verification .alert-card::before {
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      box-shadow: var(--glow-primary);
+    }
+    #device-verification .alert-icon {
+      color: var(--primary);
+      text-shadow: var(--glow-primary);
+    }
+    #device-verification .alert-title {
+      color: var(--primary);
+      font-size: 1.6rem;
+    }
+    #device-verification .alert-desc {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    /* 人机验证球容器 */
+    .verification-balls {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+    }
+    .verification-ball {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--ball-color);
+      box-shadow: var(--ball-glow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .verification-ball.active {
+      background: var(--ball-active);
+      box-shadow: var(--ball-active-glow);
+      transform: scale(1.1);
+    }
+    .verification-ball.correct {
+      background: var(--success);
+      box-shadow: var(--success-glow);
+    }
+    .verification-tip {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin: 15px 0;
+      text-shadow: var(--glow-secondary);
+    }
+    #verification-result {
+      margin: 15px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: none;
+    }
+    #verification-result.success {
+      color: var(--success);
+      text-shadow: var(--success-glow);
+      display: block;
+    }
+    #verification-result.error {
+      color: var(--danger);
+      text-shadow: var(--danger-glow);
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <!-- 1. HTTPS未加密提示（全屏阻断） -->
+  <div id="https-alert" class="alert-container">
+    <div class="alert-card">
+      <div class="alert-icon">🔒</div>
+      <div class="alert-title">⚠️ 非加密传输，拒绝访问！</div>
+      <div class="alert-desc">
+        为保障数据安全，本赛事页面仅支持HTTPS加密访问<br>
+        请使用以下官方HTTPS链接访问：
+      </div>
+      <div class="alert-cdn">https://cdn.917813.com.cn</div>
+      <div class="alert-btn-group">
+        <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 浏览器不支持提示（全屏阻断） -->
+  <div id="browser-alert" class="alert-container">
+    <div class="alert-card">
+      <div class="alert-icon">🚫</div>
+      <div class="alert-title">⚠️ 浏览器不支持！</div>
+      <div class="alert-desc">
+        检测到你使用的是小众/不合规浏览器，为保障访问安全和体验<br>
+        仅支持以下主流浏览器：微信内置浏览器、Safari、Chrome、Edge、夸克、小米浏览器、华为浏览器、OPPO浏览器、VIVO浏览器
+      </div>
+      <div class="alert-btn-group">
+        <button class="alert-btn alert-btn-primary" onclick="window.location.reload()">重试</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 非CDN访问提示（顶部提示） -->
+  <div id="cdn-alert">
+    <div class="alert-card">
+      <div class="alert-icon">📌</div>
+      <div class="alert-title">建议使用官方CDN访问</div>
+      <div class="alert-desc">
+        检测到你访问的是非CDN域名，可能存在加载不稳定或劫持风险<br>
+        推荐使用官方高速CDN链接，保障访问安全流畅
+      </div>
+      <div class="alert-cdn">https://cdn.917813.com.cn</div>
+      <div class="alert-btn-group">
+        <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转</button>
+        <button class="alert-btn alert-btn-secondary" onclick="document.getElementById('cdn-alert').classList.remove('active')">继续访问</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 开屏动画 -->
   <div id="splash-screen">
     <div class="splash-logo">
       <img src="./logo.JPG" alt="Flyz远征飞" />
@@ -192,27 +612,258 @@
     <div class="splash-url">cdn.917813.com.cn</div>
   </div>
 
+  <!-- 页面容器 -->
   <div id="pages">
+    <!-- 报名页面 -->
     <div class="page-container active" data-target="home">
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="2026线上FPV竞速赛-报名入口" scrolling="yes"></iframe>
+      <!-- 劫持提示框（仅遮挡当前iframe） -->
+      <div id="hijack-alert-home" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <!-- 设备校验人机验证（仅遮挡当前iframe） -->
+      <div id="device-verification-home" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-home" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-home">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('home')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-home" src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="2026线上FPV竞速赛-报名入口" scrolling="yes"></iframe>
     </div>
+
+    <!-- 公告页面 -->
     <div class="page-container" data-target="gg">
-      <iframe src="/https://cdn.917813.com.cnfpv/2026onlinerace/gg/index.html" title="2026线上FPV竞速赛-赛事公告" scrolling="yes"></iframe>
+      <div id="hijack-alert-gg" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div id="device-verification-gg" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-gg" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-gg">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('gg')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-gg" src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="2026线上FPV竞速赛-赛事公告" scrolling="yes"></iframe>
     </div>
+
+    <!-- 选手页面 -->
     <div class="page-container" data-target="xs">
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="2026线上FPV竞速赛-参赛选手" scrolling="yes"></iframe>
+      <div id="hijack-alert-xs" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div id="device-verification-xs" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-xs" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-xs">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('xs')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-xs" src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="2026线上FPV竞速赛-参赛选手" scrolling="yes"></iframe>
     </div>
+
+    <!-- 奖品页面 -->
     <div class="page-container" data-target="cs">
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="2026线上FPV竞速赛-奖品信息" scrolling="yes"></iframe>
+      <div id="hijack-alert-cs" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div id="device-verification-cs" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-cs" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-cs">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('cs')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-cs" src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="2026线上FPV竞速赛-奖品信息" scrolling="yes"></iframe>
     </div>
+
+    <!-- 赞助页面 -->
     <div class="page-container" data-target="zz">
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="2026线上FPV竞速赛-赞助合作" scrolling="yes"></iframe>
+      <div id="hijack-alert-zz" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div id="device-verification-zz" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-zz" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-zz">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('zz')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-zz" src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="2026线上FPV竞速赛-赞助合作" scrolling="yes"></iframe>
     </div>
+
+    <!-- 后勤页面 -->
     <div class="page-container" data-target="hq">
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="2026线上FPV竞速赛-赛事后勤" scrolling="yes"></iframe>
+      <div id="hijack-alert-hq" class="alert-container" id="hijack-alert">
+        <div class="alert-card">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-title">页面被非法劫持！</div>
+          <div class="alert-desc">
+            当前内嵌页面已被非信任站点替换，存在安全风险<br>
+            请关闭页面并通过官方HTTPS链接重新访问
+          </div>
+          <div class="alert-cdn">https://cdn.917813.com.cn</div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" onclick="window.location.href='https://cdn.917813.com.cn'">跳转官方</button>
+            <button class="alert-btn alert-btn-secondary" onclick="location.reload()">重试</button>
+          </div>
+        </div>
+      </div>
+      <div id="device-verification-hq" class="alert-container" id="device-verification">
+        <div class="alert-card">
+          <div class="alert-icon">🔍</div>
+          <div class="alert-title">设备验证</div>
+          <div class="alert-desc">
+            检测到设备信息异常（无名称/虚拟机），请完成人机验证后访问<br>
+            <span style="font-size: 0.9rem; color: #aaa;">（底部6字：人机验证 通过访问）</span>
+          </div>
+          <div class="verification-tip">提示：按顺序点击 01 → 02 → 03 的球</div>
+          <div class="verification-balls">
+            <div class="verification-ball" data-index="1">01</div>
+            <div class="verification-ball" data-index="2">02</div>
+            <div class="verification-ball" data-index="3">03</div>
+          </div>
+          <div id="verification-result-hq" id="verification-result"></div>
+          <div class="alert-btn-group">
+            <button class="alert-btn alert-btn-primary" id="verify-btn-hq">提交验证</button>
+            <button class="alert-btn alert-btn-secondary" onclick="resetVerification('hq')">重新验证</button>
+          </div>
+        </div>
+      </div>
+      <iframe id="iframe-hq" src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="2026线上FPV竞速赛-赛事后勤" scrolling="yes"></iframe>
     </div>
   </div>
 
+  <!-- 底部导航栏（始终可见） -->
   <div id="dock">
     <div class="dock-item active" data-target="home">【报名】</div>
     <div class="dock-item" data-target="gg">公告</div>
@@ -223,31 +874,230 @@
   </div>
 
   <script>
+    // 初始化元素
+    const httpsAlert = document.getElementById('https-alert');
+    const browserAlert = document.getElementById('browser-alert');
+    const cdnAlert = document.getElementById('cdn-alert');
+    const splash = document.getElementById('splash-screen');
+    const pages = document.getElementById('pages');
+    const trustedDomain = 'cdn.917813.com.cn';
+    // 扩容浏览器白名单（新增华为/OPPO/VIVO浏览器）
+    const trustedBrowsers = [
+      'MicroMessenger', // 微信内置浏览器
+      'Safari', // Safari
+      'Chrome', // Chrome
+      'Edg', // Edge
+      'Quark', // 夸克
+      'MiuiBrowser', // 小米浏览器
+      'HuaweiBrowser', // 华为浏览器
+      'OPPOBrowser', // OPPO浏览器
+      'VIVOBrowser' // VIVO浏览器
+    ];
+    // 存储每个页面的验证状态和点击顺序
+    const verificationState = {
+      home: { selected: [], passed: false },
+      gg: { selected: [], passed: false },
+      xs: { selected: [], passed: false },
+      cs: { selected: [], passed: false },
+      zz: { selected: [], passed: false },
+      hq: { selected: [], passed: false }
+    };
+
+    // 1. HTTPS校验（全屏阻断）
+    const checkHTTPS = () => {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (!isLocal && window.location.protocol !== 'https:') {
+        httpsAlert.classList.add('active');
+        return false;
+      }
+      return true;
+    };
+
+    // 2. 浏览器校验（全屏阻断）
+    const checkBrowser = () => {
+      const userAgent = navigator.userAgent;
+      const isTrusted = trustedBrowsers.some(browser => userAgent.includes(browser));
+      if (!isTrusted) {
+        browserAlert.classList.add('active');
+        return false;
+      }
+      return true;
+    };
+
+    // 3. 域名校验（顶部提示）
+    const checkDomain = () => {
+      const currentHost = window.location.hostname;
+      if (currentHost !== trustedDomain) {
+        cdnAlert.classList.add('active');
+      }
+      return true;
+    };
+
+    // 4. 设备校验（检测设备名称/虚拟机）
+    const checkDevice = () => {
+      const userAgent = navigator.userAgent;
+      // 检测虚拟机特征
+      const isVM = /VirtualBox|VMware|Hyper-V|QEMU|Genymotion|Android Emulator|iOS Simulator/.test(userAgent);
+      // 检测设备名称（简化版：通过userAgent是否包含设备标识判断）
+      const hasDeviceName = /iPhone|iPad|iPod|Android|Windows Phone|Macintosh|Windows/.test(userAgent);
+      
+      // 设备无名称或为虚拟机，返回异常
+      return !isVM && hasDeviceName;
+    };
+
+    // 5. iframe劫持校验（仅遮挡当前iframe）
+    const checkIframeHijack = (iframeId, hijackAlertId) => {
+      const iframe = document.getElementById(iframeId);
+      const hijackAlert = document.getElementById(hijackAlertId);
+      try {
+        const iframeLocation = iframe.contentWindow.location;
+        const iframeDomain = new URL(iframeLocation.href).hostname;
+        if (iframeDomain !== trustedDomain || iframeLocation.protocol !== 'https:') {
+          hijackAlert.classList.add('active');
+        }
+      } catch (e) {
+        hijackAlert.classList.add('active');
+      }
+    };
+
+    // 6. 人机验证相关函数
+    // 重置验证状态
+    const resetVerification = (target) => {
+      const state = verificationState[target];
+      state.selected = [];
+      state.passed = false;
+      // 重置UI
+      const balls = document.querySelectorAll(`#device-verification-${target} .verification-ball`);
+      balls.forEach(ball => {
+        ball.classList.remove('active', 'correct');
+      });
+      const result = document.getElementById(`verification-result-${target}`);
+      result.classList.remove('success', 'error');
+      result.textContent = '';
+    };
+
+    // 绑定验证球点击事件
+    const bindVerificationBalls = (target) => {
+      const balls = document.querySelectorAll(`#device-verification-${target} .verification-ball`);
+      const verifyBtn = document.getElementById(`verify-btn-${target}`);
+      const result = document.getElementById(`verification-result-${target}`);
+      const state = verificationState[target];
+
+      balls.forEach(ball => {
+        ball.addEventListener('click', () => {
+          const index = parseInt(ball.dataset.index);
+          // 只允许按顺序选择，且不重复
+          if (!state.selected.includes(index) && (state.selected.length === 0 || index === state.selected[state.selected.length - 1] + 1)) {
+            state.selected.push(index);
+            ball.classList.add('active');
+          }
+        });
+      });
+
+      verifyBtn.addEventListener('click', () => {
+        if (state.selected.join(',') === '1,2,3') {
+          // 验证通过
+          state.passed = true;
+          result.classList.add('success');
+          result.textContent = '验证通过！正在显示页面...';
+          // 隐藏验证框
+          setTimeout(() => {
+            document.getElementById(`device-verification-${target}`).classList.remove('active');
+          }, 1000);
+        } else {
+          // 验证失败
+          result.classList.add('error');
+          result.textContent = '验证失败！请按 01→02→03 顺序点击';
+          // 高亮正确顺序
+          balls.forEach(ball => {
+            ball.classList.remove('active');
+            if ([1,2,3].includes(parseInt(ball.dataset.index))) {
+              ball.classList.add('correct');
+            }
+          });
+          // 3秒后重置
+          setTimeout(() => resetVerification(target), 3000);
+        }
+      });
+    };
+
+    // 页面加载主逻辑
     document.addEventListener("DOMContentLoaded", () => {
-      const splash = document.getElementById('splash-screen');
-      const pages = document.getElementById('pages');
       const dockItems = document.querySelectorAll('.dock-item');
       const pageContainers = document.querySelectorAll('.page-container');
       let currentTarget = 'home';
 
-      // 开屏动画结束后显示页面（保持3秒总时长）
-      setTimeout(() => {
-        splash.style.opacity = 0;
-        splash.style.pointerEvents = 'none';
-        pages.style.display = 'block';
-      }, 3000);
+      // 执行基础校验（HTTPS → 浏览器 → 域名）
+      const isHTTPSValid = checkHTTPS();
+      const isBrowserValid = isHTTPSValid ? checkBrowser() : false;
+      const isDomainValid = isBrowserValid ? checkDomain() : false;
+      const isDeviceValid = checkDevice();
+
+      // 基础校验通过，显示开屏动画
+      if (isHTTPSValid && isBrowserValid && isDomainValid) {
+        // 开屏动画结束后显示页面
+        setTimeout(() => {
+          splash.style.opacity = 0;
+          splash.style.pointerEvents = 'none';
+          pages.style.display = 'block';
+
+          // 初始化当前页面的校验
+          initPageChecks(currentTarget);
+        }, 3000);
+      } else {
+        // 基础校验失败，隐藏开屏动画
+        splash.style.display = 'none';
+        pages.style.display = 'none';
+      }
 
       // 切页逻辑
       const switchPage = (target) => {
         if (target === currentTarget) return;
         dockItems.forEach(item => item.classList.remove('active'));
         pageContainers.forEach(cont => cont.classList.remove('active'));
-        document.querySelector(`.dock-item[data-target="${target}"]`).classList.add('active');
-        document.querySelector(`.page-container[data-target="${target}"]`).classList.add('active');
+        const activeDock = document.querySelector(`.dock-item[data-target="${target}"]`);
+        const activePage = document.querySelector(`.page-container[data-target="${target}"]`);
+        activeDock.classList.add('active');
+        activePage.classList.add('active');
         currentTarget = target;
+
+        // 切页后初始化当前页面的校验
+        initPageChecks(target);
       };
 
       dockItems.forEach(item => item.addEventListener('click', () => switchPage(item.dataset.target)));
+
+      // 初始化页面校验（iframe劫持+设备验证）
+      const initPageChecks = (target) => {
+        const iframeId = `iframe-${target}`;
+        const hijackAlertId = `hijack-alert-${target}`;
+        const deviceVerificationId = `device-verification-${target}`;
+
+        // 绑定验证球事件（仅首次绑定）
+        if (!window.verificationBinded) {
+          window.verificationBinded = {};
+        }
+        if (!window.verificationBinded[target]) {
+          bindVerificationBalls(target);
+          window.verificationBinded[target] = true;
+        }
+
+        // 设备校验失败，显示人机验证
+        if (!isDeviceValid && !verificationState[target].passed) {
+          document.getElementById(deviceVerificationId).classList.add('active');
+        } else {
+          document.getElementById(deviceVerificationId).classList.remove('active');
+        }
+
+        // iframe劫持校验
+        const iframe = document.getElementById(iframeId);
+        if (iframe) {
+          // 加载完成后校验
+          iframe.onload = () => checkIframeHijack(iframeId, hijackAlertId);
+          // 初始化校验
+          setTimeout(() => checkIframeHijack(iframeId, hijackAlertId), 500);
+        }
+      };
     });
   </script>
 </body>
