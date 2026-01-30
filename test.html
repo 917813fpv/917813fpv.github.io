@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <title>2026线上FPV竞速赛-魄客杯-Flyz远征飞</title>
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;transform:translateZ(0);-webkit-transform:translateZ(0);}
+    html,body {width:100%;height:100vh;background:#000;overflow:hidden;}
+    .loading {position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;color:#00ffff;font-family:PingFang SC,Microsoft YaHei;}
+    .spinner {width:60px;height:60px;border:4px solid rgba(0,255,255,0.2);border-top:4px solid #00ffff;border-radius:50%;animation:spin 1.2s linear infinite;}
+    .loading-text {font-size:1.2rem;letter-spacing:1px;}
+    @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    #video-player {position:fixed;inset:0;z-index:5;width:100%;height:100%;object-fit:contain;display:none;}
+    .error {position:fixed;inset:0;z-index:10;display:none;flex-direction:column;justify-content:center;align-items:center;gap:20px;color:#ff3d00;padding:20px;text-align:center;font-family:PingFang SC,Microsoft YaHei;}
+    .error-text {font-size:1.1rem;line-height:1.8;max-width:400px;}
+    .error-reload {padding:10px 30px;border:1px solid #00ffff;border-radius:8px;background:transparent;color:#00ffff;font-size:1rem;cursor:pointer;transition:all 0.3s ease;}
+    .error-reload:hover {background:rgba(0,255,255,0.1);box-shadow:0 0 10px #00ffff;}
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">视频加载中...</div>
+  </div>
+
+  <video id="video-player" controls playsinline webkit-playsinline preload="auto"></video>
+
+  <div class="error" id="error">
+    <div class="error-text">视频加载失败<br>请检查网络或稍后重试</div>
+    <button class="error-reload" onclick="window.location.reload()">刷新页面</button>
+  </div>
+
+  <script>
+    const baseUrl = 'https://cdn.917813.com.cn/fpv/2026onlinerace/video/';
+    const player = document.getElementById('video-player');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const ua = navigator.userAgent.toLowerCase();
+
+    // 设备识别：苹果/华为/iQOO/默认
+    function getVideoUrl() {
+      if (/iphone|ipad|ipod|macintosh/.test(ua)) {
+        return baseUrl + 'apple.MP4';
+      } else if (ua.includes('huawei') || ua.includes('honor')) {
+        return baseUrl + 'hw.mp4';
+      } else if (ua.includes('iqoo')) {
+        return baseUrl + 'iqqo.mp4';
+      } else {
+        return baseUrl + 'apple.MP4'; // 其他设备默认加载苹果版
+      }
+    }
+
+    // 初始化视频
+    function initVideo() {
+      player.src = getVideoUrl();
+      // 加载完成显示并自动播放
+      player.addEventListener('loadeddata', () => {
+        loading.style.display = 'none';
+        player.style.display = 'block';
+        player.play().catch(err => {}); // 捕获自动播放限制异常
+      });
+      // 播放结束跳转首页
+      player.addEventListener('ended', () => {
+        window.location.href = './index.html';
+      });
+      // 加载失败显示错误
+      player.addEventListener('error', () => {
+        loading.style.display = 'none';
+        error.style.display = 'flex';
+      });
+    }
+
+    // 页面加载完成初始化
+    document.addEventListener('DOMContentLoaded', initVideo);
+
+    // 点击空白处触发播放（解决移动端自动播放限制）
+    document.addEventListener('click', () => {
+      if (player.paused && player.style.display === 'block') {
+        player.play();
+      }
+    });
+  </script>
+</body>
+</html>
