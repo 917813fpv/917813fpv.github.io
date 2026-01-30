@@ -1,27 +1,29 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" /> <!-- 强制UTF-8编码，解决乱码 -->
+  <meta charset="utf-8" /> <!-- 强制UTF-8编码，杜绝乱码 -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, email=no" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="robots" content="index,follow" />
-  <!-- 调整CSP策略：兼容GitHub Pages，放宽必要限制 -->
+  <!-- 核心修正：CSP策略加入cdn.bootcdn.net，移除GitHub Pages配置 -->
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' https://cdn.917813.com.cn https://*.github.io;
+    default-src 'self' https://cdn.917813.com.cn https://cdn.bootcdn.net;
     frame-src https://cdn.917813.com.cn;
-    img-src 'self' https://cdn.917813.com.cn data: https://*.github.io;
-    script-src 'self';
-    style-src 'self';
-    connect-src https://cdn.917813.com.cn https://*.github.io;
+    img-src 'self' https://cdn.917813.com.cn https://cdn.bootcdn.net data:;
+    script-src 'self' https://cdn.bootcdn.net;
+    style-src 'self' https://cdn.bootcdn.net;
+    connect-src https://cdn.917813.com.cn https://cdn.bootcdn.net;
     object-src 'none';
     media-src 'none';
-    font-src 'self';
+    font-src 'self' https://cdn.bootcdn.net;
   ">
-  <!-- 强制HTTPS传输（GitHub Pages默认HTTPS，兼容本地测试） -->
+  <!-- 强制HTTPS传输（Cloudflare CDN默认HTTPS，兼容本地测试） -->
   <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
   <title>赛事｜2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
   <meta name="keywords" content="2026线上FPV竞速赛,2026线上穿越机竞速赛,Flyz远征飞,魄客杯,FPV,穿越机,FPV穿越机,穿越机竞速,FPV比赛,穿越机比赛,线上FPV赛,线上穿越机赛,FPV飞手,穿越机飞手,竞速飞手,航模飞手,无人机飞手,花飞手,FPV爱好者,穿越机爱好者,航模爱好者,无人机爱好者,沉浸式飞行,第一人称飞行,FPV Drone,Drone Racing,RC航模,遥控航模,航模竞赛,线上航模赛,FPV赛事报名,穿越机赛事报名,赛事入口,参赛通道,飞手报名,竞速赛报名" />
+  <!-- 保留外部依赖：引入cdn.bootcdn.net的资源（示例：引入Font Awesome图标库，可根据实际需求替换） -->
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
       --primary: #00ffff;
@@ -471,19 +473,21 @@
       padding: 10px 25px;
       font-size: 1rem;
     }
-    /* 修复GitHub Pages兼容：移除可能引发冲突的overflow:hidden */
+    /* 适配Cloudflare CDN：优化滚动体验 */
     html {
       overflow-x: hidden;
       overflow-y: auto;
     }
   </style>
+  <!-- 保留外部JS依赖：示例引入cdn.bootcdn.net的jQuery（可根据实际需求替换为其他资源） -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
   <!-- 1. HTTPS未加密提示（全屏阻断） -->
   <div id="https-alert" class="alert-container fullscreen-alert">
     <div class="alert-card">
       <div class="alert-logo">
-        <img src="logo.JPG" alt="Flyz远征飞" /> <!-- 简化路径，适配GitHub Pages目录结构 -->
+        <img src="logo.JPG" alt="Flyz远征飞" /> <!-- 适配Cloudflare CDN目录结构，使用相对路径 -->
       </div>
       <div class="alert-title">安全警告 - 非加密传输</div>
       <div class="alert-desc">
@@ -597,7 +601,7 @@
       <iframe id="iframe-home" src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="2026线上FPV竞速赛-报名入口" scrolling="yes"></iframe>
     </div>
 
-    <!-- 公告页面（修复之前的路径笔误） -->
+    <!-- 公告页面 -->
     <div class="page-container" data-target="gg">
       <iframe id="iframe-gg" src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="2026线上FPV竞速赛-赛事公告" scrolling="yes"></iframe>
     </div>
@@ -663,11 +667,11 @@
       verificationTemplate: document.getElementById('device-verification-template')
     };
 
-    // 1. 基础校验（兼容GitHub Pages）
+    // 1. 基础校验（适配Cloudflare CDN）
     const baseChecks = () => {
       let isValid = true;
 
-      // HTTPS校验（GitHub Pages默认HTTPS，本地测试跳过）
+      // HTTPS校验（Cloudflare CDN默认HTTPS，本地测试跳过）
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (!isLocal && window.location.protocol !== 'https:') {
         elements.httpsAlert.classList.add('active');
@@ -687,7 +691,7 @@
       // 域名校验（不阻断，仅提示）
       if (isValid) {
         const currentHost = window.location.hostname;
-        if (currentHost !== config.trustedDomain && !currentHost.includes('github.io')) {
+        if (currentHost !== config.trustedDomain) {
           elements.cdnAlert.classList.add('active');
         }
       }
@@ -695,10 +699,10 @@
       return isValid;
     };
 
-    // 2. 设备校验（简化逻辑，避免GitHub Pages兼容问题）
+    // 2. 设备校验
     const checkDevice = () => {
       const userAgent = navigator.userAgent;
-      const isVM = /VirtualBox|VMware|Hyper-V|QEMU|Genymotion/.test(userAgent); // 简化虚拟机检测
+      const isVM = /VirtualBox|VMware|Hyper-V|QEMU|Genymotion/.test(userAgent);
       const hasDeviceName = /iPhone|iPad|iPod|Android|Windows Phone|Macintosh|Windows/.test(userAgent);
       return !isVM && hasDeviceName;
     };
@@ -775,7 +779,7 @@
       result.textContent = '';
     };
 
-    // 6. iframe劫持校验（兼容GitHub Pages跨域）
+    // 6. iframe劫持校验（适配Cloudflare CDN跨域）
     const checkIframeHijack = (target) => {
       const iframe = document.getElementById(`iframe-${target}`);
       try {
@@ -785,8 +789,8 @@
           renderPopup(target, 'hijack');
         }
       } catch (e) {
-        // GitHub Pages跨域正常，仅当明确劫持时弹窗
-        if (!e.message.includes('cross-origin')) {
+        // 仅当明确非跨域错误时弹窗（Cloudflare CDN跨域正常）
+        if (!e.message.includes('cross-origin') && !e.message.includes('跨域')) {
           renderPopup(target, 'hijack');
         }
       }
@@ -820,11 +824,11 @@
         renderPopup(target, 'verification');
       }
 
-      // iframe劫持校验
+      // iframe劫持校验（适配Cloudflare CDN加载速度）
       const iframe = document.getElementById(`iframe-${target}`);
       if (iframe) {
         iframe.onload = () => checkIframeHijack(target);
-        setTimeout(() => checkIframeHijack(target), 800); // 延长延迟，适配GitHub Pages加载速度
+        setTimeout(() => checkIframeHijack(target), 600);
       }
     };
 
