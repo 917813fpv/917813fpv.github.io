@@ -1,77 +1,242 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="format-detection" content="telephone=no, email=no" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>404</title>
-  <style>
-    :root {
-      --primary: #00ffff;
-      --bg-deep: #000000;
-      --glow-primary: 0 0 12px var(--primary), 0 0 24px rgba(0, 255, 255, 0.4);
-      --glow-text: 0 0 4px #fff, 0 0 8px rgba(255, 255, 255, 0.8);
-      --trans-fade: 0.6s ease-in-out;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Consolas", monospace;
-      background: var(--bg-deep);
-      background-image: radial-gradient(circle at 50% 50%, rgba(10, 30, 40, 0.3), transparent 70%);
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-    }
-    .code-404 {
-      font-size: 8rem;
-      font-weight: 900;
-      color: var(--primary);
-      text-shadow: var(--glow-primary);
-      margin-bottom: 20px;
-      animation: fadeIn var(--trans-fade) forwards;
-    }
-    .error-text {
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: 4px;
-      text-shadow: var(--glow-text);
-      animation: fadeIn var(--trans-fade) forwards 0.3s;
-      opacity: 0;
-    }
-    .tip {
-      margin-top: 40px;
-      font-size: 1.2rem;
-      color: #888;
-      letter-spacing: 2px;
-      animation: fadeIn var(--trans-fade) forwards 0.6s;
-      opacity: 0;
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flyz远征飞下载站</title>
+    <!-- 国内可访问CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7C3AED',
+                        blue: '#165DFF' // 主按钮蓝色
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 开屏动画：仅播放，无逻辑 */
+            .rocket-fall { animation: rocketFall 1.2s ease-out forwards; opacity: 0; }
+            .text-rise { animation: textRise 1s ease-out forwards; opacity: 0; }
+            .flow-text {
+                background: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3);
+                background-size: 200% 100%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: flowColor 8s linear infinite;
+            }
+            @keyframes rocketFall {
+                0% { opacity: 0; transform: translateY(-150px) scale(0.8); }
+                70% { opacity: 1; transform: translateY(10px) scale(1.05); }
+                100% { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            @keyframes textRise {
+                0% { opacity: 0; transform: translateY(50px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes flowColor {
+                0% { background-position: 0% 50%; }
+                100% { background-position: 200% 50%; }
+            }
+            /* 基础样式：导航栏彻底移除账号显示 */
+            .top-nav { @apply fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md py-3 px-4 border-b border-gray-200; }
+            .main-card { @apply bg-white rounded-2xl shadow-xl p-4 md:p-8 mx-3 mt-6 max-w-2xl mx-auto; }
+            /* 弹窗样式：手机端优先，默认隐藏（使用display:none确保彻底隐藏） */
+            .modal-backdrop { 
+                @apply fixed inset-0 z-50 bg-black/70 flex items-center justify-center;
+                display: none; /* 基础隐藏，避免Tailwind类名冲突 */
+            }
+            .modal-content { @apply bg-white rounded-xl p-5 w-[90%] max-w-md mx-4; }
+            .legal-text { @apply text-xs text-gray-500 mt-3 pt-3 border-t border-gray-200; }
+            /* 按钮样式：手机端超大点击区，确保可点击（添加pointer-events:auto保障） */
+            .btn-primary { 
+                @apply w-full bg-blue text-white py-3 rounded-lg font-semibold text-center mt-4;
+                pointer-events: auto; /* 确保可点击，防止被覆盖 */
+                cursor: pointer; /* 显示手型，提升用户体验 */
+            }
+            .share-btn { 
+                @apply w-full bg-primary text-white py-4 rounded-lg font-semibold text-lg;
+                pointer-events: auto;
+                cursor: pointer;
+            }
+        }
+    </style>
 </head>
-<body>
-  <div class="code-404">404</div>
-  <div class="error-text">此页面已失效</div>
-  <div class="tip">即将自动返回首页...</div>
+<body class="bg-gray-100 min-h-screen overflow-x-hidden">
+    <!-- 1. 开屏层：仅动画，无任何弹窗逻辑 -->
+    <div id="splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <div class="rocket-fall w-20 h-20 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center mb-4">
+            <i class="fa fa-rocket text-4xl text-white"></i>
+        </div>
+        <h1 class="text-rise text-3xl font-bold mb-2">Flyz远征飞下载站</h1>
+        <p class="text-rise text-gray-500 text-sm">免费 · 高速 · 免登录</p>
+    </div>
 
-  <script>
-    // 3秒后自动跳转至index.html，可修改毫秒数调整跳转时间
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
-  </script>
+    <!-- 2. 顶部导航栏：彻底干净，无任何账号相关元素 -->
+    <div id="top-nav" class="top-nav" style="display: none;">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div class="flow-text text-base font-bold">
+                Flyz远征飞下载站
+            </div>
+            <!-- 彻底删除所有账号显示元素，杜绝误显示 -->
+        </div>
+    </div>
+
+    <!-- 3. 主界面：手机端优先，无任何账号相关显示 -->
+    <div id="main" style="display: none; padding-top: 4rem;">
+        <div class="main-card">
+            <!-- 功能卡片：手机端单列布局 -->
+            <div class="grid grid-cols-1 gap-3 mb-6">
+                <div class="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+                    <p class="font-medium"><i class="fa fa-gamepad text-primary mr-2"></i>模拟器下载</p>
+                    <p class="text-xs text-gray-500">免费 · 高速 · 免登录</p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+                    <p class="font-medium"><i class="fa fa-cubes text-primary mr-2"></i>3D打印文件</p>
+                    <p class="text-xs text-gray-500">STL/OBJ · 持续更新</p>
+                </div>
+                <div class="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+                    <p class="font-medium"><i class="fa fa-desktop text-primary mr-2"></i>地面站工具</p>
+                    <p class="text-xs text-gray-500">调参软件 · 固件包</p>
+                </div>
+            </div>
+            <!-- 核心按钮：添加id确保唯一，超大点击区 -->
+            <div class="flex flex-col gap-3">
+                <button id="share-btn" class="share-btn" aria-label="进入共享线路">
+                    <i class="fa fa-users mr-2"></i>进入共享线路
+                </button>
+                <button class="w-full bg-gray-200 text-gray-700 py-4 rounded-lg font-semibold text-lg">
+                    <i class="fa fa-user-secret mr-2"></i>独享线路 (注册)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 账号弹窗：默认隐藏，手机端适配，z-index确保最高 -->
+    <div id="account-modal" class="modal-backdrop" aria-hidden="true">
+        <div class="modal-content">
+            <!-- 标题：系统已自动分配账号密码 -->
+            <h2 class="text-lg font-bold text-gray-800 mb-4">系统已自动分配账号密码</h2>
+            <!-- 账号密码：点击后生成 -->
+            <div class="space-y-3 mb-4">
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500 mb-1">账号</p>
+                    <p class="text-xl font-bold" id="modal-acc"></p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg">
+                    <p class="text-xs text-gray-500 mb-1">密码</p>
+                    <p class="text-xl font-bold" id="modal-pwd"></p>
+                </div>
+            </div>
+            <!-- 合规警告 -->
+            <div class="legal-text">
+                ⚠️ 警告：本账号仅用于个人非商业用途，严禁用于非法用途、违规传播或恶意攻击，一经发现将永久封禁访问权限，情节严重将移交相关部门处理。
+            </div>
+            <!-- 核心按钮：添加双重保障，确保100%触发 -->
+            <button id="confirm-btn" class="btn-primary" aria-label="确认并在新页面进入" onclick="openTargetLink()">
+                我知道了，立即进入
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 目标跳转链接
+        const TARGET_URL = "http://47.104.206.20:51794/#/home";
+        
+        // 全局函数：直接打开链接（备用保障）
+        function openTargetLink() {
+            console.log("全局函数触发，准备在新标签页打开链接：", TARGET_URL);
+            // 使用noopener noreferrer提高安全性，避免被浏览器拦截
+            const newWindow = window.open(TARGET_URL, '_blank', 'noopener noreferrer');
+            if (newWindow) {
+                newWindow.focus(); // 聚焦新标签页
+                console.log("新标签页已成功打开");
+            } else {
+                console.error("新标签页被浏览器拦截，请允许弹窗后重试");
+                // 备用方案：提示用户允许弹窗
+                alert("新标签页被浏览器拦截，请在浏览器设置中允许本网站的弹窗后重试");
+            }
+        }
+        
+        // 等待DOM完全加载后再执行所有操作（关键修复）
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM加载完成，初始化应用...");
+            
+            // DOM元素引用（确保元素存在）
+            const splash = document.getElementById('splash');
+            const topNav = document.getElementById('top-nav');
+            const main = document.getElementById('main');
+            const shareBtn = document.getElementById('share-btn');
+            const accountModal = document.getElementById('account-modal');
+            const confirmBtn = document.getElementById('confirm-btn');
+            const modalAcc = document.getElementById('modal-acc');
+            const modalPwd = document.getElementById('modal-pwd');
+            
+            // 验证所有元素是否成功获取
+            console.log("元素获取状态：", {
+                splash: !!splash,
+                topNav: !!topNav,
+                main: !!main,
+                shareBtn: !!shareBtn,
+                accountModal: !!accountModal,
+                confirmBtn: !!confirmBtn,
+                modalAcc: !!modalAcc,
+                modalPwd: !!modalPwd
+            });
+            
+            // 1. 开屏动画结束 → 显示主界面，无弹窗
+            setTimeout(() => {
+                console.log("开屏动画结束，显示主界面...");
+                splash.style.display = 'none';
+                topNav.style.display = 'block';
+                main.style.display = 'block';
+            }, 1800);
+
+            // 2. 点击共享线路 → 必弹窗，生成账号（核心修复）
+            shareBtn.addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止事件冒泡被其他元素拦截
+                console.log("点击共享线路按钮，准备显示弹窗...");
+                
+                // 生成账号（简单但有效）
+                const acc = `A${Math.floor(Math.random() * 3) + 1}`;
+                const pwd = "1234";
+                console.log("生成账号密码：", { acc, pwd });
+                
+                // 更新弹窗内容
+                modalAcc.innerText = acc;
+                modalPwd.innerText = pwd;
+                
+                // 显示弹窗（直接操作display属性，确保100%生效）
+                accountModal.style.display = 'flex';
+                accountModal.setAttribute('aria-hidden', 'false');
+                console.log("弹窗已显示");
+            });
+
+            // 3. 点击确认按钮 → 双重事件绑定，确保100%触发（主方案）
+            confirmBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log("按钮点击事件触发（addEventListener），准备在新标签页打开链接...");
+                openTargetLink();
+            });
+
+            // 4. 点击弹窗外层关闭（可选功能，提升用户体验）
+            accountModal.addEventListener('click', function(e) {
+                if (e.target === accountModal) {
+                    console.log("点击弹窗外层，关闭弹窗...");
+                    accountModal.style.display = 'none';
+                    accountModal.setAttribute('aria-hidden', 'true');
+                }
+            });
+            
+            console.log("应用初始化完成，等待用户操作...");
+        });
+    </script>
 </body>
 </html>
