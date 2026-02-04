@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyz远征飞下载站</title>
+    <!-- 国内可访问CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#7C3AED', }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .rocket-fall { animation: rocketFall 1.2s ease-out forwards; }
+            .text-rise { animation: textRise 1s ease-out forwards; }
+            .flow-text {
+                background: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3);
+                background-size: 200% 100%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: flowColor 8s linear infinite;
+            }
+            @keyframes rocketFall {
+                0% { opacity: 0; transform: translateY(-150px) scale(0.8); }
+                70% { opacity: 1; transform: translateY(10px) scale(1.05); }
+                100% { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            @keyframes textRise {
+                0% { opacity: 0; transform: translateY(50px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes flowColor {
+                0% { background-position: 0% 50%; }
+                100% { background-position: 200% 50%; }
+            }
+            .main-card { @apply bg-white rounded-2xl shadow-xl p-6 md:p-8 mx-4 md:mx-auto max-w-5xl mt-8; }
+            .top-nav { @apply fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md py-3 px-6 border-b border-gray-200; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen overflow-x-hidden">
+    <!-- 1. 开屏层 -->
+    <div id="splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <div class="rocket-fall w-24 h-24 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center mb-6">
+            <i class="fa fa-rocket text-5xl text-white"></i>
+        </div>
+        <h1 class="text-rise text-4xl font-bold text-gray-800 mb-3">Flyz远征飞下载站</h1>
+        <p class="text-rise text-gray-500">免费 · 高速 · 免登录</p>
+    </div>
+
+    <!-- 2. 顶部导航栏 -->
+    <div id="top-nav" class="top-nav hidden">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flow-text text-lg font-bold">
+                F<span class="lowercase">lyz</span> 远征飞 FPV 下载站
+            </div>
+            <div id="nav-account" class="hidden flex gap-4">
+                <span class="text-sm"><b class="text-primary">账号：</b><span id="bar-acc"></span></span>
+                <span class="text-sm"><b class="text-primary">密码：</b><span id="bar-pwd"></span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 主页面 -->
+    <div id="main" class="hidden pt-20">
+        <div class="main-card">
+            <div class="w-full h-48 md:h-64 bg-gray-100 rounded-xl mb-6 flex items-center justify-center">
+                <h3 class="text-2xl font-bold text-gray-700">广告位招租 · Flyz远征飞赛事合作</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+                    <p class="font-medium mb-1"><i class="fa fa-gamepad text-primary mr-2"></i> 模拟器下载</p>
+                    <p class="text-sm text-gray-500">免费 · 高速 · 免登录</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+                    <p class="font-medium mb-1"><i class="fa fa-cubes text-primary mr-2"></i> 3D打印文件</p>
+                    <p class="text-sm text-gray-500">STL/OBJ · 持续更新</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+                    <p class="font-medium mb-1"><i class="fa fa-desktop text-primary mr-2"></i> 地面站工具</p>
+                    <p class="text-sm text-gray-500">调参软件 · 固件包</p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button id="share-btn" class="flex-1 bg-primary text-white py-4 px-6 rounded-lg font-semibold">
+                    <i class="fa fa-users mr-2"></i> 进入共享线路
+                </button>
+                <button class="flex-1 bg-gray-100 text-gray-700 py-4 px-6 rounded-lg font-semibold border border-gray-200">
+                    <i class="fa fa-user-secret mr-2"></i> 独享线路 (注册)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 线路分配弹窗 -->
+    <div id="modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6 hidden z-50">
+        <p class="text-lg mb-4">正在分配线路...</p>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="progress" class="h-full bg-primary rounded-full w-0"></div>
+        </div>
+    </div>
+
+    <!-- 5. 内嵌页面容器 -->
+    <div id="iframe-page" class="hidden fixed inset-0 z-50 bg-white">
+        <iframe id="iframe" src="" class="absolute inset-0 w-full h-full border-0"></iframe>
+        <button id="back-btn" class="fixed bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center z-40">
+            <i class="fa fa-arrow-left text-xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // DOM元素
+        const splash = document.getElementById('splash');
+        const topNav = document.getElementById('top-nav');
+        const main = document.getElementById('main');
+        const modal = document.getElementById('modal');
+        const progress = document.getElementById('progress');
+        const iframePage = document.getElementById('iframe-page');
+        const iframe = document.getElementById('iframe');
+        const backBtn = document.getElementById('back-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const navAccount = document.getElementById('nav-account');
+        const barAcc = document.getElementById('bar-acc');
+        const barPwd = document.getElementById('bar-pwd');
+
+        // 开屏逻辑
+        setTimeout(() => {
+            splash.classList.add('hidden');
+            topNav.classList.remove('hidden');
+            main.classList.remove('hidden');
+        }, 2000);
+
+        // 共享线路点击
+        shareBtn.addEventListener('click', () => {
+            main.classList.add('hidden');
+            modal.classList.remove('hidden');
+            // 模拟进度
+            let width = 0;
+            const timer = setInterval(() => {
+                width += 2;
+                progress.style.width = `${width}%`;
+                if (width >= 100) {
+                    clearInterval(timer);
+                    modal.classList.add('hidden');
+                    iframePage.classList.remove('hidden');
+                    // 赋值CDN嵌入链接
+                    iframe.src = 'https://cdn.917813.com.cn/fpv/download/page.html';
+                    navAccount.classList.remove('hidden');
+                    // 随机账号
+                    barAcc.innerText = `A${Math.floor(Math.random() * 3) + 1}`;
+                    barPwd.innerText = '123456';
+                }
+            }, 30);
+        });
+
+        // 返回按钮
+        backBtn.addEventListener('click', () => {
+            iframePage.classList.add('hidden');
+            main.classList.remove('hidden');
+            navAccount.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
