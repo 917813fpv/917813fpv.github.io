@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026线上FPV竞速赛 Flyz魄客杯 64进32排位赛分组</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%); 
+            min-height: 100vh; 
+            padding: 40px 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        .header { 
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); 
+            color: white; 
+            padding: 50px 30px; 
+            text-align: center; 
+            border-radius: 24px; 
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.2);
+        }
+        .title { 
+            font-size: 36px; 
+            font-weight: 800; 
+            margin-bottom: 12px; 
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .subtitle { 
+            font-size: 18px; 
+            opacity: 0.95; 
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+        .note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 32px;
+            color: #92400e;
+            font-size: 15px;
+            text-align: center;
+        }
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .group-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .group-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+        .group-header {
+            background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .group-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2563eb;
+            letter-spacing: 0.5px;
+        }
+        .player-list {
+            list-style: none;
+        }
+        .player-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .player-item:last-child {
+            margin-bottom: 0;
+        }
+        .player-item:hover {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .footer strong {
+            color: #2563eb;
+        }
+
+        /* ########### 仅修改以下部分 ########### */
+        /* 1. 给卡片增加内边距，为域名留出底部空间 */
+        .group-card {
+            padding-bottom: 50px; /* 底部预留足够空白 */
+        }
+        /* 2. 域名样式：淡灰色、底部居中、上下留白 */
+        .domain-tag {
+            position: absolute;
+            bottom: 12px; /* 距离底部12px */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 0 24px;
+        }
+        .domain-tag a {
+            font-size: 12px;
+            color: #c0c4cc; /* 更淡的灰色，不突兀 */
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        .domain-tag a:hover {
+            color: #a0a4ad; /* 鼠标悬浮略深 */
+        }
+        /* ##################################### */
+
+        @media (max-width: 768px) {
+            .title { font-size: 28px; }
+            .header { padding: 35px 20px; }
+            .groups-grid { grid-template-columns: 1fr; gap: 16px; }
+            .group-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">2026线上FPV竞速赛 Flyz魄客杯</h1>
+            <p class="subtitle">64进32排位赛 · 全随机分组公示</p>
+        </div>
+
+        <div class="note">
+            📌 分组规则：64名选手全随机分配为16组，每组4人，每组晋级2人
+        </div>
+
+        <div class="groups-grid">
+            <!-- 第1组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第1组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">无声3.1415926535897</li>
+                    <li class="player-item">憨宝哥儿</li>
+                    <li class="player-item">突击锤ACL1</li>
+                    <li class="player-item">wzliukai</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第2组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第2组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">罗思源-FPV</li>
+                    <li class="player-item">风清FPV</li>
+                    <li class="player-item">炸鸡</li>
+                    <li class="player-item">亡灵</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第3组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第3组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">飞天宝子FPV</li>
+                    <li class="player-item">千年老卵</li>
+                    <li class="player-item">荞荞酱</li>
+                    <li class="player-item">林珞客·阁</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第4组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第4组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">璀璨明星</li>
+                    <li class="player-item">超:) POTATO (Chao Yi</li>
+                    <li class="player-item">蛋白质</li>
+                    <li class="player-item">阿峰</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第5组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第5组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">◆dinosaur◆</li>
+                    <li class="player-item">门外竖着</li>
+                    <li class="player-item">K</li>
+                    <li class="player-item">举</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第6组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第6组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">Dike</li>
+                    <li class="player-item">rechr</li>
+                    <li class="player-item">HZH-FPV</li>
+                    <li class="player-item">起风了</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第7组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第7组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">十七_FPV</li>
+                    <li class="player-item">逼斗花园小美</li>
+                    <li class="player-item">2162611401</li>
+                    <li class="player-item">吃面的猴子</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第8组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第8组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">乐邦詹士</li>
+                    <li class="player-item">qcfpv</li>
+                    <li class="player-item">ETOLIE.</li>
+                    <li class="player-item">7658</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第9组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第9组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">弩箭破空而至</li>
+                    <li class="player-item">八岁深情男孩</li>
+                    <li class="player-item">顽固</li>
+                    <li class="player-item">澈澈FPV</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第10组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第10组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">温小包</li>
+                    <li class="player-item">ncj533398</li>
+                    <li class="player-item">拂晓FPV</li>
+                    <li class="player-item">魁末神</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第11组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第11组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">514班</li>
+                    <li class="player-item">XXX</li>
+                    <li class="player-item">学个大吉霸</li>
+                    <li class="player-item">叶子渝</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第12组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第12组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">刷金牌</li>
+                    <li class="player-item">社会你熊哥</li>
+                    <li class="player-item">三档起步</li>
+                    <li class="player-item">Niko空三我空七</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第13组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第13组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">Anchorfpv</li>
+                    <li class="player-item">hhh7891232025</li>
+                    <li class="player-item">awafpv</li>
+                    <li class="player-item">提升自己不如压力队友</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第14组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第14组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">TyDan</li>
+                    <li class="player-item">zouzubin4334</li>
+                    <li class="player-item">Meteor</li>
+                    <li class="player-item">mph526</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第15组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第15组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">竞速小男神</li>
+                    <li class="player-item">wangxiyan_1234</li>
+                    <li class="player-item">w睡不好觉</li>
+                    <li class="player-item">8257096</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+
+            <!-- 第16组 -->
+            <div class="group-card">
+                <div class="group-header">
+                    <div class="group-title">第16组</div>
+                </div>
+                <ul class="player-list">
+                    <li class="player-item">影视孜亚</li>
+                    <li class="player-item">Climber</li>
+                    <li class="player-item">Super shuk</li>
+                    <li class="player-item">I'M BEHIND YOU</li>
+                </ul>
+                <div class="domain-tag">
+                    <a href="https://cdn.917813.com.cn" target="_blank">cdn.917813.com.cn</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Flyz魄客杯 · <strong>公平竞技 · 逐梦赛场</strong></p>
+        </div>
+    </div>
+</body>
+</html>
