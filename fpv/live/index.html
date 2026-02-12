@@ -1,0 +1,882 @@
+把<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026FPV竞速赛直播背景 16:9</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style type="text/css">
+        /* 全局重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #00001a 0%, #000 100%);
+        }
+
+        /* 新增：开屏动画样式 */
+        #splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #00001a;
+            transition: opacity 0.5s ease;
+        }
+        .splash-text-flyz {
+            font-size: 10rem;
+            font-weight: 900;
+            color: #00b7ff;
+            text-shadow: 0 0 20px rgba(0, 183, 255, 0.8), 0 0 40px rgba(0, 183, 255, 0.5);
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+            animation: dropBounce 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 100ms;
+        }
+        .splash-text-live {
+            font-size: 10rem;
+            font-weight: 900;
+            color: #8a2be2;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.8), 0 0 40px rgba(138, 43, 226, 0.5);
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+            animation: dropBounce 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 300ms;
+        }
+        .splash-subtitle {
+            margin-top: 2rem;
+            font-size: 2rem;
+            color: #e0e0e0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+            animation: dropBounce 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 500ms;
+        }
+        @keyframes dropBounce {
+            0% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+            60% { opacity: 1; transform: translateY(10px) scale(1.05); }
+            80% { transform: translateY(-5px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 新增：假导航栏样式 */
+        #fake-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(0, 20, 40, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 183, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease 0.3s;
+        }
+        .navbar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #00b7ff;
+            text-shadow: 0 0 8px rgba(0, 183, 255, 0.6);
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+        }
+        .navbar-item {
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .navbar-item:hover {
+            color: #00b7ff;
+            text-shadow: 0 0 6px rgba(0, 183, 255, 0.4);
+        }
+        .navbar-status {
+            color: #ffd700;
+            font-weight: 600;
+            text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+        }
+
+        /* 核心大卡片 - 调整顶部间距适配导航栏 */
+        .big-card {
+            width: min(1900px, calc(100vw - 20px));
+            aspect-ratio: 16/9;
+            border: 1px solid rgba(0, 183, 255, 0.5);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at center, rgba(0, 40, 80, 0.6) 0%, #000 100%),
+                url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L200 200M200 0L0 200' stroke='%2300b7ff' stroke-width='1' stroke-opacity='0.03'/%3E%3C/svg%3E");
+            box-shadow: 
+                0 0 120px rgba(0, 183, 255, 0.3),
+                inset 0 0 60px rgba(0, 40, 80, 0.5);
+            z-index: 100;
+            opacity: 1 !important;
+            /* 新增：适配导航栏的顶部间距 */
+            margin-top: 30px;
+            /* 边框发光动画 */
+            animation: borderPulse 4s infinite alternate;
+        }
+
+        /* 边框呼吸动画 */
+        @keyframes borderPulse {
+            0% { border-color: rgba(0, 183, 255, 0.5); box-shadow: 0 0 120px rgba(0, 183, 255, 0.25), inset 0 0 60px rgba(0, 40, 80, 0.5); }
+            100% { border-color: rgba(138, 43, 226, 0.6); box-shadow: 0 0 150px rgba(0, 183, 255, 0.4), inset 0 0 60px rgba(0, 40, 80, 0.6); }
+        }
+
+        /* 图层分层体系 */
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 101;
+            pointer-events: none;
+            opacity: 0.9; /* 提高粒子透明度 */
+        }
+
+        .card-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 101;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        /* 全新卡片样式 - 清爽高端科技感 */
+        .card-base {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            /* 玻璃拟态增强 */
+            background: rgba(0, 20, 40, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            /* 渐变边框效果 */
+            border: 1px solid transparent;
+            background-clip: padding-box, border-box;
+            background-origin: padding-box, border-box;
+            background-image: 
+                linear-gradient(rgba(0, 20, 40, 0.7), rgba(0, 20, 40, 0.7)),
+                linear-gradient(135deg, rgba(0, 183, 255, 0.3), rgba(138, 43, 226, 0.3));
+            /* 科技感阴影 */
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 0 20px rgba(0, 183, 255, 0.15);
+            z-index: 998 !important;
+            opacity: 1 !important;
+            /* 卡片悬浮微动效 */
+            transition: all 0.3s ease;
+        }
+
+        .card-base:hover {
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 183, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .card-base::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 60%, rgba(0, 183, 255, 0.08));
+            z-index: 101;
+            pointer-events: none;
+        }
+
+        /* 顶部横幅 */
+        .banner-widget {
+            width: calc(100% - 20px);
+            height: 90px;
+            margin: 10px auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            /* 横幅专属渐变 */
+            background-image: 
+                linear-gradient(rgba(10, 8, 0, 0.8), rgba(10, 8, 0, 0.8)),
+                linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            opacity: 1 !important;
+        }
+        
+        .banner-text {
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            z-index: 999 !important;
+            color: #ffd700 !important;
+            text-shadow: 
+                0 0 8px rgba(255, 215, 0, 0.7), 
+                0 0 15px rgba(255, 215, 0, 0.5);
+            padding: 0 15px;
+            opacity: 1 !important;
+        }
+        
+        .main-widgets {
+            width: calc(100% - 20px);
+            margin: 10px auto 0;
+            display: flex;
+            gap: 15px;
+            height: calc(100% - 110px);
+            position: relative;
+            z-index: 998;
+        }
+        
+        .left-widgets {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* 直播区域 */
+        .video-widget {
+            flex: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            position: relative;
+            padding: 15px;
+            opacity: 1 !important;
+        }
+        
+        .video-widget::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px dashed rgba(0, 183, 255, 0.5);
+            border-radius: 8px;
+            z-index: 101;
+            opacity: 1 !important;
+            /* 虚线呼吸动画 */
+            animation: dashPulse 3s infinite alternate;
+        }
+
+        @keyframes dashPulse {
+            0% { border-color: rgba(0, 183, 255, 0.5); }
+            100% { border-color: rgba(138, 43, 226, 0.6); }
+        }
+        
+        .video-text {
+            font-size: 36px;
+            font-weight: 800;
+            z-index: 999 !important;
+            color: #00b7ff !important;
+            text-shadow: 
+                0 0 10px rgba(0, 183, 255, 0.8),
+                0 0 20px rgba(0, 183, 255, 0.4);
+            opacity: 1 !important;
+        }
+        
+        /* 广告区域 - 强化溢出隐藏 */
+        .ad-widget { 
+            height: 70px;
+            position: relative;
+            opacity: 1 !important;
+            overflow: hidden !important;
+        }
+        
+        /* 广告文字容器 - 新增外层容器适配超长文本 */
+        .ad-scroll-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .ad-scroll {
+            white-space: nowrap;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            line-height: 68px;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 0 20px;
+            z-index: 999 !important;
+            color: #ffa500 !important;
+            text-shadow: 
+                0 0 10px rgba(255, 165, 0, 0.8),
+                0 0 18px rgba(255, 165, 0, 0.4);
+            opacity: 1 !important;
+        }
+        
+        .gift-widget {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            padding: 0 20px;
+            position: relative;
+            opacity: 1 !important;
+            /* 抽奖区域专属渐变 */
+            background-image: 
+                linear-gradient(rgba(0, 20, 40, 0.7), rgba(0, 20, 40, 0.7)),
+                linear-gradient(135deg, rgba(50, 205, 50, 0.2), rgba(0, 183, 255, 0.2));
+        }
+        
+        #giftContent {
+            width: 100%;
+            text-align: center;
+            z-index: 999 !important;
+            color: #32cd32 !important;
+            text-shadow: 
+                0 0 10px rgba(50, 205, 50, 0.8),
+                0 0 18px rgba(50, 205, 50, 0.4);
+            opacity: 1 !important;
+        }
+        
+        .right-widgets {
+            width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 998;
+        }
+        
+        .small-video-widget {
+            aspect-ratio: 16/9;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            position: relative;
+            z-index: 999 !important;
+            color: #ff1493 !important;
+            text-shadow: 
+                0 0 10px rgba(255, 20, 147, 0.8),
+                0 0 18px rgba(255, 20, 147, 0.4);
+            opacity: 1 !important;
+            /* 小视频区域专属渐变 */
+            background-image: 
+                linear-gradient(rgba(0, 20, 40, 0.7), rgba(0, 20, 40, 0.7)),
+                linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(138, 43, 226, 0.2));
+        }
+        
+        .small-video-widget::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px dashed rgba(255, 20, 147, 0.4);
+            border-radius: 8px;
+            z-index: 101;
+            opacity: 1 !important;
+            animation: pinkDashPulse 3s infinite alternate;
+        }
+
+        @keyframes pinkDashPulse {
+            0% { border-color: rgba(255, 20, 147, 0.4); }
+            100% { border-color: rgba(138, 43, 226, 0.5); }
+        }
+        
+        .rank-widget {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            opacity: 1 !important;
+        }
+        
+        .rank-title {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 183, 255, 0.2);
+            margin-bottom: 15px;
+            z-index: 999 !important;
+            color: #00b7ff !important;
+            text-shadow: 
+                0 0 10px rgba(0, 183, 255, 0.8),
+                0 0 18px rgba(0, 183, 255, 0.4);
+            opacity: 1 !important;
+        }
+        
+        .rank-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            z-index: 999 !important;
+            background-color: rgba(0, 10, 20, 0.8);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 0;
+            border: 1px solid rgba(0, 183, 255, 0.15);
+            opacity: 1 !important;
+        }
+        
+        .rank-list::-webkit-scrollbar { width: 8px; }
+        .rank-list::-webkit-scrollbar-track { 
+            background: rgba(0, 20, 40, 0.7); 
+            border-radius: 4px;
+        }
+        .rank-list::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, rgba(0, 183, 255, 0.6), rgba(138, 43, 226, 0.6)); 
+            border-radius: 4px;
+            border: 1px solid rgba(0, 20, 40, 0.8);
+        }
+        
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 8px;
+            border-bottom: 1px solid rgba(0, 183, 255, 0.1);
+            font-size: 20px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            opacity: 1 !important;
+            transition: background 0.2s ease;
+        }
+
+        .rank-item:hover {
+            background: rgba(0, 50, 100, 0.4);
+        }
+        
+        .rank-num {
+            color: #00b7ff !important;
+            text-shadow: 0 0 6px rgba(0, 183, 255, 0.7);
+            font-weight: 900;
+            width: 35px;
+            font-size: 20px;
+            text-align: center;
+            opacity: 1 !important;
+        }
+        
+        .rank-name {
+            flex: 1;
+            margin-left: 10px;
+            color: #e0e0e0 !important;
+            font-weight: 700;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+            opacity: 1 !important;
+        }
+        
+        .rank-score {
+            color: #ff4500 !important;
+            text-shadow: 0 0 6px rgba(255, 69, 0, 0.7);
+            font-weight: 800;
+            min-width: 80px;
+            text-align: right;
+            font-family: "Consolas", monospace;
+            font-size: 20px;
+            opacity: 1 !important;
+        }
+
+        .rank-item:nth-child(1) .rank-num { 
+            color: #ffd700 !important; 
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+        .rank-item:nth-child(2) .rank-num { 
+            color: #c0c0c0 !important; 
+            text-shadow: 0 0 8px rgba(192, 192, 192, 0.8), 0 0 15px rgba(192, 192, 192, 0.6);
+        }
+        .rank-item:nth-child(3) .rank-num { 
+            color: #cd7f32 !important; 
+            text-shadow: 0 0 8px rgba(205, 127, 50, 0.8), 0 0 15px rgba(205, 127, 50, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- 新增：开屏动画 -->
+    <div id="splash">
+        <span class="splash-text-flyz">Flyz</span>
+        <span class="splash-text-live">Live</span>
+        <p class="splash-subtitle">Flyz智能直播背景</p>
+    </div>
+
+    <!-- 新增：假导航栏 -->
+    <div id="fake-navbar">
+        <div class="navbar-logo">Flyz Live · 智能直播背景</div>
+        <div class="navbar-menu">
+            <div class="navbar-item">首页</div>
+            <div class="navbar-item">赛事直播</div>
+            <div class="navbar-item">选手排名</div>
+            <div class="navbar-item">抽奖活动</div>
+            <div class="navbar-item navbar-status">直播中 · 2026 FPV竞速赛</div>
+        </div>
+    </div>
+
+    <!-- 原有核心内容 -->
+    <div class="big-card">
+        <!-- 全局粒子 - 底层 -->
+        <canvas id="canvas-bg"></canvas>
+
+        <!-- 顶部横幅 -->
+        <div class="banner-widget card-base">
+            <canvas class="card-particles" id="banner-particles"></canvas>
+            <div class="banner-text">2026线上FPV竞速赛|Flyz远征飞·魄客杯</div>
+        </div>
+
+        <!-- 主体内容 -->
+        <div class="main-widgets">
+            <div class="left-widgets">
+                <div class="video-widget card-base">
+                    <canvas class="card-particles" id="video-particles"></canvas>
+                    <div class="video-text">正在加载直播画面...（核心直播区域）</div>
+                </div>
+                <!-- 广告区域 - 新增外层容器 -->
+                <div class="ad-widget card-base">
+                    <canvas class="card-particles" id="ad-particles"></canvas>
+                    <div class="ad-scroll-container">
+                        <div class="ad-scroll" id="adContent">加载广告中...</div>
+                    </div>
+                </div>
+                <div class="gift-widget card-base">
+                    <canvas class="card-particles" id="gift-particles"></canvas>
+                    <div id="giftContent">加载抽奖信息中...</div>
+                </div>
+            </div>
+
+            <div class="right-widgets">
+                <div class="small-video-widget card-base">
+                    <canvas class="card-particles" id="small-video-particles"></canvas>
+                    小视频合成区 (16:9)
+                </div>
+                <div class="rank-widget card-base">
+                    <canvas class="card-particles" id="rank-particles"></canvas>
+                    <div class="rank-title">转盘抽奖🎁</div>
+                    <ul class="rank-list" id="rankList">
+                        <li class="rank-item">
+                            <span class="rank-num">1</span>
+                            <span class="rank-name">加载中...</span>
+                            <span class="rank-score">--:--.--</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // 数据源 - 测试超长文本
+        const TEST_DATA = {
+            RANK: "FPV小飞=01:18.25\n极速飞手=01:20.47\n追风者=01:22.89\n夜鹰=01:25.11\n云翼=01:27.33",
+            GIFT: "FPV竞速赛定制遥控器+电池套装",
+            AD: "2026线上FPV竞速赛 | Flyz远征飞·魄客杯 全程直播 感谢各位选手参与！本次赛事由XXX科技独家冠名赞助，YYY无人机品牌提供设备支持，ZZZ电池品牌提供能源保障，更多精彩内容请关注我们的官方公众号：FPV竞速联盟，感谢所有观众的支持与厚爱！"
+        };
+        const REMOTE_URL = {
+            RANK: "https://cdn.917813.com.cn/fpv/2026onlinerace/live/xs.txt",
+            GIFT: "https://cdn.917813.com.cn/fpv/2026onlinerace/live/chou.txt",
+            AD: "https://cdn.917813.com.cn/fpv/2026onlinerace/live/gg.txt"
+        };
+
+        // ======================
+        // 新增：开屏动画逻辑
+        // ======================
+        const splash = document.getElementById('splash');
+        const fakeNavbar = document.getElementById('fake-navbar');
+        // 开屏动画显示2秒后淡出
+        setTimeout(() => {
+            splash.style.opacity = 0;
+            setTimeout(() => {
+                splash.style.display = 'none';
+                // 显示假导航栏
+                fakeNavbar.style.opacity = 1;
+            }, 500);
+        }, 2000);
+
+        // ======================
+        // 强化粒子系统 - 增大数量、速度、动态效果
+        // ======================
+        const particleInstances = {};
+        class ParticleSystem {
+            constructor(canvasId, isGlobal = false) {
+                if (particleInstances[canvasId]) return particleInstances[canvasId];
+                
+                this.canvas = document.getElementById(canvasId);
+                if (!this.canvas) return;
+                
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                // 大幅增加粒子数量
+                this.particleCount = isGlobal ? 150 : 50;
+                this.colors = ['#00b7ff', '#4169e1', '#8a2be2', '#00ced1', '#1e90ff', '#ff1493', '#32cd32'];
+                this.isGlobal = isGlobal;
+                this.animationId = null;
+                
+                particleInstances[canvasId] = this;
+                this.resize();
+                this.initParticles();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+            }
+
+            initParticles() {
+                this.particles = [];
+                for (let i = 0; i < this.particleCount; i++) {
+                    // 增大粒子尺寸、提高速度、增加透明度变化
+                    const baseSize = this.isGlobal ? (Math.random() * 5 + 1) : (Math.random() * 3 + 0.8);
+                    const baseSpeed = this.isGlobal ? (Math.random() - 0.5) * 1.2 : (Math.random() - 0.5) * 0.6;
+                    
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: baseSize,
+                        speedX: baseSpeed,
+                        speedY: baseSpeed,
+                        opacity: this.isGlobal ? (Math.random() * 0.3 + 0.1) : (Math.random() * 0.25 + 0.1),
+                        opacitySpeed: (Math.random() - 0.5) * 0.005, // 透明度动态变化
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        // 粒子轨迹拖尾效果
+                        trailLength: Math.floor(Math.random() * 3 + 1)
+                    });
+                }
+            }
+
+            drawParticles() {
+                // 半透明清屏，实现拖尾效果
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    // 透明度动态呼吸
+                    particle.opacity += particle.opacitySpeed;
+                    if (particle.opacity > 0.4) particle.opacitySpeed *= -1;
+                    if (particle.opacity < 0.05) particle.opacitySpeed *= -1;
+                    
+                    // 绘制粒子
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `${particle.color}${Math.floor(particle.opacity * 255).toString(16).padStart(2, '0')}`;
+                    this.ctx.fill();
+                    
+                    // 绘制轨迹
+                    if (particle.trailLength > 1) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(particle.x, particle.y);
+                        this.ctx.lineTo(
+                            particle.x - particle.speedX * 5,
+                            particle.y - particle.speedY * 5
+                        );
+                        this.ctx.strokeStyle = `${particle.color}${Math.floor((particle.opacity * 0.5) * 255).toString(16).padStart(2, '0')}`;
+                        this.ctx.lineWidth = particle.size * 0.3;
+                        this.ctx.stroke();
+                    }
+                });
+            }
+
+            updateParticles() {
+                this.particles.forEach(particle => {
+                    // 粒子移动
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    
+                    // 边界反弹（替代循环，更动态）
+                    if (particle.x < 0 || particle.x > this.canvas.width) {
+                        particle.speedX *= -1;
+                        particle.x = Math.max(0, Math.min(this.canvas.width, particle.x));
+                    }
+                    if (particle.y < 0 || particle.y > this.canvas.height) {
+                        particle.speedY *= -1;
+                        particle.y = Math.max(0, Math.min(this.canvas.height, particle.y));
+                    }
+                    
+                    // 随机变向
+                    if (Math.random() < 0.005) {
+                        particle.speedX = (Math.random() - 0.5) * (this.isGlobal ? 1.2 : 0.6);
+                        particle.speedY = (Math.random() - 0.5) * (this.isGlobal ? 1.2 : 0.6);
+                    }
+                });
+            }
+
+            animate() {
+                if (this.animationId) cancelAnimationFrame(this.animationId);
+                this.drawParticles();
+                this.updateParticles();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // ======================
+        // 全新广告滚动逻辑 - 原生JS实现，适配超长文本
+        // ======================
+        let adAnimationId = null;
+        function initAdScroll(adContent) {
+            const adEl = document.getElementById('adContent');
+            const containerEl = adEl.parentElement;
+            if (!adEl || !containerEl) return;
+
+            // 停止现有动画
+            if (adAnimationId) {
+                cancelAnimationFrame(adAnimationId);
+                adAnimationId = null;
+            }
+
+            // 设置文本内容
+            adEl.textContent = adContent;
+            
+            // 等待DOM渲染完成
+            setTimeout(() => {
+                const adWidth = adEl.offsetWidth;
+                const containerWidth = containerEl.offsetWidth;
+                
+                // 如果文字宽度小于容器宽度，不滚动
+                if (adWidth <= containerWidth) {
+                    adEl.style.transform = 'translateX(0)';
+                    return;
+                }
+
+                // 滚动配置
+                const speed = 60; // 像素/秒
+                let position = containerWidth; // 初始位置（容器右侧外）
+                const maxPosition = -adWidth; // 最终位置（文字完全滚出左侧）
+                
+                // 动画函数
+                function animateScroll(timestamp) {
+                    // 计算每帧移动距离
+                    const moveDistance = speed / 60; // 60fps
+                    position -= moveDistance;
+                    
+                    // 重置位置
+                    if (position <= maxPosition) {
+                        position = containerWidth;
+                    }
+                    
+                    // 应用位移
+                    adEl.style.transform = `translateX(${position}px)`;
+                    
+                    // 继续动画
+                    adAnimationId = requestAnimationFrame(animateScroll);
+                }
+                
+                // 启动动画
+                adAnimationId = requestAnimationFrame(animateScroll);
+            }, 100);
+        }
+
+        // 数据加载
+        async function getData(type) {
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 3000);
+                const res = await fetch(REMOTE_URL[type], { signal: controller.signal, cache: 'no-store' });
+                clearTimeout(timeout);
+                if (!res.ok) throw new Error('接口异常');
+                const data = await res.text();
+                return data.trim() || TEST_DATA[type];
+            } catch (e) {
+                return TEST_DATA[type];
+            }
+        }
+
+        // 更新排名
+        async function updateRank() {
+            const data = await getData('RANK');
+            const listEl = document.getElementById('rankList');
+            listEl.innerHTML = '';
+            
+            const rankItems = data.split('\n').filter(l => l.trim());
+            
+            if (rankItems.length === 0) {
+                listEl.innerHTML = `<li class="rank-item"><span class="rank-num">-</span><span class="rank-name">暂无排名数据</span><span class="rank-score">--:--.--</span></li>`;
+                return;
+            }
+            
+            rankItems.forEach((line, idx) => {
+                const [name, time] = line.split('=');
+                const item = document.createElement('li');
+                item.className = 'rank-item';
+                item.innerHTML = `
+                    <span class="rank-num">${idx+1}</span>
+                    <span class="rank-name">${name||'未知选手'}</span>
+                    <span class="rank-score">${time||'--:--.--'}</span>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        // 更新抽奖信息
+        async function updateGift() {
+            const data = await getData('GIFT');
+            document.getElementById('giftContent').textContent = `即将抽出：${data}`;
+        }
+
+        // 初始化
+        window.addEventListener('load', async () => {
+            // 初始化强化版粒子系统
+            new ParticleSystem('canvas-bg', true);
+            new ParticleSystem('banner-particles');
+            new ParticleSystem('video-particles');
+            new ParticleSystem('ad-particles');
+            new ParticleSystem('gift-particles');
+            new ParticleSystem('small-video-particles');
+            new ParticleSystem('rank-particles');
+            
+            // 加载数据
+            await updateRank();
+            await updateGift();
+            initAdScroll(await getData('AD'));
+            
+            // 定时刷新
+            setInterval(async () => {
+                await updateRank();
+                await updateGift();
+                initAdScroll(await getData('AD'));
+            }, 15000);
+            
+            // 入场动画
+            gsap.from('.big-card', { opacity: 0, scale: 0.98, duration: 1.0, ease: 'easeOut', delay: 0.5 });
+            const components = document.querySelectorAll('.card-base');
+            components.forEach((el, idx) => {
+                gsap.from(el, { opacity: 0, y: 10, duration: 0.5, delay: 0.6 + idx * 0.08, ease: 'power3.out' });
+            });
+        });
+    </script>
+</body>
+</html>
