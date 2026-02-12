@@ -18,6 +18,17 @@
     .splash-url {font-size:1.4rem;font-weight:700;color:var(--secondary);letter-spacing:2px;padding:6px 18px;border-radius:10px;background:var(--glass);border:1px solid rgba(135,206,250,0.2);transform:translateY(800px);animation:textUp 1s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;}
     @keyframes logoDown {0%{transform:translateY(-800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
     @keyframes textUp {0%{transform:translateY(800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+    /* 临时公告弹窗 */
+    #notice-modal {position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;animation:modalFade 0.5s ease forwards;}
+    #notice-modal.active {display:flex;}
+    .notice-container {max-width:600px;width:100%;background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:24px;box-shadow:var(--glow);}
+    .notice-title {font-size:2rem;font-weight:900;color:var(--primary);text-shadow:var(--glow);text-align:center;margin-bottom:20px;letter-spacing:2px;}
+    .notice-content {font-size:1.1rem;line-height:1.8;color:#eee;margin-bottom:24px;white-space:pre-line;}
+    .notice-warning {font-size:1rem;line-height:1.6;color:var(--danger);text-shadow:var(--glow-danger);margin-bottom:24px;padding:12px;border-radius:8px;background:rgba(255,61,0,0.1);border:1px solid rgba(255,61,0,0.3);}
+    .notice-btn {width:100%;padding:14px 0;border-radius:10px;border:none;font-size:1.2rem;font-weight:700;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,255,255,0.2);opacity:0.5;pointer-events:none;}
+    .notice-btn.enabled {opacity:1;pointer-events:all;}
+    .notice-btn:hover {transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,255,255,0.3);}
+    @keyframes modalFade {0%{opacity:0;}100%{opacity:1;}}
     /* 页面容器 */
     #pages {position:relative;z-index:10;min-height:calc(100vh - 58px);display:none;background:#050505;}
     .page-container {display:none;width:100%;min-height:100%;position:relative;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:backdrop-filter 0s linear;}
@@ -79,6 +90,31 @@
     <div class="splash-url">cdn.917813.com.cn</div>
   </div>
 
+  <!-- 临时公告弹窗 -->
+  <div id="notice-modal">
+    <div class="notice-container">
+      <div class="notice-title">【临时公告】</div>
+      <div class="notice-content">
+Flyz远征飞将于2月11日起停止直播服务
+后续赛事问题及直播详情请联系@吕泓纬
+我受不了了快身体 休息几天
+
+Flyz远征飞旗下917813.com.cn赛事官网将于2026年2月11日22:00关闭访问
+Flyz远征飞旗下yzbjfpv.top已经2个月未维护更新了明天更新
+Flyz远征飞旗下下载站将于今晚22:00关闭访问
+感谢大家的支持与理解
+
+明早公布晋级名单
+明晚直播
+有事请发邮件lyz201966@gmail.com我会看的
+我先退了
+至于赛事后勤我还是会参与的[爱心]
+      </div>
+      <div class="notice-warning">⚠️ 网站赛事部分现已停止维护，如果您在访问网站遇到任何问题均由您承担所有责任</div>
+      <button class="notice-btn" id="notice-confirm">我已阅读并确认</button>
+    </div>
+  </div>
+
   <!-- 页面容器 -->
   <div id="pages">
     <div class="page-container active" data-target="home">
@@ -123,11 +159,14 @@
       pages: document.getElementById('pages'),
       httpsAlert: document.getElementById('https-alert'),
       iframeAlert: document.getElementById('iframe-alert'),
+      noticeModal: document.getElementById('notice-modal'),
+      noticeConfirm: document.getElementById('notice-confirm'),
       dockItems: document.querySelectorAll('.dock-item'),
       pageContainers: document.querySelectorAll('.page-container'),
       iframes: document.querySelectorAll('iframe')
     };
     const SPLASH_TIME = 3000;
+    const NOTICE_DELAY = 10000; // 10秒后可点击确认
     const TRUSTED_DOMAINS = ['cdn.917813.com.cn', '917813.com.cn', '917813fpv-github-io.pages.dev', '917813.github.io'];
 
     // HTTPS校验
@@ -141,7 +180,10 @@
         setTimeout(() => {
           el.splash.style.opacity = 0;
           el.splash.style.pointerEvents = 'none';
-          el.pages.style.display = 'block';
+          el.noticeModal.classList.add('active');
+          setTimeout(() => {
+            el.noticeConfirm.classList.add('enabled');
+          }, NOTICE_DELAY);
         }, SPLASH_TIME);
       }
     };
@@ -175,10 +217,17 @@
       tarPage.querySelector('iframe').src = tarPage.querySelector('iframe').src;
     };
 
+    // 确认公告
+    const confirmNotice = () => {
+      el.noticeModal.classList.remove('active');
+      el.pages.style.display = 'block';
+    };
+
     // 绑定事件
     document.addEventListener("DOMContentLoaded", () => {
       checkHttps();
       el.dockItems.forEach(item => item.addEventListener('click', () => switchPage(item.dataset.target)));
+      el.noticeConfirm.addEventListener('click', confirmNotice);
     });
   </script>
 </body>
