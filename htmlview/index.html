@@ -68,12 +68,15 @@
         }
 
         .card {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            border-radius: 20px;
+            border-radius: 16px;
         }
 
         .card::before {
@@ -100,15 +103,15 @@
         .btn-primary {
             background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
             color: white;
-            padding: 14px 36px;
-            border-radius: 14px;
+            padding: 12px 32px;
+            border-radius: 12px;
             font-weight: 600;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
             border: none;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .btn-primary::before {
@@ -127,32 +130,8 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35), 0 5px 15px rgba(139, 92, 246, 0.2);
-        }
-
-        .code-editor {
-            background: #0f172a;
-            border: 2px solid rgba(14, 165, 233, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-            color: #e2e8f0;
-            resize: none;
-            width: 100%;
-            min-height: 400px;
-            line-height: 1.6;
-        }
-
-        .code-editor:focus {
-            outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
-        }
-
-        .code-editor::placeholder {
-            color: #64748b;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(14, 165, 233, 0.35), 0 4px 12px rgba(139, 92, 246, 0.2);
         }
 
         @keyframes float {
@@ -160,24 +139,11 @@
             50% { transform: translateY(-15px); }
         }
 
-        @keyframes scale-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-scale-pulse {
-            animation: scale-pulse 4s ease-in-out infinite;
-        }
-
         .hero-blob {
             position: absolute;
             border-radius: 50%;
             filter: blur(100px);
-            opacity: 0.3;
+            opacity: 0.2;
             animation: float 10s ease-in-out infinite;
         }
 
@@ -227,16 +193,6 @@
             transform: rotate(90deg);
         }
 
-        .icon-wrapper {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
         .line-numbers {
             position: absolute;
             left: 0;
@@ -245,11 +201,11 @@
             width: 50px;
             background: rgba(0, 0, 0, 0.3);
             border-right: 1px solid rgba(14, 165, 233, 0.2);
-            padding: 20px 10px;
+            padding: 16px 8px;
             text-align: right;
             color: #64748b;
             font-family: 'Fira Code', monospace;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
             user-select: none;
             overflow: hidden;
@@ -257,9 +213,12 @@
 
         .editor-container {
             position: relative;
-            background: #0f172a;
-            border: 2px solid rgba(14, 165, 233, 0.2);
-            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             overflow: hidden;
         }
 
@@ -271,14 +230,14 @@
         .editor-textarea {
             background: transparent;
             border: none;
-            padding: 20px;
-            padding-left: 60px;
+            padding: 16px;
+            padding-left: 58px;
             font-family: 'Fira Code', monospace;
-            font-size: 14px;
+            font-size: 13px;
             color: #e2e8f0;
             resize: none;
             width: 100%;
-            min-height: 400px;
+            min-height: 450px;
             line-height: 1.6;
         }
 
@@ -289,38 +248,46 @@
         .editor-textarea::placeholder {
             color: #64748b;
         }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .editor-title i {
+            color: #0ea5e9;
+        }
     </style>
 </head>
 <body class="grid-pattern">
-    <div class="hero-blob w-[400px] h-[400px] bg-brand-400/30 top-0 right-0"></div>
-    <div class="hero-blob w-[300px] h-[300px] bg-accent-purple/30 bottom-0 left-0" style="animation-delay: -3s;"></div>
+    <div class="hero-blob w-[300px] h-[300px] bg-brand-400/30 top-0 right-0"></div>
+    <div class="hero-blob w-[200px] h-[200px] bg-accent-purple/30 bottom-0 left-0" style="animation-delay: -3s;"></div>
 
-    <div class="min-h-screen py-10 px-4 relative">
-        <header class="text-center mb-12 relative">
-            <div class="inline-flex items-center gap-4 mb-5 animate-float">
-                <div class="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-500/25 animate-scale-pulse">
-                    <i class="fas fa-code"></i>
-                </div>
-                <h1 class="font-display text-3xl md:text-4xl font-bold">
-                    <span class="gradient-text">HTML预览</span>
-                </h1>
-            </div>
-            <p class="text-gray-500 text-lg">在线代码编辑与实时预览</p>
-        </header>
-
-        <div class="max-w-4xl mx-auto">
-            <div class="card p-6 md:p-8 mb-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="icon-wrapper bg-gradient-to-br from-accent-purple to-indigo-600 text-white">
-                        <i class="fas fa-file-code"></i>
+    <div class="min-h-screen py-6 px-3 md:px-6 relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="card p-4 md:p-6">
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <div class="editor-title">
+                            <i class="fas fa-code"></i>
+                            <span>HTML代码编辑器</span>
+                        </div>
+                        <button id="previewBtn" class="btn-primary">
+                            <i class="fas fa-eye mr-2"></i>全屏预览
+                        </button>
                     </div>
-                    <div>
-                        <h2 class="font-display text-lg font-semibold">代码编辑器</h2>
-                        <p class="text-gray-500 text-sm">粘贴HTML代码，一键预览效果</p>
-                    </div>
-                </div>
-
-                <div class="editor-container mb-6">
                     <div class="line-numbers" id="lineNumbers">1</div>
                     <textarea 
                         id="htmlCode" 
@@ -334,44 +301,7 @@
 </div>"
                     ></textarea>
                 </div>
-
-                <div class="flex justify-center">
-                    <button id="previewBtn" class="btn-primary">
-                        <i class="fas fa-eye mr-2"></i>全屏预览
-                    </button>
-                </div>
             </div>
-
-            <div class="card p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="icon-wrapper bg-gradient-to-br from-brand-400 to-brand-600 text-white">
-                        <i class="fas fa-info-circle"></i>
-                    </div>
-                    <h2 class="font-display text-xl font-semibold">使用说明</h2>
-                </div>
-                <div class="space-y-4 text-gray-600">
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
-                        <span>在代码编辑器中粘贴或输入HTML代码</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
-                        <span>点击"全屏预览"按钮查看渲染效果</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
-                        <span>支持CSS样式和JavaScript脚本</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
-                        <span>按ESC键或点击关闭按钮退出预览</span>
-                    </div>
-                </div>
-            </div>
-
-            <footer class="text-center pt-8 mt-8 border-t border-gray-100">
-                <p class="text-gray-400 text-sm">支持完整的HTML文档或片段代码</p>
-            </footer>
         </div>
     </div>
 
