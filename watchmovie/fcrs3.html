@@ -139,113 +139,6 @@
         .loading-box.center { top: 50%; transform: translate(-50%, -50%); }
         .loading-box.out { top: 100vh; transform: translate(-50%, 0); }
 
-        .brand-slide {
-            position: fixed;
-            top: 20vh;
-            left: 50%;
-            transform: translate(-50%, -60px);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 34px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 12px #0ea5e9;
-            opacity: 0;
-            z-index: 9997;
-            transition: all .7s ease;
-        }
-
-        .brand-slide.show {
-            transform: translate(-50%, 0);
-            opacity: 1;
-        }
-
-        .device-panel {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 9996;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .device-panel.show {
-            opacity: 1;
-            pointer-events: auto;
-            animation: deviceAnim 5s ease forwards;
-        }
-
-        @keyframes deviceAnim {
-            0% { transform: scale(.7); opacity: 0; }
-            12% { transform: scale(1); opacity: 1; }
-            88% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(.7); opacity: 0; }
-        }
-
-        .device-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 28px;
-            color: #0ea5e9;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-        }
-
-        .device-text {
-            font-size: 17px;
-            color: #94a3b8;
-            margin: 6px 0;
-            text-align: center;
-        }
-
-        .speaker-group {
-            display: flex;
-            gap: 36px;
-            margin: 24px 0;
-        }
-
-        .speaker {
-            width: 14px;
-            height: 60px;
-            background: rgba(14, 165, 233, 0.1);
-            border-radius: 7px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
-        }
-
-        .speaker::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            background: linear-gradient(180deg, #0ea5e9, #8b5cf6);
-            animation: speakerPulse 1.2s infinite alternate;
-        }
-
-        @keyframes speakerPulse {
-            0% { height: 20%; }
-            100% { height: 100%; }
-        }
-
-        .ai-tip {
-            font-size: 18px;
-            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 600;
-            margin-top: 20px;
-        }
-
         .declare {
             position: fixed;
             left: 0;
@@ -512,6 +405,55 @@
         }
 
         .toast.show { opacity: 1; }
+
+        .loading-toast {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 24px 40px;
+            border-radius: 20px;
+            font-size: 16px;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            text-align: center;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .loading-toast.show {
+            opacity: 1;
+        }
+
+        .loading-toast-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #0ea5e9;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-toast-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0ea5e9;
+        }
+
+        .loading-toast-text {
+            color: #94a3b8;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -522,7 +464,6 @@
 <div class="eye-filter" id="eyeFilter"></div>
 
 <div class="loading-box" id="loadingBox">正在全力加载中...</div>
-<div class="brand-slide" id="brandSlide">Apple</div>
 
 <div class="splash" id="splash">
     <div class="logo gradient-text">917813</div>
@@ -541,18 +482,6 @@
         </div>
         <button class="declare-btn" id="agreeBtn">我已阅读并确认</button>
     </div>
-</div>
-
-<div class="device-panel" id="devicePanel">
-    <div class="device-title" id="deviceWelcome"></div>
-    <div class="device-text" id="deviceInfo"></div>
-    <div class="device-text">支持：高清解码 · 全屏HDR · 视网膜屏</div>
-    <div class="speaker-group">
-        <div class="speaker"></div>
-        <div class="speaker"></div>
-    </div>
-    <div class="device-text">双扬声器立体声</div>
-    <div class="ai-tip" id="aiTip"></div>
 </div>
 
 <div class="video-frame" id="vFrame" onclick="toggleControls()">
@@ -578,6 +507,12 @@
 </div>
 
 <div class="toast" id="toast">点击屏幕显示/隐藏控制面板</div>
+
+<div class="loading-toast" id="loadingToast">
+    <div class="loading-toast-icon"><i class="fas fa-spinner"></i></div>
+    <div class="loading-toast-title">影片正在加载</div>
+    <div class="loading-toast-text">请勿操作 预计20秒缓冲完毕</div>
+</div>
 
 <script>
 const v = document.getElementById('video');
@@ -642,13 +577,6 @@ function fmt(t) {
     return m+':'+s;
 }
 
-function detectDevice() {
-    const ua = navigator.userAgent;
-    if(ua.includes('iPad')) return { brand:'Apple', name:'iPad', info:'已检测：iPad 设备 | 视网膜高清屏' };
-    if(ua.includes('iPhone')) return { brand:'Apple', name:'iPhone', info:'已检测：iPhone 设备 | 立体声双扬声器' };
-    return { brand:'Apple', name:'Apple 设备', info:'已检测：高性能影音引擎' };
-}
-
 setTimeout(()=>{
     splash.classList.add('fade');
     splashBorder.classList.add('hide');
@@ -657,27 +585,21 @@ setTimeout(()=>{
 
 agreeBtn.onclick = () => {
     declare.classList.remove('show');
-    const dev = detectDevice();
-    brandSlide.textContent = dev.brand;
-    brandSlide.classList.add('show');
-    devicePanel.classList.add('show');
-    deviceWelcome.textContent = `欢迎 ${dev.name} 用户`;
-    deviceInfo.textContent = dev.info;
-    aiTip.textContent = '正在启用 917813 影音引擎为您优化体验';
+    v.classList.add('show');
+    controls.classList.add('show');
+    v.muted = false;
 
-    setTimeout(()=>{
-        devicePanel.classList.remove('show');
-        brandSlide.classList.remove('show');
-        v.classList.add('show');
-        controls.classList.add('show');
-        v.muted = false;
-
-        loadingBox.classList.add('active');
-        setTimeout(()=>{
-            loadingBox.classList.add('center');
-            setTimeout(()=> loadingBox.classList.add('out'), 2000);
-        }, 500);
+    const loadingToast = document.getElementById('loadingToast');
+    loadingToast.classList.add('show');
+    setTimeout(() => {
+        loadingToast.classList.remove('show');
     }, 5000);
+
+    loadingBox.classList.add('active');
+    setTimeout(()=>{
+        loadingBox.classList.add('center');
+        setTimeout(()=> loadingBox.classList.add('out'), 2000);
+    }, 500);
 };
 
 v.ontimeupdate = () => {
