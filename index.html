@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>917813.com.cn</title>
+    <title>917813</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -208,12 +208,13 @@
 
         .nav-item {
             position: relative;
-            padding: 10px 18px;
+            padding: 8px 12px;
             font-weight: 500;
             color: #64748b;
             transition: all 0.3s ease;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: nowrap;
         }
 
         .dark-mode .nav-item {
@@ -247,6 +248,61 @@
         .nav-item:hover::after,
         .nav-item.active::after {
             width: 50%;
+        }
+
+        .nav-item i {
+            font-size: 12px;
+        }
+
+        #mobileMenu {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 50;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode #mobileMenu {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        #mobileMenu .nav-item {
+            padding: 16px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            background: rgba(14, 165, 233, 0.03);
+            border: 1px solid rgba(14, 165, 233, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        #mobileMenu .nav-item:hover,
+        #mobileMenu .nav-item.active {
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateX(4px);
+        }
+
+        .dark-mode #mobileMenu .nav-item {
+            background: rgba(14, 165, 233, 0.05);
+            border-color: rgba(14, 165, 233, 0.1);
+        }
+
+        .dark-mode #mobileMenu .nav-item:hover,
+        .dark-mode #mobileMenu .nav-item.active {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.25);
+        }
+
+        #mobileMenu .nav-item i {
+            font-size: 16px;
+            width: 24px;
         }
 
         .icon-wrapper {
@@ -767,31 +823,31 @@
             </div>
         </div>
 
-        <div id="mobileMenu" class="lg:hidden hidden border-t border-gray-100/50 bg-white dark:bg-slate-900">
-            <div class="px-4 py-3 space-y-1">
-                <button onclick="switchTab('home')" class="nav-item w-full text-left rounded-lg" data-tab="home">
-                    <i class="fas fa-home mr-3 w-5"></i>首页
+        <div id="mobileMenu" class="lg:hidden hidden">
+            <div class="px-4 py-4 space-y-1">
+                <button onclick="switchTab('home')" class="nav-item w-full text-left" data-tab="home">
+                    <i class="fas fa-home mr-3"></i>首页
                 </button>
-                <button onclick="switchTab('yzcloud')" class="nav-item w-full text-left rounded-lg" data-tab="yzcloud">
-                    <i class="fas fa-cloud mr-3 w-5"></i>YZCloud
+                <button onclick="switchTab('yzcloud')" class="nav-item w-full text-left" data-tab="yzcloud">
+                    <i class="fas fa-cloud mr-3"></i>YZCloud
                 </button>
-                <button onclick="switchTab('music')" class="nav-item w-full text-left rounded-lg" data-tab="music">
-                    <i class="fas fa-music mr-3 w-5"></i>音乐解析
+                <button onclick="switchTab('music')" class="nav-item w-full text-left" data-tab="music">
+                    <i class="fas fa-music mr-3"></i>音乐解析
                 </button>
-                <button onclick="switchTab('htmlview')" class="nav-item w-full text-left rounded-lg" data-tab="htmlview">
-                    <i class="fas fa-code mr-3 w-5"></i>HTML预览
+                <button onclick="switchTab('htmlview')" class="nav-item w-full text-left" data-tab="htmlview">
+                    <i class="fas fa-code mr-3"></i>HTML预览
                 </button>
-                <button onclick="switchTab('length78')" class="nav-item w-full text-left rounded-lg" data-tab="length78">
-                    <i class="fas fa-ruler mr-3 w-5"></i>长度测试
+                <button onclick="switchTab('length78')" class="nav-item w-full text-left" data-tab="length78">
+                    <i class="fas fa-ruler mr-3"></i>长度测试
                 </button>
-                <button onclick="switchTab('watchmovie')" class="nav-item w-full text-left rounded-lg" data-tab="watchmovie">
-                    <i class="fas fa-film mr-3 w-5"></i>在线观影
+                <button onclick="switchTab('watchmovie')" class="nav-item w-full text-left" data-tab="watchmovie">
+                    <i class="fas fa-film mr-3"></i>在线观影
                 </button>
-                <button onclick="switchTab('benchmark')" class="nav-item w-full text-left rounded-lg" data-tab="benchmark">
-                    <i class="fas fa-microchip mr-3 w-5"></i>性能跑分
+                <button onclick="switchTab('benchmark')" class="nav-item w-full text-left" data-tab="benchmark">
+                    <i class="fas fa-microchip mr-3"></i>性能跑分
                 </button>
-                <button onclick="switchTab('fpvrace')" class="nav-item w-full text-left rounded-lg" data-tab="fpvrace">
-                    <i class="fas fa-plane mr-3 w-5"></i>穿越机赛事
+                <button onclick="switchTab('fpvrace')" class="nav-item w-full text-left" data-tab="fpvrace">
+                    <i class="fas fa-plane mr-3"></i>穿越机赛事
                 </button>
             </div>
         </div>
