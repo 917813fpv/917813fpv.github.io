@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性能跑分 - 917813</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f97316',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.15), 0 12px 24px -8px rgba(139, 92, 246, 0.1);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35), 0 5px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary:disabled::before {
+            display: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes scale-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes score-pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-scale-pulse {
+            animation: scale-pulse 4s ease-in-out infinite;
+        }
+
+        .animate-score-pop {
+            animation: score-pop 0.6s ease-out forwards;
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .grid-pattern {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .canvas-container {
+            background: #0f172a;
+            border: 2px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .canvas-container canvas {
+            display: block;
+            width: 100%;
+            height: 300px;
+        }
+
+        .chart-container {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .fps-labels {
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 10px;
+            color: #64748b;
+            font-family: 'Space Grotesk', monospace;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+            transition: width 0.3s ease;
+        }
+
+        .score-display {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0ea5e9;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .round-indicator {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .round-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .round-dot.active {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+        }
+
+        .round-dot.completed {
+            background: #22c55e;
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(14, 165, 233, 0.05);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0ea5e9;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(14, 165, 233, 0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(14, 165, 233, 0.06);
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .level-excellent {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .level-good {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+        }
+
+        .level-normal {
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            color: #f97316;
+        }
+
+        .level-low {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="grid-pattern">
+    <div class="hero-blob w-[400px] h-[400px] bg-brand-400/30 top-0 right-0"></div>
+    <div class="hero-blob w-[300px] h-[300px] bg-accent-purple/30 bottom-0 left-0" style="animation-delay: -3s;"></div>
+
+    <div class="min-h-screen py-10 px-4 relative">
+        <header class="text-center mb-12 relative">
+            <div class="inline-flex items-center gap-4 mb-5 animate-float">
+                <div class="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-500/25 animate-scale-pulse">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <h1 class="font-display text-3xl md:text-4xl font-bold">
+                    <span class="gradient-text">性能跑分</span>
+                </h1>
+            </div>
+            <p class="text-gray-500 text-lg">GPU渲染压力测试 · 精准评估设备性能</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="card p-6 md:p-8 mb-6">
+                <div class="info-bar">
+                    <div class="info-item">
+                        <div class="info-value" id="round">0/6</div>
+                        <div class="info-label">当前轮次</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-value" id="fps">--</div>
+                        <div class="info-label">实时FPS</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-value" id="time">20s</div>
+                        <div class="info-label">剩余时间</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-value" id="particles">--</div>
+                        <div class="info-label">粒子数量</div>
+                    </div>
+                </div>
+
+                <div class="round-indicator mb-6">
+                    <div class="round-dot" data-round="0"></div>
+                    <div class="round-dot" data-round="1"></div>
+                    <div class="round-dot" data-round="2"></div>
+                    <div class="round-dot" data-round="3"></div>
+                    <div class="round-dot" data-round="4"></div>
+                    <div class="round-dot" data-round="5"></div>
+                </div>
+
+                <div class="canvas-container mb-4">
+                    <canvas id="canvas"></canvas>
+                </div>
+
+                <div class="chart-container mb-4">
+                    <div class="fps-labels">
+                        <div>60</div>
+                        <div>45</div>
+                        <div>30</div>
+                        <div>15</div>
+                        <div>0</div>
+                    </div>
+                    <canvas id="fpsChart"></canvas>
+                </div>
+
+                <div class="progress-bar mb-6">
+                    <div class="progress-fill" id="bar"></div>
+                </div>
+
+                <div class="score-display mb-6" id="score">--</div>
+
+                <div class="text-center mb-6" id="level-container" style="display: none;">
+                    <span class="level-badge" id="level-badge"></span>
+                </div>
+
+                <button class="btn-primary" id="start">
+                    <i class="fas fa-play mr-2"></i>开始跑分
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card">
+                    <div class="stat-value" id="avgFps">--</div>
+                    <div class="stat-label">平均FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="maxFps">--</div>
+                    <div class="stat-label">最高FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="minFps">--</div>
+                    <div class="stat-label">最低FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stability">--</div>
+                    <div class="stat-label">稳定性</div>
+                </div>
+            </div>
+
+            <div class="card p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-accent-purple to-indigo-600 text-white">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-lg font-semibold">历史记录</h2>
+                        <p class="text-gray-500 text-sm">最近跑分结果</p>
+                    </div>
+                </div>
+
+                <div id="historyList">
+                    <div class="text-center text-gray-400 py-8">
+                        <i class="fas fa-clock text-3xl mb-3 opacity-50"></i>
+                        <p>暂无历史记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        const canvas = $('canvas');
+        const ctx = canvas.getContext('2d');
+        const fpsChart = $('fpsChart');
+        const cctx = fpsChart.getContext('2d');
+
+        const W = canvas.width = canvas.offsetWidth;
+        const H = canvas.height = canvas.offsetHeight;
+        const CW = fpsChart.width = fpsChart.offsetWidth;
+        const CH = fpsChart.height = fpsChart.offsetHeight;
+
+        const roundText = $('round');
+        const fpsText = $('fps');
+        const timeText = $('time');
+        const particlesText = $('particles');
+        const bar = $('bar');
+        const scoreBox = $('score');
+        const startBtn = $('start');
+        const levelContainer = $('level-container');
+        const levelBadge = $('level-badge');
+        const avgFpsEl = $('avgFps');
+        const maxFpsEl = $('maxFps');
+        const minFpsEl = $('minFps');
+        const stabilityEl = $('stability');
+        const historyList = $('historyList');
+
+        let running = false;
+        let frame = 0, last = performance.now();
+        let fpsList = [], chartData = [];
+        let roundScores = [];
+        let allFpsData = [];
+
+        const tasks = [
+            { name: '15万', count: 150000 },
+            { name: '25万', count: 250000 },
+            { name: '50万', count: 500000 },
+            { name: '75万', count: 750000 },
+            { name: '100万', count: 1000000 },
+            { name: '200万', count: 2000000 },
+        ];
+
+        function renderLoop(count) {
+            if (!running) return;
+            frame++;
+            const now = performance.now();
+            const dt = now - last;
+
+            if (dt >= 100) {
+                const fps = Math.round(frame * 1000 / dt);
+                fpsText.textContent = fps;
+                fpsList.push(fps);
+                chartData.push(fps);
+                allFpsData.push(fps);
+                frame = 0;
+                last = now;
+                drawChart();
+            }
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, W, H);
+
+            const gradient = ctx.createLinearGradient(0, 0, W, H);
+            gradient.addColorStop(0, '#0ea5e9');
+            gradient.addColorStop(0.5, '#8b5cf6');
+            gradient.addColorStop(1, '#ec4899');
+            ctx.fillStyle = gradient;
+
+            for (let i = 0; i < count; i += 8) {
+                const x = (i * 13) % W;
+                const y = (i * 7) % H;
+                ctx.beginPath();
+                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            requestAnimationFrame(() => renderLoop(count));
+        }
+
+        function drawChart() {
+            cctx.fillStyle = '#0f172a';
+            cctx.fillRect(0, 0, CW, CH);
+            const max = 60;
+            const step = CW / Math.max(chartData.length, 120);
+            
+            cctx.strokeStyle = 'rgba(14, 165, 233, 0.3)';
+            cctx.lineWidth = 1;
+            for (let i = 15; i <= 60; i += 15) {
+                const y = CH - (i / max * CH);
+                cctx.beginPath();
+                cctx.moveTo(0, y);
+                cctx.lineTo(CW, y);
+                cctx.stroke();
+            }
+
+            const gradient = cctx.createLinearGradient(0, 0, CW, 0);
+            gradient.addColorStop(0, '#0ea5e9');
+            gradient.addColorStop(0.5, '#8b5cf6');
+            gradient.addColorStop(1, '#ec4899');
+            cctx.strokeStyle = gradient;
+            cctx.lineWidth = 2;
+            cctx.beginPath();
+            for (let i = 0; i < chartData.length; i++) {
+                const v = Math.min(chartData[i], max);
+                const x = i * step;
+                const y = CH - (v / max * CH);
+                if (i === 0) cctx.moveTo(x, y);
+                else cctx.lineTo(x, y);
+            }
+            cctx.stroke();
+        }
+
+        function updateRoundDots(currentRound, completed) {
+            document.querySelectorAll('.round-dot').forEach((dot, idx) => {
+                dot.classList.remove('active', 'completed');
+                if (idx < completed) {
+                    dot.classList.add('completed');
+                } else if (idx === currentRound) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        function getLevelInfo(score) {
+            if (score >= 80000) return { level: 'excellent', text: '性能卓越', icon: 'fa-crown' };
+            if (score >= 50000) return { level: 'good', text: '性能优秀', icon: 'fa-star' };
+            if (score >= 25000) return { level: 'normal', text: '性能良好', icon: 'fa-thumbs-up' };
+            return { level: 'low', text: '性能一般', icon: 'fa-info-circle' };
+        }
+
+        function saveHistory(score, avgFps) {
+            const history = JSON.parse(localStorage.getItem('benchmark_history') || '[]');
+            history.unshift({
+                score: score,
+                avgFps: avgFps,
+                date: new Date().toLocaleString(),
+                userAgent: navigator.userAgent.split(' ').slice(-2).join(' ')
+            });
+            if (history.length > 5) history.pop();
+            localStorage.setItem('benchmark_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('benchmark_history') || '[]');
+            if (history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="text-center text-gray-400 py-8">
+                        <i class="fas fa-clock text-3xl mb-3 opacity-50"></i>
+                        <p>暂无历史记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = history.map((item, idx) => {
+                const levelInfo = getLevelInfo(item.score);
+                return `
+                    <div class="history-item">
+                        <div>
+                            <div class="font-semibold text-gray-800">${item.score.toLocaleString()} 分</div>
+                            <div class="text-sm text-gray-500">${item.date}</div>
+                        </div>
+                        <span class="level-badge level-${levelInfo.level}">
+                            <i class="fas ${levelInfo.icon}"></i>
+                            ${levelInfo.text}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function runRound(taskIdx) {
+            const task = tasks[taskIdx];
+            roundText.textContent = `${taskIdx + 1}/${tasks.length}`;
+            particlesText.textContent = task.name;
+            updateRoundDots(taskIdx, taskIdx);
+            running = true;
+            fpsList = [];
+            renderLoop(task.count);
+
+            for (let s = 20; s >= 0; s--) {
+                timeText.textContent = `${s}s`;
+                await new Promise(r => setTimeout(r, 1000));
+            }
+
+            running = false;
+            const avg = fpsList.length ? fpsList.reduce((a, b) => a + b) / fpsList.length : 1;
+            roundScores.push(avg);
+            bar.style.width = ((taskIdx + 1) / tasks.length * 100) + '%';
+            updateRoundDots(taskIdx, taskIdx + 1);
+        }
+
+        async function startBench() {
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>跑分中...';
+            roundScores = [];
+            chartData = [];
+            allFpsData = [];
+            bar.style.width = '0%';
+            scoreBox.textContent = '--';
+            levelContainer.style.display = 'none';
+            avgFpsEl.textContent = '--';
+            maxFpsEl.textContent = '--';
+            minFpsEl.textContent = '--';
+            stabilityEl.textContent = '--';
+
+            for (let i = 0; i < tasks.length; i++) {
+                await runRound(i);
+            }
+
+            const total = roundScores.reduce((a, b) => a + b) / roundScores.length;
+            const score = Math.round(total * 1800);
+            
+            scoreBox.textContent = score.toLocaleString();
+            scoreBox.classList.add('animate-score-pop');
+            setTimeout(() => scoreBox.classList.remove('animate-score-pop'), 600);
+
+            const levelInfo = getLevelInfo(score);
+            levelBadge.className = `level-badge level-${levelInfo.level}`;
+            levelBadge.innerHTML = `<i class="fas ${levelInfo.icon} mr-1"></i>${levelInfo.text}`;
+            levelContainer.style.display = 'block';
+
+            if (allFpsData.length > 0) {
+                const avgFps = Math.round(allFpsData.reduce((a, b) => a + b) / allFpsData.length);
+                const maxFps = Math.max(...allFpsData);
+                const minFps = Math.min(...allFpsData);
+                const variance = allFpsData.reduce((sum, fps) => sum + Math.pow(fps - avgFps, 2), 0) / allFpsData.length;
+                const stability = Math.round((1 - Math.sqrt(variance) / avgFps) * 100);
+
+                avgFpsEl.textContent = avgFps;
+                maxFpsEl.textContent = maxFps;
+                minFpsEl.textContent = minFps;
+                stabilityEl.textContent = stability + '%';
+            }
+
+            saveHistory(score, Math.round(total));
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-redo mr-2"></i>重新跑分';
+        }
+
+        startBtn.onclick = startBench;
+        renderHistory();
+    </script>
+</body>
+</html>
