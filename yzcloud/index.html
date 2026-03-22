@@ -690,8 +690,18 @@
                 currentServer = this.dataset.server;
                 currentUrl = this.dataset.url;
                 
-                document.getElementById('warningUser').textContent = 'user';
-                document.getElementById('warningPass').textContent = 'user';
+                let username, password;
+                if (currentServer === 'beijing') {
+                    username = '888';
+                    password = '666';
+                } else if (currentServer === 'hebei') {
+                    const randomUser = ['A1', 'A2', 'A3'][Math.floor(Math.random() * 3)];
+                    username = randomUser;
+                    password = '1234';
+                }
+                
+                document.getElementById('warningUser').textContent = username;
+                document.getElementById('warningPass').textContent = password;
                 document.getElementById('warning').style.display = 'flex';
             });
         });
