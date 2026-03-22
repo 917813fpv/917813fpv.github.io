@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>APP 已停止支持</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(45deg, #ffecd2, #fcb69f, #ffc3d2, #f6d0f5);
+  background-size: 300% 300%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  animation: bgMove 12s linear infinite;
+}
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.wrap {
+  max-width: 600px;
+  width: 100%;
+}
+.line {
+  opacity: 0;
+  transform: translateY(20px);
+  color: #333;
+  margin-bottom: 26px;
+  animation: fadeUp 0.7s ease forwards;
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.line1 {
+  font-size: 34px;
+  font-weight: 600;
+  animation-delay: 0.3s;
+}
+.line2 {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.3;
+  animation-delay: 1.1s;
+}
+.line3 {
+  font-size: 28px;
+  animation-delay: 1.9s;
+}
+.line4 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #d96180;
+  animation-delay: 2.7s;
+}
+#count {
+  font-size: 46px;
+  font-weight: 700;
+  color: #e64980;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="line line1">917813.com.cn</div>
+  <div class="line line2">2026全国线上穿越机竞速赛<br>官方APP</div>
+  <div class="line line3">本APP已停止支持，可留念留存</div>
+  <div class="line line4">
+    <span id="count">5</span> 秒后自动跳转最新页面
+  </div>
+</div>
+
+<script>
+setTimeout(() => {
+  let count = 5;
+  const countEl = document.getElementById('count');
+  const timer = setInterval(() => {
+    count--;
+    countEl.textContent = count;
+    if (count <= 0) {
+      clearInterval(timer);
+      window.location.href = '/';
+    }
+  }, 1000);
+}, 3200);
+</script>
+</body>
+</html>
