@@ -264,7 +264,7 @@
                             <h3 class="font-display text-2xl font-bold mb-3">飞驰人生3</h3>
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="badge badge-hd"><i class="fas fa-hd"></i>高清</span>
-                                <span class="text-gray-500 text-sm">2024</span>
+                                <span class="text-gray-500 text-sm">2026</span>
                                 <span class="text-gray-500 text-sm">喜剧 / 动作</span>
                             </div>
                             <p class="text-gray-600 mb-6 leading-relaxed">
@@ -310,62 +310,12 @@
         </div>
     </div>
 
-    <div id="videoModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-sm">
-        <div class="relative w-full max-w-5xl mx-4">
-            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 text-white bg-black/50 hover:bg-black/70 rounded-full w-10 h-10 flex items-center justify-center text-xl transition-all z-10">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="video-container bg-black rounded-2xl">
-                <video id="moviePlayer" controls class="w-full h-full">
-                    <source src="" type="video/mp4">
-                </video>
-            </div>
-        </div>
-    </div>
-
     <script>
-        const movies = {
-            'fcrs3': {
-                title: '飞驰人生3',
-                src: 'https://917813.com.cn/watchmovie/fcrs3.html'
-            }
-        };
-
         function playMovie(movieId) {
-            const movie = movies[movieId];
-            if (!movie) return;
-
-            const modal = document.getElementById('videoModal');
-            const player = document.getElementById('moviePlayer');
-            
-            player.src = movie.src;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVideoModal() {
-            const modal = document.getElementById('videoModal');
-            const player = document.getElementById('moviePlayer');
-            
-            player.pause();
-            player.src = '';
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
-        }
-
-        document.getElementById('videoModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeVideoModal();
+            if (movieId === 'fcrs3') {
+                window.location.href = 'fcrs3.html';
             }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeVideoModal();
-            }
-        });
+        }
     </script>
 </body>
 </html>
