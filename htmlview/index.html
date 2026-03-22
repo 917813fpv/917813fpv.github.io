@@ -1,193 +1,456 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flyz远征飞|HTML在线测试</title>
-  <!-- 引入外部资源 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  
-  <!-- Tailwind配置 -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#165DFF',
-          },
-          animation: {
-            'fade-in': 'fadeIn 0.8s ease-out forwards',
-            'slide-up': 'slideUp 0.6s ease-out forwards',
-          },
-          keyframes: {
-            fadeIn: {
-              '0%': { opacity: '0' },
-              '100%': { opacity: '1' },
-            },
-            slideUp: {
-              '0%': { transform: 'translateY(30px)', opacity: '0' },
-              '100%': { transform: 'translateY(0)', opacity: '1' },
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML预览 - 917813</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f97316',
+                        }
+                    }
+                }
             }
-          }
-        },
-      }
-    }
-  </script>
-  
-  <style type="text/tailwindcss">
-    @layer utilities {
-      .code-bg {
-        background-color: #0F172A;
-      }
-      .shadow-soft {
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-      }
-      .bg-simple {
-        background-image: url('https://picsum.photos/id/1068/1920/1080');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-      }
-    }
-  </style>
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.15), 0 12px 24px -8px rgba(139, 92, 246, 0.1);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35), 0 5px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .code-editor {
+            background: #0f172a;
+            border: 2px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            color: #e2e8f0;
+            resize: none;
+            width: 100%;
+            min-height: 400px;
+            line-height: 1.6;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+        }
+
+        .code-editor::placeholder {
+            color: #64748b;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes scale-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-scale-pulse {
+            animation: scale-pulse 4s ease-in-out infinite;
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .grid-pattern {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .preview-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+        }
+
+        .preview-modal.active {
+            display: flex;
+        }
+
+        .preview-modal iframe {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(14, 165, 233, 0.2);
+            padding: 20px 10px;
+            text-align: right;
+            color: #64748b;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            position: relative;
+            background: #0f172a;
+            border: 2px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .editor-container:focus-within {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+        }
+
+        .editor-textarea {
+            background: transparent;
+            border: none;
+            padding: 20px;
+            padding-left: 60px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            color: #e2e8f0;
+            resize: none;
+            width: 100%;
+            min-height: 400px;
+            line-height: 1.6;
+        }
+
+        .editor-textarea:focus {
+            outline: none;
+        }
+
+        .editor-textarea::placeholder {
+            color: #64748b;
+        }
+    </style>
 </head>
-<!-- 主背景：高级简约白色系背景图 + 半透明遮罩 -->
-<body class="bg-simple min-h-screen flex flex-col">
-  <div class="absolute inset-0 bg-white/85 backdrop-blur-sm z-0"></div>
-  
-  <!-- 头部（带进入动画） -->
-  <header class="relative z-10 bg-white/90 backdrop-blur-md shadow-sm py-3 px-6 flex justify-between items-center animate-fade-in">
-    <!-- Logo + 标题 -->
-    <div class="flex items-center space-x-3">
-      <img src="https://img520.com/UIGuUV.jpeg" alt="Flyz远征飞" class="w-10 h-10 rounded-md object-cover">
-      <h1 class="text-xl font-bold text-gray-800">
-        <span class="text-primary">Flyz远征飞</span> | HTML在线测试
-      </h1>
-    </div>
-    <div class="text-sm text-gray-500">
-      快速预览 · 简单高效
-    </div>
-  </header>
+<body class="grid-pattern">
+    <div class="hero-blob w-[400px] h-[400px] bg-brand-400/30 top-0 right-0"></div>
+    <div class="hero-blob w-[300px] h-[300px] bg-accent-purple/30 bottom-0 left-0" style="animation-delay: -3s;"></div>
 
-  <!-- 主内容区（带延迟进入动画） -->
-  <main class="relative z-10 flex-1 container mx-auto px-4 py-8 max-w-4xl animate-slide-up opacity-0" style="animation-delay: 0.2s">
-    <div class="bg-white rounded-xl shadow-soft p-6 md:p-8">
-      <!-- 说明文字（简化） -->
-      <div class="mb-6 text-gray-600 text-sm">
-        <p>粘贴HTML代码，一键查看全屏效果</p>
-      </div>
-      
-      <!-- 代码输入区 -->
-      <div class="mb-6">
-        <label for="htmlCode" class="block mb-2 font-medium text-gray-700 flex items-center">
-          <i class="fa fa-code mr-2 text-primary"></i>HTML代码
-        </label>
-        <textarea 
-          id="htmlCode" 
-          class="w-full h-64 md:h-80 code-bg text-gray-300 p-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none font-mono text-sm"
-          placeholder="粘贴您的HTML代码到这里..."></textarea>
-      </div>
-      
-      <!-- 操作按钮（居中简化） -->
-      <div class="flex justify-center">
-        <button 
-          id="previewBtn"
-          class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
-        >
-          <i class="fa fa-eye"></i>
-          <span>全屏预览</span>
+    <div class="min-h-screen py-10 px-4 relative">
+        <header class="text-center mb-12 relative">
+            <div class="inline-flex items-center gap-4 mb-5 animate-float">
+                <div class="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-500/25 animate-scale-pulse">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1 class="font-display text-3xl md:text-4xl font-bold">
+                    <span class="gradient-text">HTML预览</span>
+                </h1>
+            </div>
+            <p class="text-gray-500 text-lg">在线代码编辑与实时预览</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="card p-6 md:p-8 mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-accent-purple to-indigo-600 text-white">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-display text-lg font-semibold">代码编辑器</h2>
+                        <p class="text-gray-500 text-sm">粘贴HTML代码，一键预览效果</p>
+                    </div>
+                </div>
+
+                <div class="editor-container mb-6">
+                    <div class="line-numbers" id="lineNumbers">1</div>
+                    <textarea 
+                        id="htmlCode" 
+                        class="editor-textarea"
+                        placeholder="<!-- 在这里粘贴您的HTML代码 -->
+
+<div style='text-align: center; padding: 50px;'>
+    <h1 style='color: #0ea5e9;'>Hello World</h1>
+    <p>这是一个示例页面</p>
+    <button style='margin-top: 20px; padding: 10px 30px; background: linear-gradient(135deg, #0ea5e9, #8b5cf6); color: white; border: none; border-radius: 10px; cursor: pointer;' onclick='alert(\"交互成功！\")'>点击测试</button>
+</div>"
+                    ></textarea>
+                </div>
+
+                <div class="flex justify-center">
+                    <button id="previewBtn" class="btn-primary">
+                        <i class="fas fa-eye mr-2"></i>全屏预览
+                    </button>
+                </div>
+            </div>
+
+            <div class="card p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-brand-400 to-brand-600 text-white">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h2 class="font-display text-xl font-semibold">使用说明</h2>
+                </div>
+                <div class="space-y-4 text-gray-600">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
+                        <span>在代码编辑器中粘贴或输入HTML代码</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
+                        <span>点击"全屏预览"按钮查看渲染效果</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
+                        <span>支持CSS样式和JavaScript脚本</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-brand-500 mt-1"></i>
+                        <span>按ESC键或点击关闭按钮退出预览</span>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-center pt-8 mt-8 border-t border-gray-100">
+                <p class="text-gray-400 text-sm">支持完整的HTML文档或片段代码</p>
+            </footer>
+        </div>
+    </div>
+
+    <div id="previewModal" class="preview-modal">
+        <button id="closeBtn" class="close-btn">
+            <i class="fas fa-times"></i>
         </button>
-      </div>
+        <iframe id="previewIframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
     </div>
-  </main>
 
-  <!-- 预览模态框（优化动画和样式） -->
-  <div id="previewModal" class="fixed inset-0 z-50 flex flex-col hidden bg-black/90 animate-fade-in">
-    <!-- 关闭按钮（优化样式和交互） -->
-    <button id="closeBtn" class="absolute top-4 right-6 text-white bg-black/60 hover:bg-black/80 rounded-full w-10 h-10 flex items-center justify-center text-xl transition-all z-20">
-      <i class="fa fa-times"></i>
-    </button>
-    
-    <!-- 预览容器（保持iframe确保兼容性） -->
-    <iframe id="previewIframe" class="flex-1 w-full border-0" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
-  </div>
+    <script>
+        const htmlCode = document.getElementById('htmlCode');
+        const previewBtn = document.getElementById('previewBtn');
+        const previewModal = document.getElementById('previewModal');
+        const closeBtn = document.getElementById('closeBtn');
+        const previewIframe = document.getElementById('previewIframe');
+        const lineNumbers = document.getElementById('lineNumbers');
 
-  <!-- 页脚（简化） -->
-  <footer class="relative z-10 bg-white/90 backdrop-blur-md text-gray-500 py-3 px-4 text-center text-xs mt-4 animate-slide-up opacity-0" style="animation-delay: 0.4s">
-    <p>© 2025 Flyz远征飞 | HTML在线测试工具</p>
-  </footer>
+        function updateLineNumbers() {
+            const lines = htmlCode.value.split('\n').length;
+            let numbersHtml = '';
+            for (let i = 1; i <= lines; i++) {
+                numbersHtml += i + '\n';
+            }
+            lineNumbers.textContent = numbersHtml;
+        }
 
-  <script>
-    // 获取DOM元素
-    const htmlCode = document.getElementById('htmlCode');
-    const previewBtn = document.getElementById('previewBtn');
-    const previewModal = document.getElementById('previewModal');
-    const closeBtn = document.getElementById('closeBtn');
-    const previewIframe = document.getElementById('previewIframe');
-    
-    // 预览按钮点击事件（保持稳定功能）
-    previewBtn.addEventListener('click', () => {
-      const code = htmlCode.value.trim();
-      
-      if (!code) {
-        alert('请粘贴HTML代码后再进行预览');
-        return;
-      }
-      
-      // 构建完整HTML文档，确保所有代码正常运行
-      const fullHtml = `
-        <!DOCTYPE html>
-        <html lang="zh-CN">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>预览效果</title>
-          <base target="_blank"> <!-- 确保链接在新窗口打开 -->
-        </head>
-        <body>
-          ${code.includes('<html') ? code : code}
-        </body>
-        </html>
-      `;
-      
-      // 渲染到iframe
-      previewIframe.srcdoc = fullHtml;
-      
-      // 显示预览模态框
-      previewModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    });
-    
-    // 关闭预览
-    closeBtn.addEventListener('click', () => {
-      previewModal.classList.add('hidden');
-      document.body.style.overflow = '';
-      previewIframe.srcdoc = ''; // 清空内容
-    });
-    
-    // 点击背景关闭
-    previewModal.addEventListener('click', (e) => {
-      if (e.target === previewModal) {
-        closeBtn.click();
-      }
-    });
-    
-    // ESC键关闭
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !previewModal.classList.contains('hidden')) {
-        closeBtn.click();
-      }
-    });
-    
-    // 示例代码（简化清晰）
-    htmlCode.placeholder = `<!-- 示例代码（直接粘贴测试） -->
-<h1 style="color: #165DFF; text-align: center; margin: 50px 0;">HTML预览测试</h1>
-<div style="text-align: center; font-size: 16px; color: #333;">
-  <p>这是一个简单的测试页面</p>
-  <button style="margin-top: 20px; padding: 8px 20px; background: #165DFF; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="alert('交互成功！')">点击测试</button>
-</div>
-`;
-  </script>
+        htmlCode.addEventListener('input', updateLineNumbers);
+        htmlCode.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = htmlCode.scrollTop;
+        });
+
+        updateLineNumbers();
+
+        previewBtn.addEventListener('click', () => {
+            const code = htmlCode.value.trim();
+            
+            if (!code) {
+                alert('请输入HTML代码后再进行预览');
+                return;
+            }
+            
+            const fullHtml = `
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>预览效果</title>
+                    <base target="_blank">
+                </head>
+                <body>
+                    ${code}
+                </body>
+                </html>
+            `;
+            
+            previewIframe.srcdoc = fullHtml;
+            previewModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            previewModal.classList.remove('active');
+            document.body.style.overflow = '';
+            previewIframe.srcdoc = '';
+        });
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                closeBtn.click();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && previewModal.classList.contains('active')) {
+                closeBtn.click();
+            }
+        });
+    </script>
 </body>
 </html>
