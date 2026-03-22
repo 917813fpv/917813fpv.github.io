@@ -67,8 +67,11 @@
         }
 
         .movie-card {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -247,25 +250,25 @@
                     <span class="font-display font-semibold text-gray-700">正在热映</span>
                 </div>
                 
-                <div class="movie-card p-6 cursor-pointer" onclick="playMovie('fcrs2')">
+                <div class="movie-card p-6 cursor-pointer" onclick="playMovie('fcrs3')">
                     <div class="flex flex-col md:flex-row gap-6">
                         <div class="md:w-1/3">
                             <div class="relative">
-                                <img src="https://via.placeholder.com/300x450/1e293b/ffffff?text=FCRS2" alt="FCRS2" class="movie-poster">
+                                <img src="https://via.placeholder.com/300x450/1e293b/ffffff?text=飞驰人生3" alt="飞驰人生3" class="movie-poster">
                                 <div class="absolute top-3 left-3">
                                     <span class="badge badge-new"><i class="fas fa-star"></i>新上线</span>
                                 </div>
                             </div>
                         </div>
                         <div class="md:w-2/3 flex flex-col justify-center">
-                            <h3 class="font-display text-2xl font-bold mb-3">FCRS2</h3>
+                            <h3 class="font-display text-2xl font-bold mb-3">飞驰人生3</h3>
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="badge badge-hd"><i class="fas fa-hd"></i>高清</span>
                                 <span class="text-gray-500 text-sm">2024</span>
-                                <span class="text-gray-500 text-sm">动作 / 科幻</span>
+                                <span class="text-gray-500 text-sm">喜剧 / 动作</span>
                             </div>
                             <p class="text-gray-600 mb-6 leading-relaxed">
-                                精彩影视内容，高清流畅播放体验。点击下方按钮开始观看。
+                                韩寒执导，沈腾主演。张驰重返赛场，开启全新赛车征程。高清流畅播放，点击下方按钮开始观看。
                             </p>
                             <button class="play-btn w-full md:w-auto">
                                 <i class="fas fa-play mr-2"></i>立即观看
@@ -304,15 +307,6 @@
                     </div>
                 </div>
             </div>
-
-            <footer class="text-center pt-8 border-t border-gray-100">
-                <p class="text-gray-500 text-sm mb-4">更多精彩内容持续更新中...</p>
-                <div class="flex items-center justify-center gap-4 text-sm text-gray-400">
-                    <span>技术支持: <a href="https://yzbjfpv.top" target="_blank" class="text-brand-500 hover:text-brand-600">Flyz远征飞</a></span>
-                    <span>|</span>
-                    <a href="mailto:lyz201966@gmail.com" class="hover:text-brand-500">lyz201966@gmail.com</a>
-                </div>
-            </footer>
         </div>
     </div>
 
@@ -331,9 +325,9 @@
 
     <script>
         const movies = {
-            'fcrs2': {
-                title: 'FCRS2',
-                src: 'https://917813.com.cn/watchmovie/fcrs2'
+            'fcrs3': {
+                title: '飞驰人生3',
+                src: 'https://917813.com.cn/watchmovie/fcrs3.html'
             }
         };
 
@@ -348,8 +342,6 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
-            
-            player.play();
         }
 
         function closeVideoModal() {
