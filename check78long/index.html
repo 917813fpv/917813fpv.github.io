@@ -68,8 +68,11 @@
         }
 
         .card {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -152,8 +155,11 @@
         }
 
         .input-field {
-            background: rgba(14, 165, 233, 0.03);
-            border: 2px solid rgba(14, 165, 233, 0.15);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
             border-radius: 14px;
             padding: 14px 18px;
             font-size: 16px;
@@ -290,8 +296,11 @@
         .result-container {
             margin-top: 20px;
             padding: 24px;
-            background: rgba(14, 165, 233, 0.03);
-            border: 1px solid rgba(14, 165, 233, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             border-radius: 16px;
             border-left: 4px solid #0ea5e9;
             display: none;
@@ -554,10 +563,6 @@
                     <div class="ad-title">欢迎在评论区留下评论</div>
                     <div class="ad-desc">点击"Write a comment"前三个空乱填最后一个写内容</div>
                 </div>
-
-                <footer class="text-center mt-6 pt-6 border-t border-gray-100">
-                    <p class="text-gray-400 text-sm">本工具仅供娱乐｜摄像头画面本地私密运行</p>
-                </footer>
             </div>
         </div>
     </div>
