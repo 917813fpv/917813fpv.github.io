@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>917813</title>
+    <title>917813.com.cn</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -743,6 +743,9 @@
                     <button onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark">
                         <i class="fas fa-microchip mr-2"></i>性能跑分
                     </button>
+                    <button onclick="switchTab('fpvrace')" class="nav-item" data-tab="fpvrace">
+                        <i class="fas fa-plane mr-2"></i>穿越机赛事
+                    </button>
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -786,6 +789,9 @@
                 </button>
                 <button onclick="switchTab('benchmark')" class="nav-item w-full text-left rounded-lg" data-tab="benchmark">
                     <i class="fas fa-microchip mr-3 w-5"></i>性能跑分
+                </button>
+                <button onclick="switchTab('fpvrace')" class="nav-item w-full text-left rounded-lg" data-tab="fpvrace">
+                    <i class="fas fa-plane mr-3 w-5"></i>穿越机赛事
                 </button>
             </div>
         </div>
@@ -966,6 +972,16 @@
                 <iframe id="iframe-watchmovie" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('watchmovie')"></iframe>
             </div>
         </div>
+
+        <div id="tab-fpvrace" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-fpvrace" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading FPV Race...</p>
+                </div>
+                <iframe id="iframe-fpvrace" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('fpvrace')"></iframe>
+            </div>
+        </div>
     </main>
 
     <footer class="border-t border-gray-100 dark:border-slate-800 py-16 px-4 bg-white/50 dark:bg-slate-900/50">
@@ -1034,12 +1050,13 @@
 
     <script>
         const pageUrls = {
-            yzcloud: 'https://917813.com.cn/yzcloud/index.html',
-            music: 'https://917813.com.cn/wyymusic/index.html',
-            htmlview: 'https://917813.com.cn/htmlview/index.html',
-            length78: 'https://917813.com.cn/check78long/index.html',
-            benchmark: 'https://917813.com.cn/benchmark/index.html',
-            watchmovie: 'https://917813.com.cn/watchmovie/index.html'
+            yzcloud: 'https://cdn.917813.com.cn/yzcloud/index.html',
+            music: 'https://cdn.917813.com.cn/wyymusic/index.html',
+            htmlview: 'https://cdn.917813.com.cn/htmlview/index.html',
+            length78: 'https://cdn.917813.com.cn/check78long/index.html',
+            benchmark: 'https://cdn.917813.com.cn/benchmark/index.html',
+            watchmovie: 'https://cdn.917813.com.cn/watchmovie/index.html',
+            fpvrace: 'https://cdn.917813.com.cn/fpvrace/index.html'
         };
 
         let currentTab = 'home';
@@ -1121,7 +1138,7 @@
         }
 
         document.addEventListener('keydown', function(e) {
-            const tabs = ['home', 'yzcloud', 'music', 'htmlview', 'length78', 'watchmovie', 'benchmark'];
+            const tabs = ['home', 'yzcloud', 'music', 'htmlview', 'length78', 'watchmovie', 'benchmark', 'fpvrace'];
             const num = parseInt(e.key);
             if (num >= 1 && num <= tabs.length) {
                 switchTab(tabs[num - 1]);
