@@ -1,234 +1,1091 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="format-detection" content="telephone=no, email=no" />
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval';frame-src https://cdn.917813.com.cn https://917813fpv-github-io.pages.dev https://917813.github.io https://917813.com.cn;img-src * data:;script-src * 'unsafe-inline' 'unsafe-eval';style-src * 'unsafe-inline';connect-src *;object-src 'none';">
-  <title>2026线上FPV竞速赛-Flyz远征飞魄客杯</title>
-  <style>
-    * {margin:0;padding:0;box-sizing:border-box;transform:translateZ(0);-webkit-transform:translateZ(0);}
-    html,body {font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Consolas;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;}
-    :root {--primary:#00ffff;--secondary:#87CEFA;--danger:#ff3d00;--glow:0 0 15px var(--primary),0 0 30px rgba(0,255,255,0.5);--glow-danger:0 0 15px var(--danger),0 0 30px rgba(255,61,0,0.5);--glass:rgba(255,255,255,0.08);--glass-border:rgba(0,255,255,0.3);}
-    /* 开屏动画 */
-    #splash-screen {position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 24px;transition:opacity 0.5s ease;}
-    .splash-logo {width:140px;height:140px;border-radius:24px;border:2px solid var(--primary);box-shadow:var(--glow);margin-bottom:48px;transform:translateY(-800px);animation:logoDown 1s cubic-bezier(0.22,1,0.36,1) forwards;}
-    .splash-logo img {width:100%;height:100%;object-fit:cover;border-radius:22px;}
-    .splash-main-title {font-size:2.8rem;font-weight:900;color:var(--primary);text-shadow:var(--glow);letter-spacing:2px;margin-bottom:24px;transform:translateY(800px);animation:textUp 1s cubic-bezier(0.22,1,0.36,1) forwards 0.2s;}
-    .splash-url {font-size:1.4rem;font-weight:700;color:var(--secondary);letter-spacing:2px;padding:6px 18px;border-radius:10px;background:var(--glass);border:1px solid rgba(135,206,250,0.2);transform:translateY(800px);animation:textUp 1s cubic-bezier(0.22,1,0.36,1) forwards 0.4s;}
-    @keyframes logoDown {0%{transform:translateY(-800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
-    @keyframes textUp {0%{transform:translateY(800px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
-    /* 临时公告弹窗 */
-    #notice-modal {position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;animation:modalFade 0.5s ease forwards;}
-    #notice-modal.active {display:flex;}
-    .notice-container {max-width:600px;width:100%;background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:24px;box-shadow:var(--glow);}
-    .notice-title {font-size:2rem;font-weight:900;color:var(--primary);text-shadow:var(--glow);text-align:center;margin-bottom:20px;letter-spacing:2px;}
-    .notice-content {font-size:1.1rem;line-height:1.8;color:#eee;margin-bottom:24px;white-space:pre-line;}
-    .notice-warning {font-size:1rem;line-height:1.6;color:var(--danger);text-shadow:var(--glow-danger);margin-bottom:24px;padding:12px;border-radius:8px;background:rgba(255,61,0,0.1);border:1px solid rgba(255,61,0,0.3);}
-    .notice-btn {width:100%;padding:14px 0;border-radius:10px;border:none;font-size:1.2rem;font-weight:700;cursor:pointer;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,255,255,0.2);opacity:0.5;pointer-events:none;}
-    .notice-btn.enabled {opacity:1;pointer-events:all;}
-    .notice-btn:hover {transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,255,255,0.3);}
-    @keyframes modalFade {0%{opacity:0;}100%{opacity:1;}}
-    /* 页面容器 */
-    #pages {position:relative;z-index:10;min-height:calc(100vh - 58px);display:none;background:#050505;}
-    .page-container {display:none;width:100%;min-height:100%;position:relative;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:backdrop-filter 0s linear;}
-    .page-container.active {display:block;}
-    .page-container.loaded {backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0);}
-    /* 加载中 */
-    .page-loading {position:absolute;inset:0;z-index:5;background:rgba(5,5,5,0.8);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;}
-    .loading-spinner {width:60px;height:60px;border:4px solid rgba(0,255,255,0.2);border-top:4px solid var(--primary);border-radius:50%;animation:spin 1.2s linear infinite;box-shadow:0 0 10px rgba(0,255,255,0.2);}
-    .loading-text {font-size:1.1rem;color:var(--secondary);letter-spacing:1px;}
-    @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-    .page-container.loaded .page-loading {display:none;}
-    iframe {position:relative;z-index:10;width:100%;min-height:calc(100vh - 58px);border:none;background:transparent;display:block;}
-    /* 底部导航 */
-    #dock {position:fixed;bottom:0;left:0;right:0;height:58px;z-index:20;border-radius:20px 20px 0 0;display:flex;justify-content:space-around;align-items:center;padding:0 8px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--glass-border);box-shadow:0 -2px 8px rgba(0,0,0,0.2);}
-    .dock-item {width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:600;letter-spacing:1px;color:#fff;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.3s ease;}
-    .dock-item:hover {color:var(--secondary);text-shadow:0 0 8px rgba(135,206,250,0.4);}
-    .dock-item.active {color:var(--primary);text-shadow:var(--glow);border-bottom:3px solid var(--primary);background:rgba(0,255,255,0.06);}
-    /* 安全警告通用样式 */
-    .alert {position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;animation:alertFade 0.5s ease forwards;}
-    .alert.active {display:flex;}
-    .alert-logo {width:80px;height:80px;border-radius:16px;border:2px solid var(--primary);box-shadow:var(--glow);margin-bottom:24px;overflow:hidden;}
-    .alert-logo img {width:100%;height:100%;object-fit:cover;border-radius:14px;}
-    .alert-title {font-size:2rem;font-weight:900;margin-bottom:16px;letter-spacing:1px;}
-    .alert-desc {font-size:1rem;line-height:1.8;color:#eee;margin-bottom:32px;max-width:500px;padding:0 10px;}
-    .alert-btn {padding:12px 40px;border-radius:10px;border:none;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-    .alert-btn:hover {transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.3);}
-    /* HTTPS警告 */
-    #https-alert .alert-title {color:var(--danger);text-shadow:var(--glow-danger);}
-    #https-alert .alert-logo {border-color:var(--danger);box-shadow:var(--glow-danger);}
-    #https-alert .alert-btn {background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;}
-    /* iframe域名警告 */
-    #iframe-alert .alert-title {color:var(--danger);text-shadow:var(--glow-danger);}
-    #iframe-alert .alert-logo {border-color:var(--danger);box-shadow:var(--glow-danger);}
-    #iframe-alert .alert-btn {background:linear-gradient(90deg,var(--primary),var(--secondary));color:#000;}
-    @keyframes alertFade {0%{opacity:0;}100%{opacity:1;}}
-  </style>
-</head>
-<body>
-  <!-- HTTPS安全警告 -->
-  <div id="https-alert" class="alert">
-    <div class="alert-logo"><img src="logo.JPG" alt="Flyz远征飞"></div>
-    <div class="alert-title">安全警告 - 非加密传输</div>
-    <div class="alert-desc">本页面仅支持HTTPS加密协议访问，当前为非加密连接，存在数据泄露、页面被篡改的安全风险，请通过官方HTTPS域名重新访问，保障你的访问安全和赛事信息真实。</div>
-    <button class="alert-btn" onclick="window.location.href='https://cdn.917813.com.cn'">立即跳转官方HTTPS地址</button>
-  </div>
-
-  <!-- iframe域名校验警告 -->
-  <div id="iframe-alert" class="alert">
-    <div class="alert-logo"><img src="logo.JPG" alt="Flyz远征飞"></div>
-    <div class="alert-title">安全警告 - 域名校验失败</div>
-    <div class="alert-desc">当前内嵌页面非官方信任域名，可能为钓鱼或篡改页面，存在赛事信息伪造、数据提交风险，已禁止加载。请刷新页面或通过官方域名访问，谨防诈骗。</div>
-    <button class="alert-btn" onclick="location.reload()">刷新页面重试</button>
-  </div>
-
-  <!-- 开屏动画 -->
-  <div id="splash-screen">
-    <div class="splash-logo"><img src="logo.JPG" alt="Flyz远征飞"></div>
-    <div class="splash-main-title">2026线上FPV竞速赛</div>
-    <div class="splash-url">cdn.917813.com.cn</div>
-  </div>
-
-  <!-- 临时公告弹窗 -->
-  <div id="notice-modal">
-    <div class="notice-container">
-      <div class="notice-title">【临时公告】</div>
-      <div class="notice-content">
-Flyz远征飞将于2月11日起停止直播服务
-后续赛事问题及直播详情请联系@吕泓纬
-我受不了了快身体 休息几天
-
-Flyz远征飞旗下917813.com.cn赛事官网将于2026年2月11日22:00关闭访问
-Flyz远征飞旗下yzbjfpv.top已经2个月未维护更新了明天更新
-Flyz远征飞旗下下载站将于今晚22:00关闭访问
-感谢大家的支持与理解
-
-明早公布晋级名单
-明晚直播
-有事请发邮件lyz201966@gmail.com我会看的
-我先退了
-至于赛事后勤我还是会参与的[爱心]
-      </div>
-      <div class="notice-warning">⚠️ 网站赛事部分现已停止维护，如果您在访问网站遇到任何问题均由您承担所有责任</div>
-      <button class="notice-btn" id="notice-confirm">我已阅读并确认</button>
-    </div>
-  </div>
-
-  <!-- 页面容器 -->
-  <div id="pages">
-    <div class="page-container active" data-target="home">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/bm/index.html" title="home" onload="checkIframeDomain(this)"></iframe>
-    </div>
-    <div class="page-container" data-target="gg">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/gg/index.html" title="gg" onload="checkIframeDomain(this)"></iframe>
-    </div>
-    <div class="page-container" data-target="xs">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/xs/index.html" title="xs" onload="checkIframeDomain(this)"></iframe>
-    </div>
-    <div class="page-container" data-target="cs">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/cs/index.html" title="cs" onload="checkIframeDomain(this)"></iframe>
-    </div>
-    <div class="page-container" data-target="zz">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/zz/index.html" title="zz" onload="checkIframeDomain(this)"></iframe>
-    </div>
-    <div class="page-container" data-target="hq">
-      <div class="page-loading"><div class="loading-spinner"></div><div class="loading-text">页面加载中</div></div>
-      <iframe src="https://cdn.917813.com.cn/fpv/2026onlinerace/hq/index.html" title="hq" onload="checkIframeDomain(this)"></iframe>
-    </div>
-  </div>
-
-  <!-- 底部导航 -->
-  <div id="dock">
-    <div class="dock-item active" data-target="home">【报名】</div>
-    <div class="dock-item" data-target="gg">公告</div>
-    <div class="dock-item" data-target="xs">选手</div>
-    <div class="dock-item" data-target="cs">奖品</div>
-    <div class="dock-item" data-target="zz">赞助</div>
-    <div class="dock-item" data-target="hq">后勤</div>
-  </div>
-
-  <script>
-    const el = {
-      splash: document.getElementById('splash-screen'),
-      pages: document.getElementById('pages'),
-      httpsAlert: document.getElementById('https-alert'),
-      iframeAlert: document.getElementById('iframe-alert'),
-      noticeModal: document.getElementById('notice-modal'),
-      noticeConfirm: document.getElementById('notice-confirm'),
-      dockItems: document.querySelectorAll('.dock-item'),
-      pageContainers: document.querySelectorAll('.page-container'),
-      iframes: document.querySelectorAll('iframe')
-    };
-    const SPLASH_TIME = 3000;
-    const NOTICE_DELAY = 10000; // 10秒后可点击确认
-    const TRUSTED_DOMAINS = ['cdn.917813.com.cn', '917813.com.cn', '917813fpv-github-io.pages.dev', '917813.github.io'];
-
-    // HTTPS校验
-    const checkHttps = () => {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (!isLocal && window.location.protocol !== 'https:') {
-        el.httpsAlert.classList.add('active');
-        el.splash.style.display = 'none';
-      } else {
-        preloadAllIframes();
-        setTimeout(() => {
-          el.splash.style.opacity = 0;
-          el.splash.style.pointerEvents = 'none';
-          el.noticeModal.classList.add('active');
-          setTimeout(() => {
-            el.noticeConfirm.classList.add('enabled');
-          }, NOTICE_DELAY);
-        }, SPLASH_TIME);
-      }
-    };
-
-    // 开屏预加载所有iframe
-    const preloadAllIframes = () => {
-      el.iframes.forEach(iframe => {iframe.src = iframe.src;});
-    };
-
-    // iframe域名校验
-    const checkIframeDomain = (iframe) => {
-      try {
-        const host = new URL(iframe.src).hostname;
-        if (TRUSTED_DOMAINS.includes(host)) {
-          iframe.parentElement.classList.add('loaded');
-        } else {
-          el.iframeAlert.classList.add('active');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>917813</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Space Grotesk', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f97316',
+                        }
+                    }
+                }
+            }
         }
-      } catch (e) {
-        el.iframeAlert.classList.add('active');
-      }
-    };
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+            color: #1e293b;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-    // 切页逻辑
-    const switchPage = (target) => {
-      el.dockItems.forEach(item => item.classList.remove('active'));
-      el.pageContainers.forEach(cont => cont.classList.remove('active', 'loaded'));
-      document.querySelector(`.dock-item[data-target="${target}"]`).classList.add('active');
-      const tarPage = document.querySelector(`.page-container[data-target="${target}"]`);
-      tarPage.classList.add('active');
-      tarPage.querySelector('iframe').src = tarPage.querySelector('iframe').src;
-    };
+        body.dark-mode {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f1f5f9;
+        }
 
-    // 确认公告
-    const confirmNotice = () => {
-      el.noticeModal.classList.remove('active');
-      el.pages.style.display = 'block';
-    };
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
 
-    // 绑定事件
-    document.addEventListener("DOMContentLoaded", () => {
-      checkHttps();
-      el.dockItems.forEach(item => item.addEventListener('click', () => switchPage(item.dataset.target)));
-      el.noticeConfirm.addEventListener('click', confirmNotice);
-    });
-  </script>
+        .dark-mode ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #0ea5e9, #8b5cf6);
+            border-radius: 3px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .glass {
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-mode .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.15), 0 12px 24px -8px rgba(139, 92, 246, 0.1);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .dark-mode .card:hover {
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25), 0 12px 24px -8px rgba(139, 92, 246, 0.2);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35), 0 5px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+            padding: 12px 30px;
+            border-radius: 14px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .dark-mode .btn-secondary {
+            border-color: #475569;
+            color: #cbd5e1;
+        }
+
+        .btn-secondary:hover {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 10px 18px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .dark-mode .nav-item {
+            color: #94a3b8;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.08);
+        }
+
+        .dark-mode .nav-item:hover,
+        .dark-mode .nav-item.active {
+            background: rgba(14, 165, 233, 0.15);
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 50%;
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover .icon-wrapper {
+            transform: scale(1.15) rotate(8deg);
+        }
+
+        .theme-toggle {
+            width: 60px;
+            height: 32px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .dark-mode .theme-toggle {
+            background: #475569;
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+        }
+
+        .dark-mode .theme-toggle-slider {
+            transform: translateX(28px);
+        }
+
+        .loader {
+            width: 56px;
+            height: 56px;
+            position: relative;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid transparent;
+        }
+
+        .loader::before {
+            border-top-color: #0ea5e9;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader::after {
+            border-bottom-color: #8b5cf6;
+            animation: spin 1s linear infinite reverse;
+            inset: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .iframe-container iframe {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .iframe-container iframe.loaded {
+            opacity: 1;
+        }
+
+        .iframe-container iframe::-webkit-scrollbar {
+            display: none;
+        }
+
+        .iframe-container iframe {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(3deg); }
+        }
+
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(20px) rotate(-3deg); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes bounce-soft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes scale-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slide-in-left {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slide-in-right {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-float {
+            animation: float 7s ease-in-out infinite;
+        }
+
+        .animate-float-reverse {
+            animation: float-reverse 8s ease-in-out infinite;
+        }
+
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient-move 4s ease infinite;
+        }
+
+        .animate-bounce-soft {
+            animation: bounce-soft 3s ease-in-out infinite;
+        }
+
+        .animate-rotate-slow {
+            animation: rotate-slow 20s linear infinite;
+        }
+
+        .animate-scale-pulse {
+            animation: scale-pulse 4s ease-in-out infinite;
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.8s ease-out forwards;
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+        }
+
+        .hero-blob-1 {
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .hero-blob-2 {
+            animation: float-reverse 12s ease-in-out infinite;
+        }
+
+        .hero-blob-3 {
+            animation: float 14s ease-in-out infinite;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .announcement-bar {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.08), rgba(139, 92, 246, 0.08), rgba(236, 72, 153, 0.08));
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+        }
+
+        .dark-mode .announcement-bar {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+        }
+
+        .link-hover {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .link-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .link-hover:hover::after {
+            width: 100%;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+
+        .dark-mode .divider {
+            background: linear-gradient(90deg, transparent, #475569, transparent);
+        }
+
+        .grid-pattern {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .dark-mode .grid-pattern {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.06) 1px, transparent 0);
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.15);
+            color: #0ea5e9;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .feature-badge:hover {
+            background: rgba(14, 165, 233, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .glow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #0ea5e9, #8b5cf6, #ec4899, transparent);
+            opacity: 0.6;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(14, 165, 233, 0.03);
+            border: 1px solid rgba(14, 165, 233, 0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .footer-link:hover {
+            background: rgba(14, 165, 233, 0.08);
+            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateX(5px);
+        }
+
+        .tech-support-card {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.4s ease;
+        }
+
+        .tech-support-card:hover {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(139, 92, 246, 0.1));
+            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(14, 165, 233, 0.1);
+        }
+
+        .avatar-gradient {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(139, 92, 246, 0.1));
+            color: #0ea5e9;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+
+        .card-animate {
+            opacity: 0;
+            animation: slide-up 0.6s ease-out forwards;
+        }
+
+        .hero-title {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 25%, #ec4899 50%, #8b5cf6 75%, #0ea5e9 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-move 6s ease infinite;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            top: 10%;
+            left: 5%;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            top: 60%;
+            right: 10%;
+            animation: float-reverse 18s ease-in-out infinite;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #ec4899, #0ea5e9);
+            bottom: 20%;
+            left: 20%;
+            animation: float 12s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="grid-pattern">
+    <div id="announcementBar" class="announcement-bar py-2.5 px-4 text-center text-sm hidden relative z-50">
+        <span id="announcementText" class="font-body"></span>
+        <button onclick="closeAnnouncement()" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <nav class="glass sticky top-0 z-40 border-b border-gray-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-display font-bold text-lg shadow-lg shadow-brand-500/20 animate-scale-pulse">
+                        9
+                    </div>
+                    <span class="font-display text-xl font-bold">
+                        <span class="gradient-text">917813</span>
+                    </span>
+                </div>
+
+                <div class="hidden lg:flex items-center gap-1">
+                    <button onclick="switchTab('home')" class="nav-item active" data-tab="home">
+                        <i class="fas fa-home mr-2"></i>首页
+                    </button>
+                    <button onclick="switchTab('yzcloud')" class="nav-item" data-tab="yzcloud">
+                        <i class="fas fa-cloud mr-2"></i>YZCloud
+                    </button>
+                    <button onclick="switchTab('music')" class="nav-item" data-tab="music">
+                        <i class="fas fa-music mr-2"></i>音乐解析
+                    </button>
+                    <button onclick="switchTab('htmlview')" class="nav-item" data-tab="htmlview">
+                        <i class="fas fa-code mr-2"></i>HTML预览
+                    </button>
+                    <button onclick="switchTab('length78')" class="nav-item" data-tab="length78">
+                        <i class="fas fa-ruler mr-2"></i>长度测试
+                    </button>
+                    <button onclick="switchTab('watchmovie')" class="nav-item" data-tab="watchmovie">
+                        <i class="fas fa-film mr-2"></i>在线观影
+                    </button>
+                    <button onclick="switchTab('benchmark')" class="nav-item" data-tab="benchmark">
+                        <i class="fas fa-microchip mr-2"></i>性能跑分
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="status-dot"></div>
+                        <span class="text-xs text-gray-500 font-medium">ONLINE</span>
+                    </div>
+                    
+                    <div class="theme-toggle" onclick="toggleTheme()">
+                        <div class="theme-toggle-slider">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="lg:hidden hidden border-t border-gray-100/50 bg-white dark:bg-slate-900">
+            <div class="px-4 py-3 space-y-1">
+                <button onclick="switchTab('home')" class="nav-item w-full text-left rounded-lg" data-tab="home">
+                    <i class="fas fa-home mr-3 w-5"></i>首页
+                </button>
+                <button onclick="switchTab('yzcloud')" class="nav-item w-full text-left rounded-lg" data-tab="yzcloud">
+                    <i class="fas fa-cloud mr-3 w-5"></i>YZCloud
+                </button>
+                <button onclick="switchTab('music')" class="nav-item w-full text-left rounded-lg" data-tab="music">
+                    <i class="fas fa-music mr-3 w-5"></i>音乐解析
+                </button>
+                <button onclick="switchTab('htmlview')" class="nav-item w-full text-left rounded-lg" data-tab="htmlview">
+                    <i class="fas fa-code mr-3 w-5"></i>HTML预览
+                </button>
+                <button onclick="switchTab('length78')" class="nav-item w-full text-left rounded-lg" data-tab="length78">
+                    <i class="fas fa-ruler mr-3 w-5"></i>长度测试
+                </button>
+                <button onclick="switchTab('watchmovie')" class="nav-item w-full text-left rounded-lg" data-tab="watchmovie">
+                    <i class="fas fa-film mr-3 w-5"></i>在线观影
+                </button>
+                <button onclick="switchTab('benchmark')" class="nav-item w-full text-left rounded-lg" data-tab="benchmark">
+                    <i class="fas fa-microchip mr-3 w-5"></i>性能跑分
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative">
+        <div id="tab-home" class="tab-content">
+            <section class="relative min-h-[85vh] flex items-center justify-center px-4 py-20 overflow-hidden">
+                <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+                
+                <div class="hero-blob hero-blob-1 w-[500px] h-[500px] bg-brand-400/30 top-0 left-0"></div>
+                <div class="hero-blob hero-blob-2 w-[400px] h-[400px] bg-accent-purple/30 top-1/2 right-0"></div>
+                <div class="hero-blob hero-blob-3 w-[350px] h-[350px] bg-accent-pink/30 bottom-0 left-1/3"></div>
+                
+                <div class="relative text-center max-w-4xl mx-auto">
+                    <div class="mb-10 animate-float">
+                        <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-gray-200/50 dark:shadow-slate-900/50 text-sm font-medium text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-slate-700">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            欢迎访问 917813.com.cn
+                        </div>
+                    </div>
+                    
+                    <h1 class="font-display text-7xl md:text-9xl font-bold mb-8 tracking-tight hero-title">
+                        917813
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 mb-12 font-light max-w-2xl mx-auto leading-relaxed">
+                        综合网站 · 网盘存储 · 在线工具
+                    </p>
+                    
+                    <div class="flex flex-wrap justify-center gap-4 mb-16">
+                        <button onclick="switchTab('yzcloud')" class="btn-primary">
+                            <i class="fas fa-rocket mr-2"></i>立即体验
+                        </button>
+                        <button onclick="document.getElementById('tools').scrollIntoView({behavior: 'smooth'})" class="btn-secondary">
+                            <i class="fas fa-th-large mr-2"></i>浏览全部
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <span class="feature-badge"><i class="fas fa-bolt"></i>高速稳定</span>
+                        <span class="feature-badge"><i class="fas fa-shield-alt"></i>安全可靠</span>
+                        <span class="feature-badge"><i class="fas fa-infinity"></i>永久免费</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="glow-line w-full"></div>
+
+            <section id="tools" class="py-28 px-4">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-20">
+                        <span class="section-label mb-6">
+                            <i class="fas fa-cube"></i>
+                            FEATURES
+                        </span>
+                        <h2 class="font-display text-4xl md:text-5xl font-bold mt-4">
+                            功能模块
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto">
+                            精心打造的多功能平台，满足您的各种需求
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div onclick="switchTab('yzcloud')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-1">
+                            <div class="icon-wrapper bg-gradient-to-br from-brand-400 to-brand-600 text-white mb-5 shadow-lg shadow-brand-500/25">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">YZCloud</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">网盘存储与文件分享，高速稳定不限速</p>
+                        </div>
+
+                        <div onclick="switchTab('music')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-2">
+                            <div class="icon-wrapper bg-gradient-to-br from-accent-pink to-rose-500 text-white mb-5 shadow-lg shadow-pink-500/25">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">音乐解析</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">网易云音乐源文件解析下载</p>
+                        </div>
+
+                        <div onclick="switchTab('htmlview')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-3">
+                            <div class="icon-wrapper bg-gradient-to-br from-accent-purple to-indigo-600 text-white mb-5 shadow-lg shadow-purple-500/25">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">HTML预览</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">在线代码编辑与实时预览</p>
+                        </div>
+
+                        <div onclick="switchTab('length78')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-4">
+                            <div class="icon-wrapper bg-gradient-to-br from-emerald-400 to-teal-600 text-white mb-5 shadow-lg shadow-emerald-500/25">
+                                <i class="fas fa-ruler"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">长度测试</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">字符串长度检测工具</p>
+                        </div>
+
+                        <div onclick="switchTab('benchmark')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-5">
+                            <div class="icon-wrapper bg-gradient-to-br from-accent-orange to-amber-500 text-white mb-5 shadow-lg shadow-orange-500/25">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">性能跑分</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">设备性能基准测试</p>
+                        </div>
+
+                        <div onclick="switchTab('watchmovie')" class="card rounded-2xl p-8 cursor-pointer group card-animate stagger-6">
+                            <div class="icon-wrapper bg-gradient-to-br from-red-400 to-rose-600 text-white mb-5 shadow-lg shadow-red-500/25">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <h3 class="font-display text-xl font-semibold mb-3">在线观影</h3>
+                            <p class="text-gray-500 dark:text-gray-400 leading-relaxed">精选影视资源，高清流畅播放</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-yzcloud" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-yzcloud" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading YZCloud...</p>
+                </div>
+                <iframe id="iframe-yzcloud" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('yzcloud')"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-music" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-music" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading Music Parser...</p>
+                </div>
+                <iframe id="iframe-music" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('music')"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-htmlview" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-htmlview" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading HTML Viewer...</p>
+                </div>
+                <iframe id="iframe-htmlview" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('htmlview')"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-length78" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-length78" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading Length Test...</p>
+                </div>
+                <iframe id="iframe-length78" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('length78')"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-benchmark" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-benchmark" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading Benchmark...</p>
+                </div>
+                <iframe id="iframe-benchmark" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('benchmark')"></iframe>
+            </div>
+        </div>
+
+        <div id="tab-watchmovie" class="tab-content hidden h-[calc(100vh-64px)]">
+            <div class="iframe-container w-full h-full relative bg-white dark:bg-slate-900">
+                <div id="loader-watchmovie" class="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-900 z-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-400 font-medium">Loading Watch Movie...</p>
+                </div>
+                <iframe id="iframe-watchmovie" class="w-full h-full border-0" src="about:blank" onload="onIframeLoad('watchmovie')"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-100 dark:border-slate-800 py-16 px-4 bg-white/50 dark:bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-display font-bold shadow-lg shadow-brand-500/20">
+                            9
+                        </div>
+                        <span class="font-display text-xl font-bold gradient-text">917813</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                        综合网站，提供网盘存储、音乐解析、在线工具等服务。致力于为用户提供高效、稳定、安全的在线服务。
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-semibold mb-5 text-lg">快速链接</h4>
+                    <div class="space-y-3">
+                        <a href="https://yzbjfpv.top" target="_blank" class="footer-link">
+                            <i class="fas fa-link text-brand-500"></i>
+                            <span class="text-gray-600 dark:text-gray-400">yzbjfpv.top</span>
+                        </a>
+                        <a href="https://917813.com.cn" target="_blank" class="footer-link">
+                            <i class="fas fa-globe text-brand-500"></i>
+                            <span class="text-gray-600 dark:text-gray-400">917813.com.cn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-semibold mb-5 text-lg">技术支持</h4>
+                    <div class="tech-support-card">
+                        <div class="flex items-center gap-4">
+                            <div class="avatar-gradient">F</div>
+                            <div>
+                                <p class="font-semibold text-lg">Flyz远征飞</p>
+                                <a href="https://yzbjfpv.top" target="_blank" class="text-sm text-brand-500 hover:text-brand-600 transition-colors">
+                                    yzbjfpv.top
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
+                            <a href="mailto:lyz201966@gmail.com" class="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-brand-500 transition-colors text-sm">
+                                <i class="fas fa-envelope"></i>
+                                lyz201966@gmail.com
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider mb-8"></div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <p>&copy; 2024-2026 917813. All rights reserved.</p>
+                <div class="flex items-center gap-6">
+                    <a href="https://github.com" target="_blank" class="link-hover hover:text-brand-500 flex items-center gap-1">
+                        <i class="fab fa-github"></i>GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const pageUrls = {
+            yzcloud: 'https://917813.com.cn/yzcloud/index.html',
+            music: 'https://917813.com.cn/wyymusic/index.html',
+            htmlview: 'https://917813.com.cn/htmlview/index.html',
+            length78: 'https://917813.com.cn/check78long/index.html',
+            benchmark: 'https://917813.com.cn/benchmark/index.html',
+            watchmovie: 'https://917813.com.cn/watchmovie/index.html'
+        };
+
+        let currentTab = 'home';
+        let loadedTabs = new Set(['home']);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnnouncement();
+        });
+
+        function switchTab(tabName) {
+            if (tabName === currentTab) return;
+            
+            document.getElementById(`tab-${currentTab}`).classList.add('hidden');
+            document.querySelectorAll(`[data-tab="${currentTab}"]`).forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(el => el.classList.add('active'));
+            
+            if (pageUrls[tabName] && !loadedTabs.has(tabName)) {
+                const iframe = document.getElementById(`iframe-${tabName}`);
+                if (iframe) {
+                    iframe.src = pageUrls[tabName];
+                    loadedTabs.add(tabName);
+                }
+            }
+            
+            currentTab = tabName;
+            document.getElementById('mobileMenu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function onIframeLoad(tabName) {
+            const loader = document.getElementById(`loader-${tabName}`);
+            const iframe = document.getElementById(`iframe-${tabName}`);
+            
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+            
+            if (iframe) {
+                iframe.classList.add('loaded');
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const slider = document.querySelector('.theme-toggle-slider i');
+            if (document.body.classList.contains('dark-mode')) {
+                slider.className = 'fas fa-moon';
+            } else {
+                slider.className = 'fas fa-sun';
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function loadAnnouncement() {
+            fetch('./announcement.txt')
+                .then(response => {
+                    if (!response.ok) throw new Error('No announcement');
+                    return response.text();
+                })
+                .then(text => {
+                    if (text.trim()) {
+                        document.getElementById('announcementText').textContent = text.trim();
+                        document.getElementById('announcementBar').classList.remove('hidden');
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function closeAnnouncement() {
+            document.getElementById('announcementBar').classList.add('hidden');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const tabs = ['home', 'yzcloud', 'music', 'htmlview', 'length78', 'watchmovie', 'benchmark'];
+            const num = parseInt(e.key);
+            if (num >= 1 && num <= tabs.length) {
+                switchTab(tabs[num - 1]);
+            }
+        });
+    </script>
 </body>
 </html>
