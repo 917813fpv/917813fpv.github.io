@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YZCloud云盘</title>
+    <title>YZCloud 沅臻云盘 - 纯公益免费下载站</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 地球地图 CSS -->
-    <link rel="stylesheet" href="https://frp.80cn.cn/home/assets/index-BRrQ4QgY.css">
 
     <script>
         tailwind.config = {
@@ -22,11 +19,26 @@
                         body: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',100: '#e0f2fe',200: '#bae6fd',300: '#7dd3fc',400: '#38bdf8',
-                            500: '#0ea5e9',600: '#0284c7',700: '#0369a1',800: '#075985',900: '#0c4a6e',
+                        primary: '#316BF3',
+                        secondary: '#8B5CF6',
+                        accent: '#EC4899',
+                        text: {
+                            heading: '#1E293B',
+                            secondary: '#64748B',
+                            dim: '#94A3B8',
+                            faint: '#CBD5E1'
                         },
-                        accent: { purple: '#8b5cf6', pink: '#ec4899', orange: '#f97316' }
+                        bg: {
+                            page: '#F8FAFC',
+                            card: '#FFFFFF',
+                            subtle: '#F1F5F9',
+                            glass: 'rgba(255,255,255,0.7)'
+                        },
+                        border: {
+                            light: '#E2E8F0',
+                            subtle: '#F1F5F9',
+                            divider: '#E2E8F0'
+                        }
                     }
                 }
             }
@@ -35,269 +47,493 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #fff 0%, #f8fafc 50%, #fff 100%);
-            color: #1e293b; min-height: 100vh; overflow-x: hidden;
+            background: linear-gradient(to bottom, #F8FAFC, #EFF6FF, #F8FAFC);
+            color: #1E293B;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        body.dark-mode {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            color: #f1f5f9;
+
+        /* 全局网格背景 */
+        .grid-bg {
+            background-image: radial-gradient(circle, rgba(49,107,243,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        .dark-mode ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #0ea5e9, #8b5cf6); border-radius: 3px;
+
+        /* 浮动光晕 */
+        .light-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
         }
+        .light-orb-1 {
+            top: -10%;
+            left: 10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(49,107,243,0.12);
+        }
+        .light-orb-2 {
+            top: 20%;
+            right: 5%;
+            width: 500px;
+            height: 500px;
+            background: rgba(139,92,246,0.1);
+        }
+        .light-orb-3 {
+            bottom: 10%;
+            left: 20%;
+            width: 450px;
+            height: 450px;
+            background: rgba(236,72,153,0.08);
+        }
+        .light-orb-4 {
+            bottom: 30%;
+            right: 15%;
+            width: 400px;
+            height: 400px;
+            background: rgba(14,165,233,0.08);
+        }
+
+        /* 滚动渐入动画 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4,0,0.2,1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* 渐变文字 */
         .gradient-text {
-            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #316BF3 0%, #8B5CF6 50%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+
+        /* 玻璃态卡片 */
+        .glow-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226,232,240,0.8);
+            border-radius: 16px;
+            transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+            overflow: hidden;
         }
-        .card {
-            background: #fff; border: 1px solid rgba(226, 232, 240, 0.8);
-            transition: all 0.5s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #316BF3, #8B5CF6, #EC4899);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
         }
-        .dark-mode .card {
-            background: rgba(30,41,59,0.8); border: 1px solid rgba(71,85,105,0.5);
+        .glow-card:hover::before { transform: scaleX(1); }
+        .glow-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -12px rgba(49,107,243,0.15), 0 8px 16px -8px rgba(139,92,246,0.1);
+            border-color: rgba(49,107,243,0.3);
         }
-        .card::before {
-            content: ''; position: absolute; top:0; left:0; right:0; height:3px;
-            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
-            transform: scaleX(0); transition: transform 0.5s ease;
-        }
-        .card:hover::before { transform: scaleX(1); }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px -12px rgba(14,165,233,0.15), 0 12px 24px -8px rgba(139,92,246,0.1);
-            border-color: rgba(14,165,233,0.3);
-        }
+
+        /* 主按钮 */
         .btn-primary {
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6); color: #fff;
-            padding: 14px 32px; border-radius: 14px; font-weight: 600; border: none; cursor: pointer;
-            transition: all 0.4s ease; position: relative; overflow: hidden; font-size: 15px;
+            background: linear-gradient(135deg, #316BF3, #8B5CF6);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-primary::before {
-            content: ''; position: absolute; top:0; left:-100%; width:100%; height:100%;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
             transition: left 0.6s ease;
         }
-        .btn-primary:hover::before { left:100%; }
+        .btn-primary:hover::before { left: 100%; }
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(14,165,233,0.35), 0 5px 15px rgba(139,92,246,0.2);
+            box-shadow: 0 15px 35px rgba(49,107,243,0.35), 0 5px 15px rgba(139,92,246,0.2);
         }
-        .btn-secondary {
-            background: transparent; border: 2px solid #e2e8f0; color: #475569;
-            padding: 12px 28px; border-radius: 14px; font-weight: 600; cursor: pointer;
-            transition: all 0.4s ease; font-size: 15px;
+
+        /* 次要按钮 */
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #E2E8F0;
+            color: #64748B;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .dark-mode .btn-secondary { border-color: #475569; color: #cbd5e1; }
-        .btn-secondary:hover {
-            border-color: #8b5cf6; color: #8b5cf6; background: rgba(139,92,246,0.05);
+        .btn-outline:hover {
+            border-color: #316BF3;
+            color: #316BF3;
+            background: rgba(49,107,243,0.05);
             transform: translateY(-3px);
         }
+
+        /* 状态标签 */
         .status-online {
-            display: inline-flex; align-items: center; gap:6px; padding:8px 16px; border-radius:20px;
-            background: rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2);
-            color: #22c55e; font-size:12px; font-weight:600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.2);
+            color: #22C55E;
+            font-size: 12px;
+            font-weight: 600;
         }
         .status-online::before {
-            content: ''; width:6px; height:6px; background:#22c55e; border-radius:50%;
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #22C55E;
+            border-radius: 50%;
             animation: pulse 2s infinite;
         }
         .status-offline {
-            display: inline-flex; align-items: center; gap:6px; padding:8px 16px; border-radius:20px;
-            background: rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);
-            color: #ef4444; font-size:12px; font-weight:600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: #EF4444;
+            font-size: 12px;
+            font-weight: 600;
         }
         .status-offline::before {
-            content: ''; width:6px; height:6px; background:#ef4444; border-radius:50%;
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #EF4444;
+            border-radius: 50%;
         }
         @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
+
+        /* 图标容器 */
         .icon-wrapper {
-            width:60px; height:60px; border-radius:18px; display:flex;
-            align-items:center; justify-content:center; font-size:26px;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
             transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
         }
-        .card:hover .icon-wrapper { transform: scale(1.15) rotate(8deg); }
+        .glow-card:hover .icon-wrapper {
+            transform: scale(1.15) rotate(8deg);
+        }
+
+        /* 数据行 */
         .data-row {
-            display: flex; align-items:center; gap:12px; padding:14px 0;
-            border-bottom:1px solid rgba(226,232,240,0.6);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(226,232,240,0.6);
         }
-        .dark-mode .data-row { border-bottom:1px solid rgba(71,85,105,0.4); }
-        .data-row:last-child { border-bottom:none; }
+        .data-row:last-child { border-bottom: none; }
         .data-icon {
-            width:44px; height:44px; border-radius:12px; display:flex;
-            align-items:center; justify-content:center; background:rgba(14,165,233,0.08);
-            color: #0ea5e9; transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(49,107,243,0.08);
+            color: #316BF3;
+            transition: all 0.3s ease;
         }
-        .card:hover .data-icon { background:rgba(14,165,233,0.15); transform:scale(1.05); }
-        .sponsor-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 18px;
-            border-radius: 14px; background: rgba(14,165,233,0.03);
-            border: 1px solid rgba(14,165,233,0.08); transition: all 0.4s ease;
+        .glow-card:hover .data-icon {
+            background: rgba(49,107,243,0.15);
+            transform: scale(1.05);
         }
-        .dark-mode .sponsor-item {
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-        }
-        .sponsor-item:hover {
-            background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.2);
-            transform: translateY(-4px); box-shadow: 0 8px 20px rgba(14,165,233,0.1);
-        }
-        .sponsor-icon {
-            width: 32px; height: 32px; border-radius: 10px;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 12px; box-shadow: 0 2px 8px rgba(14,165,233,0.3);
-        }
-        .tech-link {
-            padding: 12px 20px; border-radius: 12px; background: rgba(14,165,233,0.05);
-            border: 1px solid rgba(14,165,233,0.1); color: #0ea5e9;
-            text-decoration: none; transition: all 0.4s ease;
-            font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500;
-        }
-        .tech-link:hover {
-            background: rgba(14,165,233,0.1); border-color: #0ea5e9;
-            box-shadow: 0 8px 20px rgba(14,165,233,0.15); transform: translateY(-3px);
-        }
-        #warning {
-            position:fixed; inset:0; z-index:100; display:none;
-            align-items:center; justify-content:center; background:rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-        }
-        .warning-box {
-            background:#fff; border-radius:24px; padding:36px; max-width:500px; width:90%;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            border:1px solid rgba(226,232,240,0.8);
-        }
-        .dark-mode .warning-box {
-            background:#1e293b; border:1px solid rgba(71,85,105,0.5);
-        }
-        .account-box {
-            background:rgba(14,165,233,0.05); border:1px solid rgba(14,165,233,0.1);
-            border-radius:16px; padding:18px;
-        }
-        .section-title {
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            margin-bottom: 28px;
-        }
-        .section-title::before,
-        .section-title::after {
-            content: ''; width: 60px; height: 1px;
-            background: linear-gradient(90deg, transparent, #e2e8f0);
-        }
-        .dark-mode .section-title::before,
-        .dark-mode .section-title::after {
-            background: linear-gradient(90deg, transparent, #475569);
-        }
-        .section-title::after {
-            background: linear-gradient(90deg, #e2e8f0, transparent);
-        }
-        .dark-mode .section-title::after {
-            background: linear-gradient(90deg, #475569, transparent);
-        }
-        .grid-pattern {
-            background-image: radial-gradient(circle at 1px 1px, rgba(14,165,233,0.03) 1px, transparent 0);
-            background-size:40px 40px;
-        }
-        .dark-mode .grid-pattern {
-            background-image: radial-gradient(circle at 1px 1px, rgba(14,165,233,0.06) 1px, transparent 0);
-        }
-        @keyframes float { 0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);} }
-        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        /* 分割线 */
         .divider {
-            height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E2E8F0, transparent);
+            margin: 40px 0;
         }
-        .dark-mode .divider {
-            background: linear-gradient(90deg, transparent, #475569, transparent);
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226,232,240,0.6);
+            padding: 12px 0;
         }
-        .footer-card {
-            background: linear-gradient(135deg, rgba(14,165,233,0.05), rgba(139,92,246,0.05));
-            border: 1px solid rgba(14,165,233,0.1); border-radius: 16px; padding: 20px;
-            transition: all 0.4s ease;
-        }
-        .footer-card:hover {
-            background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(139,92,246,0.1));
-            border-color: rgba(14,165,233,0.2); transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(14,165,233,0.1);
-        }
-        .avatar-gradient {
-            width: 48px; height: 48px; border-radius: 14px;
-            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 18px;
-            box-shadow: 0 4px 15px rgba(14,165,233,0.3);
-        }
+
+        /* 地球容器 */
         #globe-container {
-            width: 100%; height: 380px; position: relative;
+            width: 100%;
+            height: 400px;
+            position: relative;
         }
         @media (min-width:768px) {
-            #globe-container { height: 420px; }
+            #globe-container { height: 450px; }
         }
+
+        /* 打字机效果 */
+        .typewriter {
+            display: inline-block;
+            border-right: 2px solid #316BF3;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%,100%{border-color:transparent;}50%{border-color:#316BF3;} }
     </style>
 </head>
 
-<body class="grid-pattern">
-    <div class="min-h-screen py-8 px-4 relative">
-        <!-- 顶部标题 + 地球 -->
-        <div class="max-w-6xl mx-auto mb-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-10">
+<body class="grid-bg">
+    <!-- 背景光晕 -->
+    <div class="light-orb light-orb-1"></div>
+    <div class="light-orb light-orb-2"></div>
+    <div class="light-orb light-orb-3"></div>
+    <div class="light-orb light-orb-4"></div>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
+                    YZ
+                </div>
+                <span class="font-display text-xl font-bold">YZCloud 沅臻云盘</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-text-secondary hover:text-primary transition-colors">首页</a>
+                <a href="#features" class="text-text-secondary hover:text-primary transition-colors">功能</a>
+                <a href="#nodes" class="text-text-secondary hover:text-primary transition-colors">节点</a>
+                <a href="#stats" class="text-text-secondary hover:text-primary transition-colors">数据</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/user/login" class="btn-outline text-sm px-5 py-2">登录</a>
+                <a href="/user/register" class="btn-primary text-sm px-5 py-2">注册</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-16 px-4 relative z-10" id="home">
+        <!-- Hero英雄区 -->
+        <div class="max-w-7xl mx-auto mb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- 左侧文字 -->
-                <div class="text-center md:text-left w-full md:w-auto">
-                    <h1 class="text-3xl md:text-5xl font-display font-bold gradient-text mb-3">
-                        全球在线
+                <div class="text-center lg:text-left">
+                    <div class="reveal mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs tracking-wider uppercase" style="background: rgba(49,107,243,0.08); border: 1px solid rgba(49,107,243,0.2);">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                        纯公益免费下载站
+                    </div>
+                    <h1 class="reveal reveal-delay-1 text-4xl md:text-6xl font-display font-bold mb-4">
+                        <span class="gradient-text">全球在线</span>
+                        <br>超高速云盘
                     </h1>
-                    <p class="text-xl md:text-2xl font-semibold mb-2">立即体验</p>
-                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-1">
-                        全球多服务器在线
+                    <div class="reveal reveal-delay-2 h-10 mb-6">
+                        <p class="text-xl text-text-secondary">
+                            <span id="typewriter" class="typewriter"></span>
+                        </p>
+                    </div>
+                    <p class="reveal reveal-delay-3 text-text-dim mb-8 max-w-md mx-auto lg:mx-0">
+                        全球多服务器节点部署，不限速下载，支持大文件分享，为您提供稳定高速的云存储服务。
                     </p>
-                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300">
-                        立即体验超高速下载
-                    </p>
+                    <div class="reveal reveal-delay-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
+                        <a href="#nodes" class="btn-primary w-full sm:w-auto">
+                            <i class="fas fa-cloud-download-alt"></i>
+                            立即下载
+                        </a>
+                        <a href="#features" class="btn-outline w-full sm:w-auto">
+                            了解更多
+                        </a>
+                    </div>
+
+                    <!-- 快速数据 -->
+                    <div class="reveal reveal-delay-4 grid grid-cols-3 gap-4 max-w-sm mx-auto lg:mx-0">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-primary">3.2TB</p>
+                            <p class="text-xs text-text-dim">总存储</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-secondary">2</p>
+                            <p class="text-xs text-text-dim">在线节点</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-accent">100%</p>
+                            <p class="text-xs text-text-dim">免费</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 右侧地球 -->
-                <div class="w-full md:w-[420px]">
+                <div class="reveal reveal-delay-2">
                     <div id="globe-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 节点选择（放在最下方） -->
-        <div class="max-w-5xl mx-auto mt-10 mb-16">
+        <!-- 核心功能区 -->
+        <div class="max-w-7xl mx-auto mb-20" id="features">
+            <div class="text-center mb-12">
+                <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">FEATURES</p>
+                <h2 class="reveal reveal-delay-1 text-3xl md:text-4xl font-display font-bold mb-4">
+                    <span class="gradient-text">核心功能</span>
+                </h2>
+                <p class="reveal reveal-delay-2 text-text-dim max-w-lg mx-auto">
+                    简单易用，功能强大，满足您所有的云存储需求
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="reveal glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-primary to-blue-400 text-white mb-4">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">不限速上传下载</h3>
+                    <p class="text-text-dim text-sm">
+                        全带宽跑满，无速度限制，大文件也能快速传输，告别等待。
+                    </p>
+                </div>
+                <div class="reveal reveal-delay-1 glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-secondary to-purple-400 text-white mb-4">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">一键分享</h3>
+                    <p class="text-text-dim text-sm">
+                        生成分享链接和提取码，一键分享给好友，支持有效期设置。
+                    </p>
+                </div>
+                <div class="reveal reveal-delay-2 glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-accent to-pink-400 text-white mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">安全加密</h3>
+                    <p class="text-text-dim text-sm">
+                        全程TLS加密传输，文件分片存储，保障您的数据安全。
+                    </p>
+                </div>
+                <div class="reveal glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-emerald-500 to-teal-400 text-white mb-4">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">多节点部署</h3>
+                    <p class="text-text-dim text-sm">
+                        全国多地区服务器节点，智能选路，低延迟高可用。
+                    </p>
+                </div>
+                <div class="reveal reveal-delay-1 glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-orange-500 to-amber-400 text-white mb-4">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">多平台支持</h3>
+                    <p class="text-text-dim text-sm">
+                        支持Windows、macOS、Linux、Android、iOS全平台访问。
+                    </p>
+                </div>
+                <div class="reveal reveal-delay-2 glow-card p-6">
+                    <div class="icon-wrapper bg-gradient-to-br from-indigo-500 to-blue-400 text-white mb-4">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">永久免费</h3>
+                    <p class="text-text-dim text-sm">
+                        纯公益项目，无广告，无套路，永久免费使用。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 节点展示区 -->
+        <div class="max-w-6xl mx-auto mb-20" id="nodes">
+            <div class="text-center mb-12">
+                <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">NODES</p>
+                <h2 class="reveal reveal-delay-1 text-3xl md:text-4xl font-display font-bold mb-4">
+                    <span class="gradient-text">节点网络</span>
+                </h2>
+                <p class="reveal reveal-delay-2 text-text-dim max-w-lg mx-auto">
+                    多地区节点覆盖，实时状态监控，按需选择最优线路
+                </p>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- 北京节点：临时关闭 -->
-                <div class="card rounded-3xl p-8">
+                <!-- 北京节点 -->
+                <div class="reveal glow-card p-8">
                     <div class="flex justify-between items-start mb-8">
                         <div class="flex items-center gap-4">
-                            <div class="icon-wrapper bg-gradient-to-br from-brand-400 to-brand-600 text-white">
+                            <div class="icon-wrapper bg-gradient-to-br from-primary to-blue-600 text-white">
                                 <i class="fas fa-server"></i>
                             </div>
                             <div>
                                 <h3 class="font-display text-xl font-semibold">北京节点</h3>
-                                <p class="text-gray-500 text-sm">核心节点 · 低延迟高带宽</p>
+                                <p class="text-text-dim text-sm">核心节点 · 低延迟高带宽</p>
                             </div>
                         </div>
-                        <span id="status-beijing" class="status-offline">临时关闭</span>
+                        <span class="status-offline">临时关闭</span>
                     </div>
                     <div class="space-y-1 mb-8">
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-microchip"></i></div>
                             <div>
-                                <p class="text-gray-400 text-xs">Processor</p>
-                                <p class="font-medium">i7-8565U + UHD620</p>
+                                <p class="text-text-dim text-xs">处理器</p>
+                                <p class="font-medium">Intel i7-8565U + UHD620</p>
                             </div>
                         </div>
                         <div class="data-row">
                             <div class="data-icon"><i class="fas fa-hdd"></i></div>
                             <div>
-                                <p class="text-gray-400 text-xs">Storage</p>
+                                <p class="text-text-dim text-xs">存储</p>
                                 <p class="font-medium">512G SSD + 3TB HDD</p>
+                            </div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div>
+                                <p class="text-text-dim text-xs">带宽</p>
+                                <p class="font-medium">100Mbps 上行</p>
                             </div>
                         </div>
                     </div>
@@ -306,19 +542,19 @@
                     </button>
                 </div>
 
-                <!-- 河北节点：在线 -->
-                <div class="card rounded-3xl p-8">
+                <!-- 河北节点 -->
+                <div class="reveal reveal-delay-1 glow-card p-8">
                     <div class="flex justify-between items-start mb-8">
                         <div class="flex items-center gap-4">
-                            <div class="icon-wrapper bg-gradient-to-br from-accent-purple to-indigo-600 text-white">
+                            <div class="icon-wrapper bg-gradient-to-br from-secondary to-indigo-600 text-white">
                                 <i class="fas fa-server"></i>
                             </div>
                             <div>
                                 <h3 class="font-display text-xl font-semibold">河北节点</h3>
-                                <p class="text-gray-500 text-sm">备用节点 · 稳定高可用</p>
+                                <p class="text-text-dim text-sm">备用节点 · 稳定高可用</p>
                             </div>
                         </div>
-                        <span id="status-hebei" class="status-online">ONLINE</span>
+                        <span class="status-online">ONLINE</span>
                     </div>
                     <div class="space-y-1 mb-8">
                         <div class="data-row">
@@ -326,8 +562,8 @@
                                 <i class="fas fa-microchip"></i>
                             </div>
                             <div>
-                                <p class="text-gray-400 text-xs">Processor</p>
-                                <p class="font-medium">Celeron J1800</p>
+                                <p class="text-text-dim text-xs">处理器</p>
+                                <p class="font-medium">Intel Celeron J1800</p>
                             </div>
                         </div>
                         <div class="data-row">
@@ -335,8 +571,17 @@
                                 <i class="fas fa-hdd"></i>
                             </div>
                             <div>
-                                <p class="text-gray-400 text-xs">Storage</p>
-                                <p class="font-medium">64G + 128G</p>
+                                <p class="text-text-dim text-xs">存储</p>
+                                <p class="font-medium">64G SSD + 128G HDD</p>
+                            </div>
+                        </div>
+                        <div class="data-row">
+                            <div class="data-icon" style="background:rgba(139,92,246,0.08);color:#8b5cf6">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-dim text-xs">带宽</p>
+                                <p class="font-medium">50Mbps 上行</p>
                             </div>
                         </div>
                     </div>
@@ -347,148 +592,442 @@
             </div>
         </div>
 
-        <!-- 赞助商（原样恢复） -->
-        <div class="max-w-5xl mx-auto mb-14">
-            <div class="section-title">
-                <i class="fas fa-star text-yellow-400"></i>
-                <span class="font-display text-sm tracking-wider text-gray-400 uppercase">Official Sponsors</span>
+        <!-- 实时数据区 -->
+        <div class="max-w-6xl mx-auto mb-20" id="stats">
+            <div class="text-center mb-12">
+                <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">STATISTICS</p>
+                <h2 class="reveal reveal-delay-1 text-3xl md:text-4xl font-display font-bold mb-4">
+                    <span class="gradient-text">实时数据</span>
+                </h2>
+                <p class="reveal reveal-delay-2 text-text-dim max-w-lg mx-auto">
+                    平台运行数据实时更新
+                </p>
             </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="reveal glow-card p-6 text-center">
+                    <p class="text-3xl md:text-4xl font-bold text-primary mb-2" id="stat-storage">0</p>
+                    <p class="text-text-dim text-sm">总存储容量</p>
+                </div>
+                <div class="reveal reveal-delay-1 glow-card p-6 text-center">
+                    <p class="text-3xl md:text-4xl font-bold text-secondary mb-2" id="stat-files">0</p>
+                    <p class="text-text-dim text-sm">总文件数</p>
+                </div>
+                <div class="reveal reveal-delay-2 glow-card p-6 text-center">
+                    <p class="text-3xl md:text-4xl font-bold text-accent mb-2" id="stat-downloads">0</p>
+                    <p class="text-text-dim text-sm">总下载次数</p>
+                </div>
+                <div class="reveal reveal-delay-3 glow-card p-6 text-center">
+                    <p class="text-3xl md:text-4xl font-bold text-emerald-500 mb-2" id="stat-days">0</p>
+                    <p class="text-text-dim text-sm">稳定运行天数</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 赞助商区 -->
+        <div class="max-w-6xl mx-auto mb-16">
+            <div class="text-center mb-8">
+                <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">SPONSORS</p>
+                <h2 class="reveal reveal-delay-1 text-2xl font-display font-bold mb-4">
+                    官方赞助商
+                </h2>
+            </div>
+
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-bolt"></i></div>
+                <div class="reveal glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-bolt"></i>
+                    </div>
                     <span class="text-sm font-medium">大黄狗电池</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-battery-full"></i></div>
+                <div class="reveal reveal-delay-1 glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary to-purple-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
                     <span class="text-sm font-medium">博氏电池</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-video"></i></div>
+                <div class="reveal reveal-delay-2 glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-pink-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-video"></i>
+                    </div>
                     <span class="text-sm font-medium">飞阅传媒</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-wifi"></i></div>
+                <div class="reveal glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-wifi"></i>
+                    </div>
                     <span class="text-sm font-medium">PandaRC</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-plane"></i></div>
+                <div class="reveal reveal-delay-1 glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-plane"></i>
+                    </div>
                     <span class="text-sm font-medium">HaoYeRC</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                <div class="reveal reveal-delay-2 glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-battery-three-quarters"></i>
+                    </div>
                     <span class="text-sm font-medium">嘟嘟电池</span>
                 </div>
-                <div class="sponsor-item">
-                    <div class="sponsor-icon"><i class="fas fa-cogs"></i></div>
+                <div class="reveal glow-card p-4 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-400 flex items-center justify-center text-white text-sm">
+                        <i class="fas fa-cogs"></i>
+                    </div>
                     <span class="text-sm font-medium">翼效架构</span>
                 </div>
             </div>
         </div>
 
-        <!-- 技术支持（原样恢复） -->
-        <div class="max-w-5xl mx-auto mb-14">
-            <div class="section-title">
-                <i class="fas fa-code text-brand-500"></i>
-                <span class="font-display text-sm tracking-wider text-gray-400 uppercase">Tech Support</span>
+        <!-- 技术支持区 -->
+        <div class="max-w-6xl mx-auto mb-16">
+            <div class="text-center mb-8">
+                <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-primary/70 mb-3">TECH SUPPORT</p>
+                <h2 class="reveal reveal-delay-1 text-2xl font-display font-bold mb-4">
+                    技术支持
+                </h2>
             </div>
+
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://yzbjfpv.top" target="_blank" class="tech-link">yzbjfpv.top</a>
-                <a href="https://917813.com.cn" target="_blank" class="tech-link">917813.com.cn</a>
-                <a href="https://wanshizan.com.cn" target="_blank" class="tech-link">wanshizan.com.cn</a>
-                <a href="https://pokrc.com" target="_blank" class="tech-link">pokrc.com</a>
-                <a href="https://pokrc.cn" target="_blank" class="tech-link">pokrc.cn</a>
+                <a href="https://yzbjfpv.top" target="_blank" class="reveal glow-card px-5 py-3 text-primary font-medium text-sm">
+                    yzbjfpv.top
+                </a>
+                <a href="https://917813.com.cn" target="_blank" class="reveal reveal-delay-1 glow-card px-5 py-3 text-primary font-medium text-sm">
+                    917813.com.cn
+                </a>
+                <a href="https://wanshizan.com.cn" target="_blank" class="reveal reveal-delay-2 glow-card px-5 py-3 text-primary font-medium text-sm">
+                    wanshizan.com.cn
+                </a>
+                <a href="https://pokrc.com" target="_blank" class="reveal glow-card px-5 py-3 text-primary font-medium text-sm">
+                    pokrc.com
+                </a>
+                <a href="https://pokrc.cn" target="_blank" class="reveal reveal-delay-1 glow-card px-5 py-3 text-primary font-medium text-sm">
+                    pokrc.cn
+                </a>
             </div>
         </div>
 
-        <div class="divider mb-10"></div>
+        <div class="divider"></div>
 
-        <!-- 页脚（原样恢复） -->
-        <footer class="text-center max-w-5xl mx-auto">
-            <div class="footer-card max-w-md mx-auto mb-6">
-                <div class="flex items-center justify-center gap-4 mb-4">
-                    <div class="avatar-gradient">F</div>
-                    <div class="text-left">
-                        <p class="font-semibold">Flyz远征飞</p>
-                        <a href="https://yzbjfpv.top" target="_blank" class="text-sm text-brand-500 hover:text-brand-600 transition-colors">
-                            yzbjfpv.top
-                        </a>
+        <!-- 页脚 -->
+        <footer class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+                            YZ
+                        </div>
+                        <span class="font-display text-lg font-bold">YZCloud 沅臻云盘</span>
                     </div>
+                    <p class="text-text-dim text-sm mb-4">
+                        纯公益免费下载站，为您提供稳定高速的云存储服务。
+                    </p>
+                    <a href="mailto:lyz201966@gmail.com" class="flex items-center gap-2 text-text-secondary hover:text-primary transition-colors text-sm">
+                        <i class="fas fa-envelope"></i>
+                        lyz201966@gmail.com
+                    </a>
                 </div>
-                <a href="mailto:lyz201966@gmail.com" class="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 hover:text-brand-500 transition-colors text-sm">
-                    <i class="fas fa-envelope"></i>
-                    lyz201966@gmail.com
-                </a>
+
+                <div>
+                    <h4 class="font-semibold mb-4">快速链接</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#home" class="text-text-dim hover:text-primary transition-colors">首页</a></li>
+                        <li><a href="#features" class="text-text-dim hover:text-primary transition-colors">核心功能</a></li>
+                        <li><a href="#nodes" class="text-text-dim hover:text-primary transition-colors">节点网络</a></li>
+                        <li><a href="#stats" class="text-text-dim hover:text-primary transition-colors">实时数据</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">用户中心</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/user/login" class="text-text-dim hover:text-primary transition-colors">用户登录</a></li>
+                        <li><a href="/user/register" class="text-text-dim hover:text-primary transition-colors">注册账号</a></li>
+                        <li><a href="/user" class="text-text-dim hover:text-primary transition-colors">用户面板</a></li>
+                        <li><a href="/help" class="text-text-dim hover:text-primary transition-colors">帮助中心</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">关于我们</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/about" class="text-text-dim hover:text-primary transition-colors">关于我们</a></li>
+                        <li><a href="/terms" class="text-text-dim hover:text-primary transition-colors">服务条款</a></li>
+                        <li><a href="/privacy" class="text-text-dim hover:text-primary transition-colors">隐私政策</a></li>
+                        <li><a href="https://frp.80cn.cn" class="text-text-dim hover:text-primary transition-colors">管理员登录</a></li>
+                    </ul>
+                </div>
             </div>
-            
-            <p class="text-gray-500 text-sm mb-4">© 2024-2026 YZ Cloud 沅臻云盘 · 纯公益免费下载站</p>
-            <a href="https://frp.80cn.cn" target="_blank" class="inline-flex items-center gap-2 text-brand-500 hover:text-brand-600 transition-colors text-sm font-medium">
-                <i class="fas fa-user-shield"></i>
-                <span>管理员登录</span>
-            </a>
+
+            <div class="pt-6 border-t border-border-divider text-center">
+                <p class="text-text-dim text-sm">
+                    © 2024-2026 YZCloud 沅臻云盘 · 纯公益免费下载站 · 由 Flyz远征飞 维护
+                </p>
+            </div>
         </footer>
     </div>
 
     <!-- 警告弹窗 -->
-    <div id="warning">
-        <div class="warning-box">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-14 h-14 rounded-2xl bg-yellow-100 flex items-center justify-center">
+    <div id="warning" class="fixed inset-0 z-50 hidden items-center justify-center" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);">
+        <div class="glow-card max-w-md w-11/12 p-8">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center">
                     <i class="fas fa-exclamation-triangle text-yellow-500 text-2xl"></i>
                 </div>
-                <h2 class="font-display text-2xl font-bold">使用警告</h2>
+                <h2 class="text-xl font-bold">使用警告</h2>
             </div>
-            <div class="space-y-4 mb-8 text-sm text-gray-600">
+            <div class="space-y-3 mb-6 text-sm text-text-secondary">
                 <p>本账号仅用于个人非商业用途，严禁用于非法用途、违规传播或恶意攻击。</p>
                 <p>点击下方按钮即代表您同意自行承担因上传损害国家、社会、集体利益的内容至本下载站或其他不当行为的全部责任。</p>
                 <p>情节严重将移交相关部门处理。</p>
             </div>
-            <div class="account-box mb-6">
-                <p class="text-gray-500 text-xs mb-2">账号信息</p>
-                <p class="font-medium">用户名: <span id="warningUser"></span></p>
-                <p class="font-medium">密码: <span id="warningPass"></span></p>
+            <div class="p-4 rounded-lg bg-bg-subtle mb-6">
+                <p class="text-text-dim text-xs mb-2">账号信息</p>
+                <p class="font-medium">用户名: <span id="warningUser">A1/A2/A3</span></p>
+                <p class="font-medium">密码: <span id="warningPass">1234</span></p>
             </div>
             <div class="flex gap-4">
-                <button onclick="closeWarning()" class="btn-secondary flex-1">取消</button>
+                <button onclick="closeWarning()" class="btn-outline flex-1">取消</button>
                 <button onclick="confirmConnect()" class="btn-primary flex-1">同意并连接</button>
             </div>
         </div>
     </div>
 
-    <!-- 地球地图 JS -->
-    <script src="https://rjsprbi.myalicdn.com/rum_common.js"></script>
+    <!-- 地球地图依赖 -->
     <script src="https://frp.80cn.cn/home/assets/echarts-globe/js/echarts-gl.min.js"></script>
     <script src="https://frp.80cn.cn/home/assets/echarts-globe/js/world-gl-map/d3-contour.js"></script>
     <script src="https://frp.80cn.cn/home/assets/echarts-globe/js/world-gl-map/d3_geo.js"></script>
     <script src="https://frp.80cn.cn/home/assets/echarts-globe/js/world-gl-map/d3_timer.js"></script>
-    <script src="https://frp.80cn.cn/home/assets/index-6hBgRFJd.js"></script>
 
     <script>
+        // 滚动渐入动画
+        function initReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // 打字机效果
+        function initTypewriter() {
+            const texts = [
+                "不限速下载",
+                "大文件分享",
+                "多节点部署",
+                "永久免费使用"
+            ];
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typewriter = document.getElementById('typewriter');
+
+            function type() {
+                const currentText = texts[textIndex];
+                if (isDeleting) {
+                    typewriter.textContent = currentText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typewriter.textContent = currentText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let delay = isDeleting ? 50 : 100;
+                if (!isDeleting && charIndex === currentText.length) {
+                    delay = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    delay = 500;
+                }
+
+                setTimeout(type, delay);
+            }
+
+            setTimeout(type, 1000);
+        }
+
+        // 数字滚动动画
+        function animateNumber(element, target, suffix = '') {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current) + suffix;
+            }, 20);
+        }
+
+        // 初始化数据统计
+        function initStats() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateNumber(document.getElementById('stat-storage'), 3.2, 'TB');
+                        animateNumber(document.getElementById('stat-files'), 1286);
+                        animateNumber(document.getElementById('stat-downloads'), 45230);
+                        animateNumber(document.getElementById('stat-days'), 217);
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(document.getElementById('stats'));
+        }
+
+        // 初始化地球
+        function initGlobe() {
+            const chart = echarts.init(document.getElementById('globe-container'));
+            const option = {
+                backgroundColor: 'transparent',
+                globe: {
+                    environment: 'none',
+                    baseTexture: 'https://frp.80cn.cn/home/assets/echarts-globe/img/8.png',
+                    shading: 'lambert',
+                    light: {
+                        main: {
+                            color: '#60a5fa',
+                            intensity: 3.2,
+                            shadow: false,
+                            alpha: 40,
+                            beta: -30
+                        },
+                        ambient: {
+                            intensity: 1.6
+                        }
+                    },
+                    viewControl: {
+                        alpha: 30,
+                        beta: 160,
+                        distance: 220,
+                        autoRotate: true,
+                        autoRotateAfterStill: 1.2,
+                        autoRotateSpeed: 3,
+                        zoomSensitivity: 0,
+                        minDistance: 220,
+                        maxDistance: 220
+                    },
+                    postEffect: {
+                        enable: false
+                    },
+                    layers: []
+                },
+                series: [
+                    {
+                        name: 'lines3D',
+                        type: 'lines3D',
+                        coordinateSystem: 'globe',
+                        effect: {
+                            show: true,
+                            period: 2,
+                            trailWidth: 3,
+                            trailLength: 0.5,
+                            trailOpacity: 1,
+                            trailColor: '#316BF3'
+                        },
+                        blendMode: 'lighter',
+                        lineStyle: {
+                            width: 1,
+                            color: '#316BF3',
+                            opacity: 0.2
+                        },
+                        data: [
+                            { coords: [[116.405, 39.905], [121.473, 31.232]] },
+                            { coords: [[116.405, 39.905], [113.867, 38.045]] },
+                            { coords: [[113.867, 38.045], [121.473, 31.232]] },
+                            { coords: [[113.867, 38.045], [104.066, 30.659]] },
+                            { coords: [[116.405, 39.905], [114.066, 22.547]] }
+                        ],
+                        silent: true
+                    },
+                    {
+                        name: '节点',
+                        type: 'scatter3D',
+                        coordinateSystem: 'globe',
+                        blendMode: 'lighter',
+                        zlevel: 2,
+                        effectType: 'ripple',
+                        symbolSize: 15,
+                        rippleEffect: {
+                            period: 4,
+                            scale: 4,
+                            brushType: 'fill'
+                        },
+                        hoverAnimation: true,
+                        label: {
+                            show: true,
+                            position: 'right',
+                            textStyle: {
+                                fontSize: 14,
+                                color: '#f5d909',
+                                fontWeight: 'bold',
+                                backgroundColor: 'transparent'
+                            }
+                        },
+                        itemStyle: {
+                            color: 'rgb(29, 183, 255)'
+                        },
+                        data: [
+                            { name: '北京', value: [116.405, 39.905] },
+                            { name: '河北', value: [113.867, 38.045] },
+                            { name: '上海', value: [121.473, 31.232] },
+                            { name: '深圳', value: [114.066, 22.547] },
+                            { name: '成都', value: [104.066, 30.659] }
+                        ]
+                    }
+                ]
+            };
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 节点连接逻辑
         let currentServer = null;
         let currentUrl = null;
 
         document.querySelectorAll('button[data-server]').forEach(btn => {
-            btn.addEventListener('click', function(){
+            btn.addEventListener('click', function() {
                 currentServer = this.dataset.server;
                 currentUrl = this.dataset.url;
-                document.getElementById('warningUser').textContent = 'A1/A2/A3';
-                document.getElementById('warningPass').textContent = '1234';
                 document.getElementById('warning').style.display = 'flex';
-            })
-        })
+            });
+        });
 
-        function closeWarning(){
+        function closeWarning() {
             document.getElementById('warning').style.display = 'none';
-            currentServer = null; currentUrl = null;
+            currentServer = null;
+            currentUrl = null;
         }
 
-        function confirmConnect(){
-            if(currentUrl) window.open(currentUrl, '_blank');
+        function confirmConnect() {
+            if (currentUrl) {
+                window.open(currentUrl, '_blank');
+            }
             closeWarning();
         }
 
-        document.addEventListener('keydown', e=>{
-            if(e.key==='Escape') closeWarning();
-        })
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeWarning();
+        });
+
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            initReveal();
+            initTypewriter();
+            initStats();
+            initGlobe();
+        });
     </script>
 </body>
 </html>
