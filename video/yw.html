@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>91精选｜亚太语文老师跳舞视频</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 全屏渐变动态背景 */
+        .loading-box {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #0a192f, #112240, #233554, #64ffda);
+            background-size: 400% 400%;
+            animation: gradientAnim 2.5s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        @keyframes gradientAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* 主标题动画样式 */
+        .main-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: titlePulse 1.2s ease-in-out infinite;
+            text-align: center;
+            padding: 0 20px;
+        }
+        /* 加载提示文字 */
+        .load-text {
+            color: #e6e6e6;
+            font-size: 18px;
+            letter-spacing: 4px;
+        }
+        @keyframes titlePulse {
+            0%,100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-box">
+        <!-- 写入页面标题 -->
+        <div class="main-title">91精选｜亚太语文老师跳舞视频</div>
+        <div class="load-text">资源加载中...</div>
+    </div>
+
+    <script>
+        // 3秒动画结束后跳转视频
+        setTimeout(() => {
+            location.href = "47.104.206.20:51794/api/file/rawFile/语文老师跳舞.mp4?path=RCUzQSU1QyVFOCVBRiVBRCVFNiU5NiU4NyVFOCU4MCU4MSVFNSVCOCU4OCVFOCVCNyVCMyVFOCU4OCU5RS5tcDQ&enc=U2FsdGVkX19JrysOl%2BBeidBxcd7njZt7bZiWwDwoAob9RmaiUBk2FSUazvWQKRaL&iv=U2FsdGVkX1%2FfaH1I%2BfSKGK1cyjQ50M6wBhLqfga4sbhk5HS5no47fLUVydHFH6ce&st=nRk5P&sp=";
+        }, 3000);
+    </script>
+</body>
+</html>
