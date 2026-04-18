@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZBJFPV - 正在连接</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+        
+        #loading-overlay {
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        #content-frame {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #content-frame.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-black m-0 p-0 overflow-hidden">
+    <!-- 内嵌目标页面 -->
+    <iframe 
+        id="content-frame"
+        src="https://yzbjfpv.top/cloud"
+        frameborder="0"
+        class="w-screen h-screen"
+        onload="this.classList.add('loaded')"
+    ></iframe>
+    
+    <!-- 加载遮罩层 -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center z-50">
+        <div class="text-center max-w-md px-6">
+            <!-- 科技感加载动画 -->
+            <div class="relative mb-10">
+                <div class="w-24 h-24 border-4 border-cyan-500/20 rounded-full mx-auto"></div>
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 border-4 border-transparent border-t-cyan-400 rounded-full spinner"></div>
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-20 border-4 border-transparent border-b-blue-500 rounded-full spinner" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-16 border-4 border-transparent border-r-cyan-300 rounded-full spinner" style="animation-duration: 2s;"></div>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-white mb-3 tracking-wider">正在连接 YZBJFPV</h1>
+            <p class="text-cyan-400 mb-6 pulse">全国公益航模穿越机资源共享平台</p>
+            
+            <div class="w-full bg-gray-800 rounded-full h-1 mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full transition-all duration-2000" style="width: 0%"></div>
+            </div>
+            
+            <div class="text-gray-400 text-sm">
+                正在建立安全连接...
+            </div>
+            
+            <p class="text-gray-600 text-xs mt-8">
+                如果长时间未加载，请
+                <a href="https://yzbjfpv.top/cloud" class="text-cyan-500 hover:text-cyan-400 underline">点击这里</a>
+                直接访问
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 进度条动画
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = '100%';
+        
+        // 2秒后隐藏遮罩，显示内嵌页面
+        setTimeout(() => {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.classList.add('fade-out');
+            
+            // 遮罩完全消失后移除，防止遮挡点击
+            setTimeout(() => {
+                overlay.remove();
+            }, 500);
+        }, 2000);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YZBJFPV - 正在连接</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+        
+        #loading-overlay {
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        #content-frame {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #content-frame.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-black m-0 p-0 overflow-hidden">
+    <!-- 内嵌目标页面 -->
+    <iframe 
+        id="content-frame"
+        src="https://yzbjfpv.top/cloud"
+        frameborder="0"
+        class="w-screen h-screen"
+        onload="this.classList.add('loaded')"
+    ></iframe>
+    
+    <!-- 加载遮罩层 -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center z-50">
+        <div class="text-center max-w-md px-6">
+            <!-- 科技感加载动画 -->
+            <div class="relative mb-10">
+                <div class="w-24 h-24 border-4 border-cyan-500/20 rounded-full mx-auto"></div>
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 border-4 border-transparent border-t-cyan-400 rounded-full spinner"></div>
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-20 border-4 border-transparent border-b-blue-500 rounded-full spinner" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-16 h-16 border-4 border-transparent border-r-cyan-300 rounded-full spinner" style="animation-duration: 2s;"></div>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-white mb-3 tracking-wider">正在连接 YZBJFPV.top/cloud</h1>
+            <p class="text-cyan-400 mb-6 pulse">全国公益航模穿越机资源共享平台</p>
+            
+            <div class="w-full bg-gray-800 rounded-full h-1 mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full transition-all duration-2000" style="width: 0%"></div>
+            </div>
+            
+            <div class="text-gray-400 text-sm">
+                正在建立安全连接...
+            </div>
+            
+            <p class="text-gray-600 text-xs mt-8">
+                如果长时间未加载，请
+                <a href="https://yzbjfpv.top/cloud" class="text-cyan-500 hover:text-cyan-400 underline">点击这里</a>
+                直接访问
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 进度条动画
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = '100%';
+        
+        // 2秒后隐藏遮罩，显示内嵌页面
+        setTimeout(() => {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.classList.add('fade-out');
+            
+            // 遮罩完全消失后移除，防止遮挡点击
+            setTimeout(() => {
+                overlay.remove();
+            }, 500);
+        }, 2000);
+    </script>
+</body>
+</html>
