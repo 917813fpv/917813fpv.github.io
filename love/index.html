@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>新婚快乐</title>
+<script src="https://cdn.staticfile.net/gsap/3.12.2/gsap.min.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html, body {
+    width: 100vw;
+    height: 100vh;
+    background: #ffe6f2;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+/* 进入遮罩 */
+#enterMask {
+    position: fixed;
+    inset: 0;
+    background: #ffe6f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    cursor: pointer;
+}
+.enterText {
+    font-size: 32px;
+    color: #d84a8b;
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+@keyframes pulse {
+    0% { transform: scale(1); text-shadow: 0 0 0 rgba(216,74,139,0); }
+    50% { transform: scale(1.08); text-shadow: 0 4px 15px rgba(216,74,139,0.4); }
+    100% { transform: scale(1); text-shadow: 0 0 0 rgba(216,74,139,0); }
+}
+
+/* 轮播舞台 */
+.stage {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    perspective: 1500px; /* 开启 3D 空间 */
+}
+
+/* 图片容器：使用 Flex 居中，确保不管横竖都能完美居中 */
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden; /* 隐藏非当前层，极大提升手机端性能 */
+    will-change: transform, opacity;
+}
+
+/* 图片自适应：严格限制最大宽高，边框紧贴图片 */
+.slide img {
+    max-width: 88vw;
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 6px solid #ff99bb;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(216, 74, 139, 0.4);
+    display: block;
+    background: #fff; /* 防止透明 png 透出背景 */
+}
+
+/* 爱心飘落性能优化 */
+.heart {
+    position: fixed;
+    top: -40px;
+    color: #ff7ab2;
+    pointer-events: none;
+    z-index: 100;
+    will-change: transform;
+    animation: fall linear forwards;
+}
+@keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="enterMask">
+    <div class="enterText">点击进入浪漫时刻 💖</div>
+</div>
+
+<div class="stage">
+    <div class="slide">
+        <img src="https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/u5S1/1050X1498/D8385F9A-4F53-457A-A086-C7551CD54CA7.png/webp" alt="竖图">
+    </div>
+    <div class="slide">
+        <img src="https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/8PNv/1491X1055/5EDDF25C-FD97-4E75-9EC8-A464335EFEA3.png/webp" alt="横图">
+    </div>
+    <div class="slide">
+        <img src="https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/u5S1/1050X1498/D8385F9A-4F53-457A-A086-C7551CD54CA7.png/webp" alt="竖图">
+    </div>
+    <div class="slide">
+        <img src="https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/8PNv/1491X1055/5EDDF25C-FD97-4E75-9EC8-A464335EFEA3.png/webp" alt="横图">
+    </div>
+</div>
+
+<audio id="bgm" loop preload="auto">
+    <source src="https://music.163.com/song/media/outer/url?id=3351938028.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// 图片预加载，提升无缝体验
+const imgUrls = [
+    "https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/u5S1/1050X1498/D8385F9A-4F53-457A-A086-C7551CD54CA7.png/webp",
+    "https://test.fukit.cn/autoupload/f/-N3RwKX0ONaVbSpZm9TqodiO_OyvX7mIgxFBfDMDErs/20260425/8PNv/1491X1055/5EDDF25C-FD97-4E75-9EC8-A464335EFEA3.png/webp"
+];
+imgUrls.forEach(url => {
+    const img = new Image();
+    img.src = url;
+});
+
+const mask = document.getElementById('enterMask');
+const slides = gsap.utils.toArray('.slide');
+const bgm = document.getElementById('bgm');
+const heartList = ['💖','💗','💕','💝','💓','💞','💟','💘'];
+
+// 初始状态：只显示第一张
+gsap.set(slides, { opacity: 0, visibility: 'hidden' });
+gsap.set(slides[0], { opacity: 1, visibility: 'visible' });
+
+// 点击进入
+mask.onclick = function() {
+    gsap.to(mask, { duration: 0.5, opacity: 0, onComplete: () => mask.style.display = 'none' });
+    bgm.play().catch(e => console.log('音乐播放被浏览器限制:', e));
+    
+    startAnimationSequence();
+    
+    // 控制爱心生成的频率，200ms即可，过快会导致低端手机发烫
+    setInterval(createHeart, 200);
+};
+
+// 重写后的丝滑动画序列：修复了循环内存泄漏和卡顿问题
+function startAnimationSequence() {
+    // 创建一个无限循环的主时间轴
+    const tl = gsap.timeline({ repeat: -1 });
+    
+    // 图片停留展示时间
+    const delay = "+=2.5"; 
+
+    /* 动画1：图1(旋出) -> 图2(旋入) */
+    tl.to(slides[0], { duration: 1.2, rotate: 180, scale: 0.3, opacity: 0, ease: "power2.inOut" }, delay)
+      .set(slides[0], { visibility: 'hidden' })
+      .set(slides[1], { visibility: 'visible' })
+      .fromTo(slides[1], { rotate: -180, scale: 0.3, opacity: 0 }, { duration: 1.2, rotate: 0, scale: 1, opacity: 1, ease: "power2.out" }, "<");
+
+    /* 动画2：图2(上飞) -> 图3(下落弹跳) */
+    tl.to(slides[1], { duration: 1.2, y: "-80vh", opacity: 0, ease: "back.in(1.2)" }, delay)
+      .set(slides[1], { visibility: 'hidden' })
+      .set(slides[2], { visibility: 'visible' })
+      .fromTo(slides[2], { y: "80vh", opacity: 0 }, { duration: 1.2, y: 0, opacity: 1, ease: "back.out(1.2)" }, "<");
+
+    /* 动画3：图3(3D立体翻转) -> 图4(3D翻转入) */
+    tl.to(slides[2], { duration: 1.2, rotateY: 90, scale: 0.8, opacity: 0, ease: "power1.in" }, delay)
+      .set(slides[2], { visibility: 'hidden' })
+      .set(slides[3], { visibility: 'visible' })
+      .fromTo(slides[3], { rotateY: -90, scale: 0.8, opacity: 0 }, { duration: 1.2, rotateY: 0, scale: 1, opacity: 1, ease: "power1.out" }, "<");
+
+    /* 动画4：图4(向右飞出) -> 图1(向左滑入) （完成完美闭环） */
+    tl.to(slides[3], { duration: 1.2, x: "80vw", rotate: 20, opacity: 0, ease: "power2.inOut" }, delay)
+      .set(slides[3], { visibility: 'hidden' })
+      .set(slides[0], { visibility: 'visible' })
+      .fromTo(slides[0], { x: "-80vw", rotate: -20, opacity: 0 }, { duration: 1.2, x: 0, rotate: 0, opacity: 1, ease: "power2.out" }, "<");
+}
+
+// 飘落爱心特效
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = heartList[Math.floor(Math.random() * heartList.length)];
+    // 随机位置与大小
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = Math.random() * 18 + 12 + 'px';
+    // 随机下落时间(更自然)
+    heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+    
+    document.body.appendChild(heart);
+    
+    // 动画结束后自动清理 DOM 防止内存溢出
+    setTimeout(() => {
+        if(heart.parentNode) heart.parentNode.removeChild(heart);
+    }, 6000);
+}
+</script>
+</body>
+</html>
