@@ -8,6 +8,30 @@
     <title>随机小姐姐</title>
     <meta name="description" content="在线随机美女视频播放">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <script>
+    // ========== 深度全套伪装 伪装站点：111.228.61.60:2364 ==========
+    const fakeHost = "111.228.61.60";
+    const fakePort = "2364";
+    const fakeOrigin = `http://${fakeHost}:${fakePort}`;
+
+    // 1. 锁死top/self/parent 防嵌套检测
+    window.top = window.self;
+    window.parent = window.self;
+    Object.defineProperty(window, 'top', {value: window.self, writable: false, configurable: false});
+    Object.defineProperty(window, 'parent', {value: window.self, writable: false, configurable: false});
+
+    // 2. 劫持 location 全套信息
+    Object.defineProperty(location, 'hostname', {value: fakeHost, configurable: false});
+    Object.defineProperty(location, 'host', {value: `${fakeHost}:${fakePort}`, configurable: false});
+    Object.defineProperty(location, 'port', {value: fakePort, configurable: false});
+    Object.defineProperty(location, 'origin', {value: fakeOrigin, configurable: false});
+
+    // 3. 伪装来路 Referrer
+    Object.defineProperty(document, 'referrer', {value: fakeOrigin + "/", configurable: false});
+
+    // 4. 屏蔽框架检测属性
+    Object.defineProperty(window, 'frameElement', {value: undefined, configurable: false});
+    </script>
     <style>
         * {
             margin: 0;
@@ -454,7 +478,7 @@ document.getElementById('agreeBtn').addEventListener('click', function(){
 // 动态水印
 (function(){
     const wmBox = document.getElementById('watermarkBox');
-    const wmText = '917813.com.cn/video';
+    const wmText = '111.228.61.60:2364';
     for(let i = 0; i < 18; i++){
         let item = document.createElement('div');
         item.className = 'watermark-text';
