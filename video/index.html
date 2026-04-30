@@ -23,6 +23,36 @@
             width: 100vw;
         }
 
+        /* JS加载进度弹窗 */
+        .load-progress-wrap {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+        }
+        .progress-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        .progress-bar-box {
+            width: 280px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-inner {
+            height: 100%;
+            width: 0%;
+            background: #fe2c55;
+            transition: 0.1s;
+        }
+
         /* 开屏免责声明弹窗 */
         .disclaimer-popup {
             position: fixed;
@@ -72,7 +102,10 @@
             cursor: pointer;
         }
 
-        /* 主容器 */
+        /* 主容器默认隐藏，等脚本缓存就绪再显示 */
+        .main-container {
+            display: none;
+        }
         .main-container,
         .video-section,
         .video-container,
@@ -81,18 +114,11 @@
             height: 100vh;
             position: relative;
         }
-        /* 隐藏原生控件 */
         #player {
             width: 100%;
             height: 100%;
             object-fit: cover;
             pointer-events: none;
-            display: none;
-        }
-        .video-show {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         /* 加载动画 */
@@ -273,8 +299,16 @@
     </style>
 </head>
 <body>
+<!-- JS加载进度页 -->
+<div class="load-progress-wrap" id="loadProgressWrap">
+    <div class="progress-text" id="progressText">资源加载中 0%</div>
+    <div class="progress-bar-box">
+        <div class="progress-inner" id="progressInner"></div>
+    </div>
+</div>
+
 <!-- 开屏免责声明弹窗 -->
-<div class="disclaimer-popup" id="disclaimerPop">
+<div class="disclaimer-popup" id="disclaimerPop" style="display:none;">
     <div class="pop-box">
         <h3>免责声明</h3>
         <p>本站所有视频内容均来源于网络，仅供个人娱乐和学习交流使用。所有版权归原作者所有。如涉及侵权，请及时联系我们删除。</p>
@@ -282,16 +316,14 @@
     </div>
 </div>
 
-<main class="main-container" id="mainPage" style="display:none;">
+<main class="main-container" id="mainPage">
     <section class="video-section">
         <div class="video-container">
             <div class="video-wrapper">
-                <!-- 原生控件禁用 隐藏video -->
-                <video id="player" muted webkit-playsinline playsinline
+                <video id="player" controlslist="nodownload" webkit-playsinline playsinline muted
                        data-api="http://av.npcq.cn/pc.php" data-source="external" data-version="v2.1">
+                    您的浏览器不支持视频播放
                 </video>
-                <!-- 用来展示视频画面 -->
-                <img id="videoView" class="video-show">
 
                 <!-- 动态水印 -->
                 <div class="watermark" id="watermarkBox"></div>
@@ -339,12 +371,84 @@
     </section>
 </main>
 
-<script src="https://cdn.917813.com.cn/video/gril.js"></script>
 <script>
-// 开屏免责同意
-document.getElementById('agreeBtn').addEventListener('click',function(){
-    document.getElementById('disclaimerPop').style.display = 'none';
-    document.getElementById('mainPage').style.display = 'block';
+// 配置
+const JS_URL = "https://cdn.917813.com.cn/video/gril.js";
+const CACHE_KEY = "gril_js_cache";
+
+// DOM
+const loadProgressWrap = document.getElementById('loadProgressWrap');
+const progressText = document.getElementById('progressText');
+const progressInner = document.getElementById('progressInner');
+const disclaimerPop = document.getElementById('disclaimerPop');
+const mainPage = document.getElementById('mainPage');
+
+// 初始化：优先读本地缓存
+initLoad();
+
+function initLoad() {
+    // 有缓存直接加载缓存
+    const cache = localStorage.getItem(CACHE_KEY);
+    if (cache) {
+        runScript(cache);
+        finishLoad();
+        return;
+    }
+    // 无缓存 带进度下载
+    downloadJsWithProgress();
+}
+
+// 带进度下载JS
+function downloadJsWithProgress() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', JS_URL, true);
+    xhr.responseType = 'text';
+
+    // 监听下载进度
+    xhr.addEventListener('progress', function(e) {
+        if (e.lengthComputable) {
+            let percent = Math.round((e.loaded / e.total) * 100);
+            progressInner.style.width = percent + '%';
+            progressText.innerText = `资源加载中 ${percent}%`;
+        }
+    });
+
+    // 下载完成
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            const jsCode = xhr.responseText;
+            // 存入本地缓存
+            localStorage.setItem(CACHE_KEY, jsCode);
+            // 执行脚本
+            runScript(jsCode);
+            finishLoad();
+        }
+    };
+
+    xhr.onerror = function() {
+        progressText.innerText = "加载失败，请刷新重试";
+    };
+
+    xhr.send();
+}
+
+// 运行JS代码
+function runScript(code) {
+    const script = document.createElement('script');
+    script.textContent = code;
+    document.head.appendChild(script);
+}
+
+// 加载完成：关闭进度页，弹出免责
+function finishLoad() {
+    loadProgressWrap.style.display = 'none';
+    disclaimerPop.style.display = 'flex';
+    mainPage.style.display = 'block';
+}
+
+// 免责同意按钮
+document.getElementById('agreeBtn').addEventListener('click', function(){
+    disclaimerPop.style.display = 'none';
 });
 
 // 动态水印
@@ -362,17 +466,12 @@ document.getElementById('agreeBtn').addEventListener('click',function(){
     }
 })();
 
+// 播放器控制逻辑
 const player = document.getElementById('player');
-const videoView = document.getElementById('videoView');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const muteBtn = document.getElementById('muteBtn');
 const progressWrap = document.getElementById('progressWrap');
 const progressBar = document.getElementById('progressBar');
-
-// 同步视频画面到img
-player.addEventListener('loadeddata', function(){
-    videoView.src = player.currentSrc;
-});
 
 // 播放暂停
 playPauseBtn.addEventListener('click', () => {
