@@ -2,17 +2,16 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DCT2026 赛事赞助商招募</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
+            font-family: "PingFang SC", "MiSans", "Microsoft YaHei", sans-serif;
         }
 
-        /* 🌊 新增：流体背景动画 */
         @keyframes liquidBg {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -20,33 +19,35 @@
         }
 
         body {
-            min-height: 100vh;
-            /* 四色豪华渐变，放大背景尺寸以便丝滑流动 */
+            /* 严格锁定单屏高度，禁止溢出和滚动 */
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh; /* 兼容移动端动态工具栏高度 */
             background: linear-gradient(-45deg, #ffc0d5, #91d3ff, #e2b6ff, #ffeaa7);
             background-size: 400% 400%;
-            animation: liquidBg 15s ease infinite; /* 15秒超丝滑循环流动 */
+            animation: liquidBg 15s ease infinite;
             
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 12px;
             overflow: hidden;
+            position: relative;
         }
 
-        /* 动画库 */
         @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            from { opacity: 0; transform: scale(0.96) translateY(10px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
         @keyframes float {
             0% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-4px); }
             100% { transform: translateY(0); }
         }
         @keyframes danmakuFly {
             from { transform: translateX(100vw); }
-            to { transform: translateX(-100vw) translateX(-100%); }
+            to { transform: translateX(-100%); }
         }
 
         /* 弹幕容器层 */
@@ -55,185 +56,186 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
         .danmaku-item {
             position: absolute;
-            left: 0;
             white-space: nowrap;
             font-weight: bold;
-            font-size: 16px;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+            font-size: 14px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
             will-change: transform;
         }
-        /* 赞助商弹幕高亮样式 */
         .danmaku-sponsor {
             color: #ff3e7b;
-            font-size: 20px;
-            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
-            border: 1.5px solid rgba(255, 87, 143, 0.4);
-            background: rgba(255, 255, 255, 0.6);
-            padding: 4px 14px;
+            font-size: 16px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 87, 143, 0.4);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 3px 10px;
             border-radius: 20px;
         }
-        /* 选手弹幕样式 */
         .danmaku-player {
             color: rgba(255, 255, 255, 0.95);
         }
 
-        /* 🧪 极致纯净：完全透明无模糊主面板 */
+        /* 🧪 全透明单屏适配卡片面板 */
         .panel {
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: none !important; 
             -webkit-backdrop-filter: none !important;
             border: 1px solid rgba(255, 255, 255, 0.35); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02), 
                         inset 0 0 15px rgba(255, 255, 255, 0.1); 
             
-            padding: 40px 30px 25px 30px; 
-            border-radius: 30px;
+            padding: 24px 20px 16px 20px; 
+            border-radius: 24px;
             width: 100%;
-            max-width: 650px;
+            max-width: 540px; /* 移动端最佳紧凑宽度 */
+            max-height: 85vh; /* 严格限制最高占比，绝不撑爆屏幕 */
             text-align: center;
-            animation: scaleIn 0.8s ease forwards;
+            animation: scaleIn 0.5s ease forwards;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            justify-content: space-between; /* 弹性内容等比分布 */
+            gap: 4vh; /* 使用响应式间距 */
             align-items: center;
+            
+            /* ⚠️ 右下角避让：在手机小屏下稍微往上拔，给右下角返回键留坑 */
+            margin-bottom: 3vh; 
         }
 
+        /* 自适应标题 */
         .title {
-            font-size: 28px;
+            font-size: 6vw;
+            @media (min-width: 480px) { font-size: 26px; }
             color: #222;
             font-weight: bold;
-            line-height: 1.4;
-            text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+            line-height: 1.3;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.6);
         }
         .title span {
             color: #ff3e7b;
         }
 
-        /* 内置数据卡片 */
+        /* 自适应宣发亮点 */
         .hype-box {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             width: 100%;
             justify-content: center;
-            flex-wrap: wrap;
         }
         .hype-item {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            padding: 15px 20px;
-            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 10px 12px;
+            border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.25);
             flex: 1;
-            min-width: 140px;
             animation: float 4s ease-in-out infinite;
         }
         .hype-item:nth-child(2) { animation-delay: 1s; }
         
         .hype-num {
-            font-size: 26px;
+            font-size: 20px;
             color: #0d47a1;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
         .hype-text {
-            font-size: 14px;
+            font-size: 12px;
             color: #222;
             font-weight: bold;
         }
 
+        /* 自适应介绍框 */
         .desc {
-            font-size: 16px;
+            font-size: 14px;
             color: #222;
-            line-height: 1.8;
-            margin: 10px 0;
+            line-height: 1.6;
             background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            border-left: 5px solid #ff578f;
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #ff578f;
             text-align: left;
             font-weight: 500;
+            width: 100%;
+            /* 限制文本在极小设备上自动收缩 */
+            max-height: 120px;
+            overflow-y: auto;
         }
 
-        /* 主按钮 */
+        /* 🚀 按钮极限放大和变宽 */
         .btn {
-            padding: 20px 0;
-            width: 280px;
+            padding: 15px 0;
+            width: 92%; /* 极限拉宽，更易触控 */
+            max-width: 320px;
             border: none;
-            border-radius: 20px;
-            font-size: 20px;
+            border-radius: 18px;
+            font-size: 18px;
             font-weight: bold;
             background: #ff578f;
             color: white;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 6px 20px rgba(255, 87, 143, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 87, 143, 0.3);
+            -webkit-tap-highlight-color: transparent; /* 消除移动端点击蓝框 */
         }
-        .btn:hover {
-            transform: translateY(-5px);
+        .btn:hover, .btn:active {
+            transform: scale(1.02);
             background: #ff3e7b;
         }
 
-        /* 淡水印样式 */
+        /* 淡水印 */
         .watermark {
-            font-size: 12px;
+            font-size: 11px;
             color: rgba(0, 0, 0, 0.35);
             font-weight: bold;
-            letter-spacing: 1px;
-            margin-top: 5px;
+            letter-spacing: 0.5px;
             user-select: none;
             text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
         }
 
-        /* 弹窗 */
+        /* 弹窗适配 */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.25); 
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
+            background: rgba(0, 0, 0, 0.3); 
             justify-content: center;
             align-items: center;
             z-index: 999;
-            padding: 20px;
+            padding: 15px;
         }
         .modal-content {
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
             border: 1px solid rgba(255, 255, 255, 0.35);
-            padding: 30px 25px;
-            border-radius: 30px;
+            padding: 24px 20px;
+            border-radius: 24px;
             width: 100%;
-            max-width: 400px;
+            max-width: 340px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             animation: scaleIn 0.3s ease forwards;
             box-shadow: 0 15px 40px rgba(0,0,0,0.05);
         }
         .qrcode {
-            width: 50vw;
-            max-width: 220px;
+            width: 45vw;
+            max-width: 180px;
             height: auto;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .close-btn {
-            padding: 10px 30px;
-            border-radius: 20px;
+            padding: 8px 24px;
+            border-radius: 16px;
             border: none;
             background: #1e88e5;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -248,72 +250,61 @@
     <div class="panel">
         <div class="title">🏆 DCT2026 赛事<br><span>全球赞助商招募启动</span></div>
         
-        <!-- 赛事宣发亮点 -->
         <div class="hype-box">
             <div class="hype-item">
                 <div class="hype-num">100+</div>
-                <div class="hype-text">顶尖飞手同台竞技</div>
+                <div class="hype-text">顶尖飞手同台</div>
             </div>
             <div class="hype-item">
                 <div class="hype-num">全程高燃</div>
-                <div class="hype-text">全网多平台同步直播</div>
+                <div class="hype-text">全多平台直播</div>
             </div>
         </div>
 
         <div class="desc">
-            🚀 <b>全网曝光，精准引流！</b><br>
-            上届赛事吸引了海量 FPV 爱好者的目光，为您的品牌带来不可估量的商业价值。诚邀各大品牌入驻，共创竞速狂欢！
+            🚀 <b>百万曝光，精准引流！</b><br>
+            上届赛事吸引了海量 FPV 爱好者的目光，这一次，我们将用更豪华的舞台、更震撼的视觉盛宴，为您的品牌带来不可估量的商业价值。诚邀各大品牌入驻，共创竞速狂狂欢！
         </div>
 
         <button class="btn" onclick="openWxModal()">关注公众号回复【赞助】</button>
 
-        <!-- 淡水印 -->
         <div class="watermark">数据来自Flyz远征飞 保证真实</div>
     </div>
 
     <!-- 公众号二维码弹窗 -->
     <div class="modal" id="wxModal">
         <div class="modal-content">
-            <div style="color: #ff3e7b; font-weight: bold; font-size: 20px;">请扫码关注远征飞官方公众号</div>
-            <div style="color: #111; font-size: 15px; font-weight: bold;">并在后台直接发送文字：<span style="color:#ff578f; background: rgba(255,255,255,0.6); padding: 2px 8px; border-radius: 5px;">赞助</span></div>
+            <div style="color: #ff3e7b; font-weight: bold; font-size: 18px; text-align: center;">请扫码关注远征飞官方公众号</div>
+            <div style="color: #111; font-size: 14px; font-weight: bold; text-align: center;">并在后台发送文字：<br><span style="color:#ff578f; background: rgba(255,255,255,0.7); padding: 2px 8px; border-radius: 5px; display: inline-block; margin-top: 5px;">赞助</span></div>
             <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" alt="官方公众号">
             <button class="close-btn" onclick="closeModal()">关闭</button>
         </div>
     </div>
 
     <script>
-        // 往届赞助商数据
-        const sponsors = [
-            "翼效架构", "PandaRC", "HaoYeRC", "嘟嘟电池", "Extreme极限电池", 
-            "大黄狗电池", "BosLi-Po博氏电池", "SharpRace", "UPRN-GPS", 
-            "飞阅传媒", "PokRC魄客模型", "GeeGoo", "丰云无刷", "Flyz远征飞"
-        ];
-
-        // 往届选手数据
-        const players = [
-            "吕泓纬", "碎恋彤云", "CCFPV", "cher", "阿峰", "ZX.FPV", "强中强王中王双汇火腿肠", 
-            "GeekPote", "超级舒克", "澈澈FPV", "竞速小男神", "荞崽", "牢刷", "飞天宝子FPV", 
-            "远程超超", "dinosaur🦖", "BEAR_FPV", "超:)potato", "王茂杰", "TH", 
-            "无声3.14159265358979", "风清FPV", "三档起步", "LWX-FPV", "小奶龙", "ydj", 
-            "Dike", "吃鱼小队", "7658", "Rpin.fpv（大R）", "blongfpv", "rechr", "climber", 
-            "飞的比我快的是gay", "ETOILE.", "514班", "hhh", "弩箭破空而至", "顽固", "碎个好觉。", 
-            "不会飞FPV", "吃面的猴子", "mk", "鱼总大小王", "peter", "穷鬼套餐只吃双吉", 
-            "乐邦詹士", "嘉诚", "LXD-FPV", "门内外竖着", "People", "与其提升自己不如压力队友", 
-            "楠咯", "zouzubin4334", "别太自满", "EL", "叶子渝", "-Einhorn", "堵桥来—乌鲁鲁", 
-            "博博", "甄经国", "bushi", "生豪", "CQ", "灵尘", "一帆", "四叶草", "浩子", 
-            "浩浩的FPV", "温小包", "孜亚", "awaFPV", "阳", "~SE~", "XXX", "DKLFPV", 
-            "阿泽fpv", "歪歪", "Fpv9527", "菜鸡飞一圈", "摸鱼飞手", "小星", "Kknd", 
-            "老炮儿", "碎碎念", "阿楠", "随便起的", "飞不动了", "Xy_01", "摆烂选手", 
-            "小魔", "乱码一个", "阿昊", "菜到抠脚", "fpv小菜", "老周", "瞎飞", "念念", 
-            "Qwe", "摸鱼", "小哲", "飞手阿离", "乱起名", "阿伟", "fpv新手", "摆烂", 
-            "小桐", "杂七杂八", "阿杰", "糊了", "123fpv", "小宇", "瞎起的", "阿睿", 
-            "飞飞飞", "憨憨飞手"
-        ];
+        const sponsors = ["翼效架构", "PandaRC", "HaoYeRC", "嘟嘟电池", "Extreme极限电池", "大黄狗电池", "BosLi-Po博氏电池", "SharpRace", "UPRN-GPS", "飞阅传媒", "PokRC魄客模型", "GeeGoo", "丰云无刷", "Flyz远征飞"];
+        const players = ["吕泓纬", "碎恋彤云", "CCFPV", "cher", "阿峰", "ZX.FPV", "强中强王中王双汇火腿肠", "GeekPote", "超级舒克", "澈澈FPV", "竞速小男神", "荞崽", "牢刷", "飞天宝子FPV", "远程超超", "dinosaur🦖", "BEAR_FPV", "超:)potato", "王茂杰", "TH", "无声3.14159265358979", "风清FPV", "三档起步", "LWX-FPV", "小奶龙", "ydj", "Dike", "吃鱼小队", "7658", "Rpin.fpv（大R）", "blongfpv", "rechr", "climber", "飞的比我快的是gay", "ETOILE.", "514班", "hhh", "弩箭破空而至", "顽固", "碎个好觉。", "不会飞FPV", "吃面的猴子", "mk", "鱼总大小王", "peter", "穷鬼套餐只吃双吉", "乐邦詹士", "嘉诚", "LXD-FPV", "门内外竖着", "People", "与其提升自己不如压力队友", "楠咯", "zouzubin4334", "别太自满", "EL", "叶子渝", "-Einhorn", "堵桥来—乌鲁鲁", "博博", "甄经国", "bushi", "生豪", "CQ", "灵尘", "一帆", "四叶草", "浩子", "浩浩的FPV", "温小包", "孜亚", "awaFPV", "阳", "~SE~", "XXX", "DKLFPV", "阿泽fpv", "歪歪", "Fpv9527", "菜鸡飞一圈", "摸鱼飞手", "小星", "Kknd", "老炮儿", "碎碎念", "阿楠", "随便起的", "飞不动了", "Xy_01", "摆烂选手", "小魔", "乱码一个", "阿昊", "菜到抠脚", "fpv小菜", "老周", "瞎飞", "念念", "Qwe", "摸鱼", "小哲", "飞手阿离", "乱起名", "阿伟", "fpv新手", "摆烂", "小桐", "杂七杂八", "阿杰", "糊了", "123fpv", "小宇", "瞎起的", "阿睿", "飞飞飞", "憨憨飞手"];
 
         const box = document.getElementById('danmakuBox');
 
-        // 生成随机弹幕
+        // 🛠️ 独创：反弹幕堆叠防抖轨道系统
+        const TRACK_COUNT = 10; // 将可显示高度切成10个固定轨道
+        const trackOccupied = new Array(TRACK_COUNT).fill(false);
+
         function createDanmaku() {
+            // 1. 寻找当前未被占用的空闲轨道
+            let availableTracks = [];
+            trackOccupied.forEach((status, index) => {
+                if (!status) availableTracks.push(index);
+            });
+
+            // 如果全部轨道被挤满，本发不发射，防止强行堆叠重合
+            if (availableTracks.length === 0) return;
+
+            // 随机抽一个空闲轨道，并加锁
+            const randomTrackIndex = availableTracks[Math.floor(Math.random() * availableTracks.length)];
+            trackOccupied[randomTrackIndex] = true;
+
             const el = document.createElement('div');
             const isSponsor = Math.random() < 0.45; 
             
@@ -328,28 +319,35 @@
                 el.style.opacity = (Math.random() * 0.3 + 0.6).toFixed(2); 
             }
 
-            const topPos = Math.floor(Math.random() * 80) + 10;
+            // 计算该轨道的精准纵向Top百分比 (把弹幕控制在 8% 到 85% 之间，避开核心视觉盲区)
+            const topPos = 8 + (randomTrackIndex * (77 / TRACK_COUNT));
             el.style.top = topPos + "%";
 
-            const duration = Math.floor(Math.random() * 5) + 7;
+            // 速度自适应 (8s - 13s)
+            const duration = Math.floor(Math.random() * 5) + 8;
             el.style.animation = `danmakuFly ${duration}s linear forwards`;
 
             box.appendChild(el);
 
+            // 轨道解锁时机：大约弹幕飞过屏幕一半时(即耗时45%时)，允许下一条进入该轨道
+            setTimeout(() => {
+                trackOccupied[randomTrackIndex] = false;
+            }, duration * 450);
+
+            // 节点销毁
             setTimeout(() => {
                 el.remove();
             }, duration * 1000);
         }
 
-        // 初始化屏幕预装弹幕
-        for(let i=0; i<15; i++) {
-            setTimeout(createDanmaku, Math.random() * 2000);
+        // 初始高密度多波次装载
+        for(let i = 0; i < 8; i++) {
+            setTimeout(createDanmaku, i * 250);
         }
 
-        // 循环持续发射
-        setInterval(createDanmaku, 750);
+        // 持续高效、低耦合发射调度器
+        setInterval(createDanmaku, 650);
 
-        // 弹窗控制
         function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('wxModal').style.display = 'none'; }
     </script>
