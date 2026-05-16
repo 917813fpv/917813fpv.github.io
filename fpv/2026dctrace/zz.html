@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DCT2026 赛事赞助商招募</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffc0d5 0%, #91d3ff 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        /* 动画库 */
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        @keyframes danmakuFly {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100vw) translateX(-100%); }
+        }
+
+        /* 弹幕容器层 */
+        .danmaku-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .danmaku-item {
+            position: absolute;
+            left: 0;
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            will-change: transform;
+        }
+        /* 赞助商弹幕高亮样式 */
+        .danmaku-sponsor {
+            color: #ff3e7b;
+            font-size: 20px;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+            border: 1.5px solid rgba(255, 87, 143, 0.4);
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+        /* 选手弹幕样式 */
+        .danmaku-player {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 🧪 极致通透：液态玻璃主面板 */
+        .panel {
+            background: rgba(255, 255, 255, 0.12); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), 
+                        inset 0 0 20px rgba(255, 255, 255, 0.15); 
+            
+            padding: 40px 30px 25px 30px; /* 调整底部间距留给水印 */
+            border-radius: 30px;
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            animation: scaleIn 0.8s ease forwards;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 28px;
+            color: #222;
+            font-weight: bold;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.6);
+        }
+        .title span {
+            color: #ff3e7b;
+        }
+
+        /* 数据卡片 */
+        .hype-box {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .hype-item {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 15px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            flex: 1;
+            min-width: 140px;
+            animation: float 4s ease-in-out infinite;
+        }
+        .hype-item:nth-child(2) { animation-delay: 1s; }
+        
+        .hype-num {
+            font-size: 26px;
+            color: #0d47a1;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .hype-text {
+            font-size: 14px;
+            color: #222;
+            font-weight: bold;
+        }
+
+        .desc {
+            font-size: 16px;
+            color: #222;
+            line-height: 1.8;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 5px solid #ff578f;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        /* 主按钮 */
+        .btn {
+            padding: 20px 0;
+            width: 280px;
+            border: none;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #ff578f;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 6px 20px rgba(255, 87, 143, 0.4);
+        }
+        .btn:hover {
+            transform: translateY(-5px);
+            background: #ff3e7b;
+        }
+
+        /* 🔒 新增：淡水印样式 */
+        .watermark {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.35);
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            user-select: none;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 20px;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 30px 25px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            animation: scaleIn 0.3s ease forwards;
+        }
+        .qrcode {
+            width: 50vw;
+            max-width: 220px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .close-btn {
+            padding: 10px 30px;
+            border-radius: 20px;
+            border: none;
+            background: #1e88e5;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 弹幕层 -->
+    <div class="danmaku-container" id="danmakuBox"></div>
+
+    <!-- 招商主面板 -->
+    <div class="panel">
+        <div class="title">🏆 DCT2026 赛事<br><span>全球赞助商招募启动</span></div>
+        
+        <!-- 赛事宣发亮点 -->
+        <div class="hype-box">
+            <div class="hype-item">
+                <div class="hype-num">100+</div>
+                <div class="hype-text">顶尖飞手同台竞技</div>
+            </div>
+            <div class="hype-item">
+                <div class="hype-num">全程高燃</div>
+                <div class="hype-text">全网多平台同步直播</div>
+            </div>
+        </div>
+
+        <div class="desc">
+            🚀 <b>百万曝光，精准引流！</b><br>
+            上届赛事吸引了海量 FPV 爱好者的目光，这一次，我们将用更豪华的舞台、更震撼的视觉盛宴，为您的品牌带来不可估量的商业价值。诚邀各大品牌入驻，共创竞速狂欢！
+        </div>
+
+        <button class="btn" onclick="openWxModal()">关注公众号回复【赞助】</button>
+
+        <!-- 淡水印 -->
+        <div class="watermark">数据来自Flyz远征飞 保证真实</div>
+    </div>
+
+    <!-- 公众号二维码弹窗 -->
+    <div class="modal" id="wxModal">
+        <div class="modal-content">
+            <div style="color: #ff3e7b; font-weight: bold; font-size: 20px;">请扫码关注远征飞官方公众号</div>
+            <div style="color: #111; font-size: 15px; font-weight: bold;">并在后台直接发送文字：<span style="color:#ff578f; background: rgba(255,255,255,0.6); padding: 2px 8px; border-radius: 5px;">赞助</span></div>
+            <img src="https://z.wiki/u/wVwJ9Dxzo" class="qrcode" alt="官方公众号">
+            <button class="close-btn" onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // 往届赞助商数据
+        const sponsors = [
+            "翼效架构", "PandaRC", "HaoYeRC", "嘟嘟电池", "Extreme极限电池", 
+            "大黄狗电池", "BosLi-Po博氏电池", "SharpRace", "UPRN-GPS", 
+            "飞阅传媒", "PokRC魄客模型", "GeeGoo", "丰云无刷", "Flyz远征飞"
+        ];
+
+        // 往届选手数据
+        const players = [
+            "吕泓纬", "碎恋彤云", "CCFPV", "cher", "阿峰", "ZX.FPV", "强中强王中王双汇火腿肠", 
+            "GeekPote", "超级舒克", "澈澈FPV", "竞速小男神", "荞崽", "牢刷", "飞天宝子FPV", 
+            "远程超超", "dinosaur🦖", "BEAR_FPV", "超:)potato", "王茂杰", "TH", 
+            "无声3.14159265358979", "风清FPV", "三档起步", "LWX-FPV", "小奶龙", "ydj", 
+            "Dike", "吃鱼小队", "7658", "Rpin.fpv（大R）", "blongfpv", "rechr", "climber", 
+            "飞的比我快的是gay", "ETOILE.", "514班", "hhh", "弩箭破空而至", "顽固", "碎个好觉。", 
+            "不会飞FPV", "吃面的猴子", "mk", "鱼总大小王", "peter", "穷鬼套餐只吃双吉", 
+            "乐邦詹士", "嘉诚", "LXD-FPV", "门内外竖着", "People", "与其提升自己不如压力队友", 
+            "楠咯", "zouzubin4334", "别太自满", "EL", "叶子渝", "-Einhorn", "堵桥来—乌鲁鲁", 
+            "博博", "甄经国", "bushi", "生豪", "CQ", "灵尘", "一帆", "四叶草", "浩子", 
+            "浩浩的FPV", "温小包", "孜亚", "awaFPV", "阳", "~SE~", "XXX", "DKLFPV", 
+            "阿泽fpv", "歪歪", "Fpv9527", "菜鸡飞一圈", "摸鱼飞手", "小星", "Kknd", 
+            "老炮儿", "碎碎念", "阿楠", "随便起的", "飞不动了", "Xy_01", "摆烂选手", 
+            "小魔", "乱码一个", "阿昊", "菜到抠脚", "fpv小菜", "老周", "瞎飞", "念念", 
+            "Qwe", "摸鱼", "小哲", "飞手阿离", "乱起名", "阿伟", "fpv新手", "摆烂", 
+            "小桐", "杂七杂八", "阿杰", "糊了", "123fpv", "小宇", "瞎起的", "阿睿", 
+            "飞飞飞", "憨憨飞手"
+        ];
+
+        const box = document.getElementById('danmakuBox');
+
+        // 生成随机弹幕
+        function createDanmaku() {
+            const el = document.createElement('div');
+            const isSponsor = Math.random() < 0.45; 
+            
+            if (isSponsor) {
+                const text = sponsors[Math.floor(Math.random() * sponsors.length)];
+                el.innerText = "[ 赞助商 ] " + text; 
+                el.className = "danmaku-item danmaku-sponsor";
+            } else {
+                const text = players[Math.floor(Math.random() * players.length)];
+                el.innerText = text; 
+                el.className = "danmaku-item danmaku-player";
+                el.style.opacity = (Math.random() * 0.3 + 0.6).toFixed(2); 
+            }
+
+            const topPos = Math.floor(Math.random() * 80) + 10;
+            el.style.top = topPos + "%";
+
+            const duration = Math.floor(Math.random() * 5) + 7;
+            el.style.animation = `danmakuFly ${duration}s linear forwards`;
+
+            box.appendChild(el);
+
+            setTimeout(() => {
+                el.remove();
+            }, duration * 1000);
+        }
+
+        // 初始化屏幕预装弹幕
+        for(let i=0; i<15; i++) {
+            setTimeout(createDanmaku, Math.random() * 2000);
+        }
+
+        // 循环持续发射
+        setInterval(createDanmaku, 750);
+
+        // 弹窗控制
+        function openWxModal() { document.getElementById('wxModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('wxModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
