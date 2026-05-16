@@ -12,9 +12,20 @@
             font-family: "Microsoft YaHei", sans-serif;
         }
 
+        /* 🌊 新增：流体背景动画 */
+        @keyframes liquidBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #ffc0d5 0%, #91d3ff 100%);
+            /* 四色豪华渐变，放大背景尺寸以便丝滑流动 */
+            background: linear-gradient(-45deg, #ffc0d5, #91d3ff, #e2b6ff, #ffeaa7);
+            background-size: 400% 400%;
+            animation: liquidBg 15s ease infinite; /* 15秒超丝滑循环流动 */
+            
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -52,7 +63,7 @@
             white-space: nowrap;
             font-weight: bold;
             font-size: 16px;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
             will-change: transform;
         }
         /* 赞助商弹幕高亮样式 */
@@ -61,7 +72,7 @@
             font-size: 20px;
             text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
             border: 1.5px solid rgba(255, 87, 143, 0.4);
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             padding: 4px 14px;
             border-radius: 20px;
         }
@@ -70,16 +81,16 @@
             color: rgba(255, 255, 255, 0.95);
         }
 
-        /* 🧪 极致通透：液态玻璃主面板 */
+        /* 🧪 极致纯净：完全透明无模糊主面板 */
         .panel {
-            background: rgba(255, 255, 255, 0.12); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4); 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.15); 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: none !important; 
+            -webkit-backdrop-filter: none !important;
+            border: 1px solid rgba(255, 255, 255, 0.35); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 
+                        inset 0 0 15px rgba(255, 255, 255, 0.1); 
             
-            padding: 40px 30px 25px 30px; /* 调整底部间距留给水印 */
+            padding: 40px 30px 25px 30px; 
             border-radius: 30px;
             width: 100%;
             max-width: 650px;
@@ -103,7 +114,7 @@
             color: #ff3e7b;
         }
 
-        /* 数据卡片 */
+        /* 内置数据卡片 */
         .hype-box {
             display: flex;
             gap: 15px;
@@ -112,12 +123,12 @@
             flex-wrap: wrap;
         }
         .hype-item {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
             padding: 15px 20px;
             border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             flex: 1;
             min-width: 140px;
             animation: float 4s ease-in-out infinite;
@@ -141,7 +152,7 @@
             color: #222;
             line-height: 1.8;
             margin: 10px 0;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             padding: 15px;
             border-radius: 15px;
             border-left: 5px solid #ff578f;
@@ -168,7 +179,7 @@
             background: #ff3e7b;
         }
 
-        /* 🔒 新增：淡水印样式 */
+        /* 淡水印样式 */
         .watermark {
             font-size: 12px;
             color: rgba(0, 0, 0, 0.35);
@@ -185,19 +196,19 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.25); 
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
             justify-content: center;
             align-items: center;
             z-index: 999;
             padding: 20px;
         }
         .modal-content {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: 1px solid rgba(255, 255, 255, 0.35);
             padding: 30px 25px;
             border-radius: 30px;
             width: 100%;
@@ -207,6 +218,7 @@
             gap: 20px;
             align-items: center;
             animation: scaleIn 0.3s ease forwards;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
         }
         .qrcode {
             width: 50vw;
@@ -307,11 +319,11 @@
             
             if (isSponsor) {
                 const text = sponsors[Math.floor(Math.random() * sponsors.length)];
-                el.innerText = "[ 赞助商 ] " + text; 
+                el.innerText = "往届赞助商 · " + text; 
                 el.className = "danmaku-item danmaku-sponsor";
             } else {
                 const text = players[Math.floor(Math.random() * players.length)];
-                el.innerText = text; 
+                el.innerText = "往届选手 · " + text; 
                 el.className = "danmaku-item danmaku-player";
                 el.style.opacity = (Math.random() * 0.3 + 0.6).toFixed(2); 
             }
