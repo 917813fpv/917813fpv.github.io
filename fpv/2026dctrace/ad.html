@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DCT · 宣传动画</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000511;
+      font-family: -apple-system, "Microsoft YaHei", Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+    }
+
+    /* 高速斜向网格背景 */
+    .grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 204, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 204, 255, 0.15) 1px, transparent 1px);
+      background-size: 18px 18px;
+      animation: gridMove 0.8s linear infinite;
+      z-index: 0;
+    }
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 72px 72px; }
+    }
+
+    /* 主容器 */
+    #logoContainer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      transform-style: preserve-3d;
+    }
+
+    /* Logo：延迟启动，2秒滑完（5-7秒），滑完无等待 */
+    .logo {
+      width: 190px;
+      height: 190px;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 0 90px rgba(0, 204, 255, 0.95);
+      transform: translateX(-1000px) rotateY(-15deg);
+      opacity: 0;
+      /* 0.5秒启动，2秒滑入，7秒整精准结束 */
+      animation: logoSlide 2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    @keyframes logoSlide {
+      0% { transform: translateX(-1000px) rotateY(-15deg); opacity: 0; }
+      70% { transform: translateX(20px) rotateY(5deg); opacity: 1; }
+      100% { transform: translateX(0) rotateY(0); opacity: 1; }
+    }
+
+    /* 文字容器 */
+    .site-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 网址：秒整（Logo滑完瞬间）立即启动，无等待 */
+    .url {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #00ccff;
+      text-shadow: 0 0 28px rgba(0, 204, 255, 0.95);
+    }
+    .url span {
+      display: inline-block;
+      opacity: 0;
+      transform: translate(800px, -200px) rotate(20deg);
+      animation: urlArcIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes urlArcIn {
+      0% { opacity: 0; transform: translate(800px, -200px) rotate(20deg); }
+      70% { opacity: 1; transform: translate(-10px, 5px) rotate(-2deg); }
+      100% { opacity: 1; transform: translate(0, 0) rotate(0); }
+    }
+
+    /* 分隔线：网址甩完立即启动（约8.2秒），和slogan同步 */
+    .line {
+      height: 4px;
+      width: 0;
+      background: linear-gradient(90deg, #00ccff, #0077ff);
+      box-shadow: 0 0 20px rgba(0, 204, 255, 0.9);
+      animation: lineSlide 1.5s ease-out forwards 8.2s;
+    }
+    @keyframes lineSlide {
+      0% { width: 0; opacity: 0.3; }
+      100% { width: 100%; opacity: 1; }
+    }
+
+    /* Slogan：和分隔线同步启动（8.2秒） */
+    .slogan {
+      font-size: 1.9rem;
+      color: #a0d8ff;
+      text-shadow: 0 0 18px rgba(0, 204, 255, 0.85);
+    }
+    .slogan span {
+      display: inline-block;
+      opacity: 0;
+      transform: translate(600px, 150px) rotate(-15deg);
+      animation: sloganArcIn 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    }
+    @keyframes sloganArcIn {
+      0% { opacity: 0; transform: translate(600px, 150px) rotate(-15deg); }
+      70% { opacity: 1; transform: translate(-5px, -3px) rotate(1deg); }
+      100% { opacity: 1; transform: translate(0, 0) rotate(0); }
+    }
+
+    /* 整体漂浮：所有动画结束后启动（10秒） */
+    #logoContainer {
+      animation: float 10s ease-in-out infinite 10s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateZ(0); }
+      50% { transform: translateY(-12px) translateZ(20px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <div id="logoContainer">
+    <div class="logo">
+      <img src="https://z.wiki/u/R7lNSn61h" alt="Flyz 远征飞" />
+    </div>
+    <div class="site-info">
+      <div class="url" id="url">917813.com.cn</div>
+      <div class="line"></div>
+      <div class="slogan" id="slogan">2026DCT线上FPV竞速赛</div>
+    </div>
+  </div>
+
+  <script>
+    // 精准时间轴：
+    function initTextAnimation() {
+      // 网址：整（Logo滑完瞬间）启动，逐字间隔0.1秒，无任何等待
+      const urlText = document.getElementById('url').textContent;
+      document.getElementById('url').innerHTML = urlText.split('').map((char, i) => {
+        return `<span style="animation-delay: ${7 + i * 0.1}s">${char}</span>`;
+      }).join('');
+
+      // Slogan：8.2秒（网址甩完）和分隔线同步启动
+      const sloganText = document.getElementById('slogan').textContent;
+      document.getElementById('slogan').innerHTML = sloganText.split('').map((char, i) => {
+        return `<span style="animation-delay: ${8.2 + i * 0.12}s">${char}</span>`;
+      }).join('');
+    }
+
+    window.onload = initTextAnimation;
+  </script>
+</body>
+</html>
