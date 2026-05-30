@@ -52,8 +52,17 @@
             overflow-x: hidden;
         }
 
+        /* 修复：不隐藏滚动条，改为细透明滚动条，保证内嵌可滑动 */
         body::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+            height: 6px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.2);
+            border-radius: 3px;
+        }
+        body::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .gradient-text {
@@ -207,6 +216,7 @@
             filter: blur(100px);
             opacity: 0.3;
             animation: float 10s ease-in-out infinite;
+            pointer-events: none;
         }
 
         .grid-pattern {
@@ -223,6 +233,7 @@
             overflow: hidden;
             display: none;
             background: #0f172a;
+            transform: translateZ(0);
         }
 
         .camera-header {
@@ -264,6 +275,7 @@
                 70% 100%, 70% 50px, 
                 0% 50px
             );
+            pointer-events: none;
         }
 
         .scan-line {
@@ -274,6 +286,7 @@
             height: 2px;
             background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
             animation: scan-line 2s ease-in-out infinite;
+            pointer-events: none;
         }
 
         .countdown {
@@ -287,6 +300,7 @@
             text-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
             opacity: 0;
             z-index: 3;
+            pointer-events: none;
         }
 
         .countdown.active {
@@ -380,6 +394,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            overflow: hidden;
         }
 
         .ad-modal.active {
@@ -561,7 +576,7 @@
 
                 <div class="ad-space" id="ad-space-bottom">
                     <div class="ad-title">欢迎在评论区留下评论</div>
-                    <div class="ad-desc">点击"Write a comment"前三个空乱填最后一个写内容</div>
+                    <div class="ad-desc">投广请私信微信公众号917813.com.cn</div>
                 </div>
             </div>
         </div>
@@ -573,8 +588,8 @@
             <div class="modal-title">广告位合作详情</div>
             
             <div class="my-6">
-                <div class="text-gray-500 text-sm mb-2">联系方式（微信ID）</div>
-                <div class="contact-value">YGWFK2024</div>
+                <div class="text-gray-500 text-sm mb-2">联系方式·微信公众号私信</div>
+                <div class="contact-value">公众号:917813.com.cn</div>
             </div>
             
             <div class="text-left max-w-xs mx-auto">
