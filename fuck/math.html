@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026数学出题人你M4了</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: #050508;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .text-wrap {
+            width: 90vw;
+            text-align: center;
+            position: relative;
+        }
+        .loop-text {
+            font-size: clamp(6rem, 22vw, 18rem);
+            font-weight: 900;
+            font-family: system-ui, sans-serif;
+            background: linear-gradient(90deg, #4facfe, #00f2fe, #a855f7, #4facfe);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientFlow 3s linear infinite, floatShake 4s ease-in-out infinite alternate, opacityPulse 2.5s ease infinite;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+        /* 渐变流光循环 */
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+        /* 轻微浮动位移 */
+        @keyframes floatShake {
+            0% { transform: translateY(-12px) scale(0.97); }
+            100% { transform: translateY(12px) scale(1.03); }
+        }
+        /* 明暗呼吸闪烁 */
+        @keyframes opacityPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.4); }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-wrap">
+        <!-- 修改此处文字，默认111 -->
+        <div class="loop-text" id="mainText">数学出题人你m4了</div>
+    </div>
+
+    <script>
+        // 修改文字示例：document.getElementById('mainText').innerText = '自定义文字';
+        // 可自行拓展定时器循环切换文字逻辑
+        const textDom = document.getElementById('mainText');
+        // 示例文字数组，开启循环切换可取消注释
+        /*
+        const textList = ["111", "222", "333", "高级动画"];
+        let index = 0;
+        setInterval(() => {
+            index = (index + 1) % textList.length;
+            textDom.innerText = textList[index];
+        }, 2000);
+        */
+    </script>
+</body>
+</html>
