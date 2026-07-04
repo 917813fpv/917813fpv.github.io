@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TangxinVlog</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: #0d0d0d;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            perspective: 1000px;
+        }
+
+        .container {
+            width: 90vw;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .text-line {
+            position: absolute;
+            font-size: 8vmax; /* 自适应屏幕大小，确保不超屏 */
+            font-weight: 800;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 0.3rem;
+            color: transparent;
+            background: linear-gradient(135deg, #ffffff 0%, #d4af37 50%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            opacity: 0;
+            filter: blur(20px);
+            transform: scale(0.8) translateZ(-100px);
+            pointer-events: none;
+            word-break: break-all;
+        }
+
+        /* 核心动画：高级渐显、缩放、模糊与淡出 */
+        @keyframes highEndFade {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: scale(0.8) translateZ(-100px);
+            }
+            10% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: scale(1) translateZ(0px);
+            }
+            30% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: scale(1.05) translateZ(20px);
+            }
+            40% {
+                opacity: 0;
+                filter: blur(15px);
+                transform: scale(1.1) translateZ(50px);
+            }
+            100% {
+                opacity: 0;
+                filter: blur(15px);
+                transform: scale(1.1) translateZ(50px);
+            }
+        }
+
+        /* 轮流循环出现，总时长 12 秒，每句话展示 4 秒 */
+        .text-line:nth-child(1) {
+            animation: highEndFade 12s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+            animation-delay: 0s;
+        }
+
+        .text-line:nth-child(2) {
+            animation: highEndFade 12s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+            animation-delay: 4s;
+        }
+
+        .text-line:nth-child(3) {
+            animation: highEndFade 12s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+            animation-delay: 8s;
+        }
+
+        /* 氛围粒子线，增强高端感 */
+        .ambient-glow {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: #d4af37;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: pulse 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            100% { transform: scale(1.5); opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    
+    <div class="container">
+        <div class="text-line">炫耀🈷️泡司马</div>
+        <div class="text-line">赶紧上号瓦</div>
+        <div class="text-line">再不上号老牧师</div>
+    </div>
+
+</body>
+</html>
