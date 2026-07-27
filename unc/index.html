@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>UNC模拟器约飞网 | 敬请期待</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+        }
+
+        html, body {
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4088ff 0%, #f488c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 独立全屏开屏层 */
+        .splash-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #4088ff 0%, #f488c0 100%);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 开屏中间核心内容 */
+        .splash-center {
+            text-align: center;
+        }
+
+        .splash-title {
+            font-size: clamp(32px, 8vw, 42px);
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 5px;
+            margin-bottom: 14px;
+        }
+
+        .splash-url {
+            font-size: clamp(15px, 3.2vw, 18px);
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 1px;
+        }
+
+        /* 开屏底部小字 固定在屏幕最下方 居中 淡灰色 */
+        .splash-footer {
+            position: absolute;
+            bottom: clamp(24px, 6vh, 48px);
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: clamp(12px, 2.6vw, 14px);
+            line-height: 1.8;
+        }
+
+        /* 主内容区 无任何边框背景 纯文字 */
+        .main-content {
+            width: min(90%, 480px);
+            text-align: center;
+            visibility: hidden;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(14px, 3.2vh, 28px);
+        }
+
+        .state-text {
+            font-size: clamp(17px, 3.6vw, 20px);
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .launch-time {
+            font-size: clamp(24px, 5.5vw, 30px);
+            font-weight: 500;
+            color: #ffffff;
+            padding-bottom: 18px;
+            position: relative;
+        }
+
+        .launch-time::after {
+            content: "";
+            position: absolute;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            animation: lineScan 3.6s linear infinite;
+        }
+
+        @keyframes lineScan {
+            0% {opacity: 0.2; transform: scaleX(0.2);}
+            50% {opacity: 1; transform: scaleX(1);}
+            100% {opacity: 0.2; transform: scaleX(0.2);}
+        }
+
+        .feature-wrap {
+            margin-top: 8px;
+        }
+
+        .feature-title {
+            font-size: clamp(19px, 4vw, 22px);
+            color: #ffffff;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .feature-desc {
+            font-size: clamp(15px, 3.2vw, 17px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 2;
+        }
+
+        .bottom-tip {
+            font-size: clamp(12px, 2.6vw, 14px);
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 独立开屏 -->
+    <div class="splash-screen">
+        <div class="splash-center">
+            <div class="splash-title">UNC模拟器约飞网</div>
+            <div class="splash-url">917813.com.cn/UNC</div>
+        </div>
+        <div class="splash-footer">
+            YZCloud 提供云计算服务<br>
+            本站支持 IPv6
+        </div>
+    </div>
+
+    <!-- 主体内容 开屏结束后显示 -->
+    <div class="main-content">
+        <p class="state-text">网站建设中 · 敬请期待</p>
+        <div class="launch-time">正式上线时间：8月1日</div>
+        <div class="feature-wrap">
+            <div class="feature-title">全国穿越机在线约飞平台</div>
+            <div class="feature-desc">
+                无需注册，一键发布约飞帖子<br>
+                支持填写模拟器房间号、联机密码<br>
+                面向全国飞友，自由组队联机竞速
+            </div>
+        </div>
+        <div class="bottom-tip">FPV穿越机模拟器联机交流平台</div>
+    </div>
+
+<script>
+    const tl = gsap.timeline();
+
+    // 开屏动画：标题弹入 → 网址跟进 → 底部小字淡入
+    tl.from(".splash-title", {
+        duration: 0.9,
+        scale: 0.75,
+        opacity: 0,
+        ease: "back.out(1.4)"
+    })
+    .from(".splash-url", {
+        duration: 0.6,
+        y: 20,
+        opacity: 0,
+        ease: "power2.out"
+    }, "-=0.4")
+    .from(".splash-footer", {
+        duration: 0.6,
+        opacity: 0,
+        ease: "power2.out"
+    }, "-=0.3")
+
+    // 停留展示
+    .to({}, { duration: 1.5 })
+
+    // 开屏整体向上滑出
+    .to(".splash-screen", {
+        duration: 0.7,
+        yPercent: -100,
+        ease: "power2.inOut"
+    })
+
+    // 主内容依次淡入
+    .to(".main-content", {
+        duration: 0.6,
+        opacity: 1,
+        visibility: "visible",
+        ease: "power2.out"
+    }, "-=0.2")
+    .from(".state-text, .launch-time, .feature-wrap, .bottom-tip", {
+        duration: 0.7,
+        y: 24,
+        opacity: 0,
+        stagger: 0.12,
+        ease: "power2.out"
+    }, "-=0.4");
+</script>
+</body>
+</html>
