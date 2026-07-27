@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UNC模拟器约飞网 | 敬请期待</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4088ff 0%, #f488c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 全屏开屏层 */
+        .splash-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #4088ff 0%, #f488c0 100%);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .splash-center {
+            text-align: center;
+        }
+
+        .splash-title {
+            font-size: clamp(32px, 8vw, 42px);
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 5px;
+            margin-bottom: 14px;
+        }
+
+        .splash-url {
+            font-size: clamp(15px, 3.2vw, 18px);
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 1px;
+        }
+
+        /* 点击进入提示 放大并移到云服务文字上方 */
+        .click-tip {
+            position: absolute;
+            bottom: clamp(100px, 16vh, 150px);
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #ffffff;
+            font-size: clamp(18px, 4vw, 22px);
+            font-weight: 500;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* 开屏底部小字 */
+        .splash-footer {
+            position: absolute;
+            bottom: clamp(36px, 6vh, 60px);
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: clamp(12px, 2.6vw, 14px);
+            line-height: 1.8;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            width: min(90%, 480px);
+            text-align: center;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(14px, 3.2vh, 28px);
+        }
+
+        .state-text {
+            font-size: clamp(17px, 3.6vw, 20px);
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .launch-time {
+            font-size: clamp(24px, 5.5vw, 30px);
+            font-weight: 500;
+            color: #ffffff;
+            padding-bottom: 18px;
+            position: relative;
+        }
+
+        .launch-time::after {
+            content: "";
+            position: absolute;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            animation: lineScan 3.6s linear infinite;
+        }
+
+        @keyframes lineScan {
+            0% { opacity: 0.2; transform: scaleX(0.2); }
+            50% { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0.2; transform: scaleX(0.2); }
+        }
+
+        .feature-wrap {
+            margin-top: 8px;
+        }
+
+        .feature-title {
+            font-size: clamp(19px, 4vw, 22px);
+            color: #ffffff;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .feature-desc {
+            font-size: clamp(15px, 3.2vw, 17px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 2;
+        }
+
+        .bottom-tip {
+            font-size: clamp(12px, 2.6vw, 14px);
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 独立开屏界面 -->
+    <div class="splash-screen">
+        <div class="splash-center">
+            <div class="splash-title">UNC模拟器约飞网</div>
+            <div class="splash-url">917813.com.cn/UNC</div>
+        </div>
+        <div class="click-tip">点击任意位置进入</div>
+        <div class="splash-footer">
+            YZCloud 提供云计算服务<br>
+            本站支持 IPv6
+        </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+        <p class="state-text">网站建设中 · 敬请期待</p>
+        <div class="launch-time">正式上线时间：8月1日</div>
+        <div class="feature-wrap">
+            <div class="feature-title">全国穿越机在线约飞平台</div>
+            <div class="feature-desc">
+                无需注册，一键发布约飞帖子<br>
+                支持填写模拟器房间号、联机密码<br>
+                面向全国飞友，自由组队联机竞速
+            </div>
+        </div>
+        <div class="bottom-tip">FPV穿越机模拟器联机交流平台</div>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="http://music.163.com/song/media/outer/url?id=3410164121.mp3" type="audio/mpeg">
+    
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+        const splash = document.querySelector('.splash-screen');
+        const mainContent = document.querySelector('.main-content');
+        let canEnter = false;
+
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            tl.from('.splash-title', {
+                duration: 0.9,
+                scale: 0.75,
+                opacity: 0,
+                ease: 'back.out(1.4)'
+            })
+            .from('.splash-url', {
+                duration: 0.6,
+                y: 20,
+                opacity: 0,
+                ease: 'power2.out'
+            }, '-=0.4')
+            .from('.click-tip', {
+                duration: 0.5,
+                opacity: 0,
+                y: 10,
+                ease: 'power2.out',
+                onComplete: () => { canEnter = true; }
+            }, '-=0.2')
+            .from('.splash-footer', {
+                duration: 0.6,
+                opacity: 0,
+                ease: 'power2.out'
+            }, '-=0.3');
+        });
+
+        document.body.addEventListener('click', () => {
+            if (!canEnter) return;
+            canEnter = false;
+
+            bgMusic.play().catch(() => {});
+
+            gsap.to(splash, {
+                duration: 0.7,
+                yPercent: -100,
+                ease: 'power2.inOut'
+            });
+
+            gsap.to(mainContent, {
+                duration: 0.6,
+                opacity: 1,
+                ease: 'power2.out',
+                delay: 0.1
+            });
+
+            gsap.from('.state-text, .launch-time, .feature-wrap, .bottom-tip', {
+                duration: 0.7,
+                y: 24,
+                opacity: 0,
+                stagger: 0.12,
+                ease: 'power2.out',
+                delay: 0.2
+            });
+        });
+    </script>
+</body>
+</html>
